@@ -23,7 +23,22 @@ An MCP server that **BM25-searches any number of `llms.txt` documentation indexe
 `strands`, `kiro`, `aws-bedrock-userguide`, `aws-agentic-ai-lens`, `aws-bedrock-agentcore-devguide`.
 Registry is persisted at `~/.config/llmstxt-doc-search/sources.json` (override with `LLMSTXT_REGISTRY_PATH`).
 
-## Build & run
+## Install
+
+Published to npm as [`@praveenc/llmstxt-doc-search`](https://www.npmjs.com/package/@praveenc/llmstxt-doc-search). No local build needed - run it via `npx`:
+
+```json
+{
+  "mcpServers": {
+    "llmstxt-doc-search": {
+      "command": "npx",
+      "args": ["-y", "@praveenc/llmstxt-doc-search"]
+    }
+  }
+}
+```
+
+## Build & run (from source)
 
 ```bash
 npm install
@@ -32,7 +47,7 @@ npm test           # offline unit tests
 npm run typecheck
 ```
 
-MCP client config (after `npm run build`):
+MCP client config (from a local build):
 
 ```json
 {
@@ -57,8 +72,13 @@ Dev (no build): `"command": "npx", "args": ["tsx", "/ABS/PATH/src/index.ts"]`.
 
 ## Security
 
-- `fetch_doc` only fetches URLs **under a registered source's base prefix** (no arbitrary fetch).
-- All fetches reject non-`http(s)` schemes and loopback/link-local/private hosts (SSRF guard).
+This server fetches user-supplied URLs at runtime, so the SSRF surface is guarded in depth:
+
+- `fetch_doc` only fetches URLs **under a registered source's origin + path prefix** (matched on a path boundary, not a raw string prefix) - no arbitrary fetch.
+- Non-`http(s)` schemes are rejected.
+- Private/reserved destinations are blocked using range classification (`ipaddr.js`), covering decimal/octal/hex IPv4, IPv4-mapped IPv6, loopback, link-local, unique-local, carrier-grade NAT, and other reserved ranges - not just a hostname regex.
+- The resolved IP is validated **at connection time** via a custom DNS lookup, closing DNS-rebinding, and every redirect hop is re-validated.
+- Response bodies are capped (10 MB) to bound memory and regex (ReDoS) exposure.
 
 ## License
 

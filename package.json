@@ -2,7 +2,7 @@
   "name": "@praveenc/llmstxt-doc-search",
   "version": "0.1.0",
   "mcpName": "io.github.praveenc/llmstxt-doc-search",
-  "description": "MCP server that BM25-searches any number of llms.txt documentation indexes (Strands, Kiro, AWS guides, ...). Title-indexed at startup, content fetched on demand, sources addable at runtime.",
+  "description": "BM25 search over llms.txt doc indexes (Strands, Kiro, AWS); sources addable at runtime.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,6 +34,17 @@
   ],
   "author": "praveenc",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/praveenc/llmstxt-doc-search.git"
+  },
+  "homepage": "https://github.com/praveenc/llmstxt-doc-search#readme",
+  "bugs": {
+    "url": "https://github.com/praveenc/llmstxt-doc-search/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18.0.0"
   },

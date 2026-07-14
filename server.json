@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.praveenc/llmstxt-doc-search",
+  "description": "BM25 search over llms.txt doc indexes (Strands, Kiro, AWS); sources addable at runtime.",
+  "repository": {
+    "url": "https://github.com/praveenc/llmstxt-doc-search",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@praveenc/llmstxt-doc-search",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
