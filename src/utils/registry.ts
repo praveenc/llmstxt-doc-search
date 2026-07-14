@@ -44,7 +44,7 @@ export function loadRegistry(): Source[] {
         .map((s: any) => ({
           name: String(s.name),
           url: String(s.url),
-          base: s.base ? String(s.base) : deriveBase(String(s.url)),
+          base: deriveBase(String(s.url)),
           addedAt: s.addedAt || new Date().toISOString(),
         }));
       if (cache && cache.length) return cache;
@@ -77,7 +77,29 @@ export function getSource(name: string): Source | undefined {
 
 /** Find the registered source whose base prefix authorizes a doc URL. */
 export function findSourceForUrl(url: string): Source | undefined {
-  return loadRegistry().find((s) => url.startsWith(s.base));
+  let target: URL;
+  try {
+    target = new URL(url);
+  } catch {
+    return undefined;
+  }
+  return loadRegistry().find((s) => {
+    let baseUrl: URL;
+    try {
+      baseUrl = new URL(s.base);
+    } catch {
+      return false;
+    }
+    // Same origin, and the doc path is at or under the source's base path.
+    // Compare on a path boundary so `/foo` does not authorize `/foobar`.
+    if (target.protocol !== baseUrl.protocol || target.host !== baseUrl.host) {
+      return false;
+    }
+    const basePath = baseUrl.pathname.endsWith("/")
+      ? baseUrl.pathname
+      : baseUrl.pathname + "/";
+    return target.pathname === baseUrl.pathname || target.pathname.startsWith(basePath);
+  });
 }
 
 export function addSourceEntry(name: string, url: string): Source {

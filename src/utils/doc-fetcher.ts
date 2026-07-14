@@ -1,7 +1,11 @@
 /**
  * Document fetching and llms.txt parsing.
  */
-import { assertPublicHttpUrl } from "./url-validator.js";
+import { lookup as dnsLookup } from "node:dns";
+import { request as httpsRequest } from "node:https";
+import { request as httpRequest } from "node:http";
+import type { IncomingMessage } from "node:http";
+import { assertPublicHttpUrl, assertPublicAddress } from "./url-validator.js";
 
 const MD_LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const HTML_BLOCK_RE = /<(script|style|noscript)[^>]*>[\s\S]*?<\/\1>/gi;
@@ -12,6 +16,56 @@ const META_OG_RE = /<meta[^>]+property=["']og:title["'][^>]+content=["']([\s\S]*
 
 const DEFAULT_TIMEOUT = 30000;
 const USER_AGENT = "llmstxt-doc-search/0.1";
+/** Hard cap on a fetched response body to bound memory / ReDoS surface. */
+const MAX_BODY_BYTES = 10 * 1024 * 1024; // 10 MB
+/** Max number of redirect hops to follow (each re-validated). */
+const MAX_REDIRECTS = 5;
+
+/**
+ * DNS lookup that rejects any host resolving to a private/reserved address.
+ * Enforced at connection time (below), so it also covers DNS rebinding (a
+ * public name that resolves to 169.254.169.254, 127.0.0.1, etc.).
+ */
+const safeLookup: typeof dnsLookup = ((hostname: string, options: any, callback: any) => {
+  const cb = typeof options === "function" ? options : callback;
+  const opts = typeof options === "function" ? {} : options;
+  return dnsLookup(hostname, opts, (err: any, address: any, family: any) => {
+    if (err) {
+      cb(err, address, family);
+      return;
+    }
+    try {
+      if (Array.isArray(address)) {
+        for (const a of address) assertPublicAddress(a.address, hostname);
+      } else {
+        assertPublicAddress(address as string, hostname);
+      }
+    } catch (e) {
+      cb(e, address, family);
+      return;
+    }
+    cb(err, address, family);
+  });
+}) as typeof dnsLookup;
+
+/** Perform a single (non-redirecting) GET and return the response stream. */
+function requestOnce(target: URL, signal: AbortSignal): Promise<IncomingMessage> {
+  const request = target.protocol === "http:" ? httpRequest : httpsRequest;
+  return new Promise((resolve, reject) => {
+    const req = request(
+      target,
+      {
+        method: "GET",
+        headers: { "User-Agent": USER_AGENT },
+        lookup: safeLookup,
+        signal,
+      },
+      resolve
+    );
+    req.on("error", reject);
+    req.end();
+  });
+}
 
 export interface Page {
   url: string;
@@ -23,17 +77,49 @@ async function fetchUrl(url: string): Promise<string> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
   try {
-    const response = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT },
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Follow redirects manually so each hop's target is re-validated against
+    // the SSRF guard (scheme + literal-IP check) before we connect to it.
+    let current = assertPublicHttpUrl(url);
+    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+      const res = await requestOnce(new URL(current), controller.signal);
+      const status = res.statusCode ?? 0;
+      if (status >= 300 && status < 400) {
+        const loc = res.headers.location;
+        res.resume(); // drain the redirect body
+        if (!loc) throw new Error(`HTTP ${status}: redirect without Location`);
+        if (hop === MAX_REDIRECTS) throw new Error("too many redirects");
+        current = assertPublicHttpUrl(new URL(loc, current).toString());
+        continue;
+      }
+      if (status < 200 || status >= 300) {
+        res.resume();
+        throw new Error(`HTTP ${status}`);
+      }
+      return await readCapped(res);
     }
-    return await response.text();
+    throw new Error("too many redirects");
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+/** Read a response stream as text, aborting past MAX_BODY_BYTES. */
+function readCapped(res: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let total = 0;
+    res.on("data", (chunk: Buffer) => {
+      total += chunk.length;
+      if (total > MAX_BODY_BYTES) {
+        res.destroy();
+        reject(new Error(`response body exceeds ${MAX_BODY_BYTES} byte cap`));
+        return;
+      }
+      chunks.push(chunk);
+    });
+    res.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    res.on("error", reject);
+  });
 }
 
 /**

@@ -7,7 +7,7 @@ import {
   getSources,
   _resetRegistryCache,
 } from "../src/utils/registry.js";
-import { assertPublicHttpUrl, URLValidationError } from "../src/utils/url-validator.js";
+import { assertPublicHttpUrl, isPublicAddress, URLValidationError } from "../src/utils/url-validator.js";
 import { IndexSearch, tokenize } from "../src/utils/indexer.js";
 import { existsSync, rmSync } from "node:fs";
 
@@ -41,6 +41,15 @@ describe("registry", () => {
     expect(findSourceForUrl("https://evil.example.com/x.md")).toBeUndefined();
   });
 
+  it("does not authorize a same-prefix host on a different origin", () => {
+    addSourceEntry("lg", "https://langchain-ai.github.io/langgraph/llms.txt");
+    // Different host that merely starts with the same string must not match.
+    expect(findSourceForUrl("https://langchain-ai.github.io.evil.com/langgraph/x.md")).toBeUndefined();
+    // Path-prefix must respect the / boundary: /langgraph must not authorize /langgraph-evil.
+    expect(findSourceForUrl("https://langchain-ai.github.io/langgraph-evil/x.md")).toBeUndefined();
+    expect(findSourceForUrl("https://langchain-ai.github.io/langgraph/x.md")?.name).toBe("lg");
+  });
+
   it("adds and removes a source at runtime", () => {
     const added = addSourceEntry("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt");
     expect(added.base).toBe("https://langchain-ai.github.io/langgraph/");
@@ -67,6 +76,45 @@ describe("assertPublicHttpUrl", () => {
     expect(() => assertPublicHttpUrl("http://localhost/x")).toThrow(URLValidationError);
     expect(() => assertPublicHttpUrl("http://10.0.0.5/x")).toThrow(URLValidationError);
     expect(() => assertPublicHttpUrl("not a url")).toThrow(URLValidationError);
+  });
+  it("rejects encoded / alternate-form private IP literals", () => {
+    // Decimal, octal, and hex encodings of 127.0.0.1 and metadata IP.
+    expect(() => assertPublicHttpUrl("http://2130706433/x")).toThrow(URLValidationError); // 127.0.0.1
+    expect(() => assertPublicHttpUrl("http://0x7f000001/x")).toThrow(URLValidationError); // 127.0.0.1
+    // Cloud metadata endpoint and its IPv4-mapped IPv6 form.
+    expect(() => assertPublicHttpUrl("http://169.254.169.254/latest/meta-data/")).toThrow(URLValidationError);
+    expect(() => assertPublicHttpUrl("http://[::ffff:169.254.169.254]/x")).toThrow(URLValidationError);
+    // IPv6 loopback and unique-local.
+    expect(() => assertPublicHttpUrl("http://[::1]/x")).toThrow(URLValidationError);
+    expect(() => assertPublicHttpUrl("http://[fd00::1]/x")).toThrow(URLValidationError);
+    // Carrier-grade NAT range.
+    expect(() => assertPublicHttpUrl("http://100.64.0.1/x")).toThrow(URLValidationError);
+  });
+});
+
+describe("isPublicAddress", () => {
+  it("accepts routable public addresses", () => {
+    expect(isPublicAddress("8.8.8.8")).toBe(true);
+    expect(isPublicAddress("2606:4700:4700::1111")).toBe(true);
+  });
+  it("rejects private, loopback, link-local, and metadata addresses", () => {
+    for (const ip of [
+      "127.0.0.1",
+      "10.0.0.5",
+      "192.168.1.1",
+      "172.16.0.1",
+      "169.254.169.254",
+      "100.64.0.1",
+      "::1",
+      "fd00::1",
+      "fe80::1",
+      "::ffff:127.0.0.1",
+    ]) {
+      expect(isPublicAddress(ip), ip).toBe(false);
+    }
+  });
+  it("rejects garbage input", () => {
+    expect(isPublicAddress("not-an-ip")).toBe(false);
   });
 });
 

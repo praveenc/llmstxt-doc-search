@@ -81,7 +81,7 @@ server.registerTool(
         .string()
         .optional()
         .describe("Optional source name to scope to (e.g. 'strands', 'aws-bedrock-userguide'); omit to search all"),
-      k: z.number().optional().default(5).describe("Max results (default 5)"),
+      k: z.number().int().min(1).max(50).optional().default(5).describe("Max results (default 5, max 50)"),
     },
   },
   async ({ query, source, k }) => {
@@ -101,7 +101,7 @@ server.registerTool(
       "Fetch full content of a doc url. The url must belong to a registered source (use " +
       "search_docs first). Content is fetched live.",
     inputSchema: {
-      url: z.string().describe("Document URL from a search_docs result"),
+      url: z.string().url().describe("Document URL from a search_docs result"),
     },
   },
   async ({ url }) => {
@@ -117,7 +117,7 @@ server.registerTool(
       "Register a new llms.txt source at runtime and index it. Persisted for future runs.",
     inputSchema: {
       name: z.string().describe("Short id, e.g. 'langgraph'"),
-      llms_txt_url: z.string().describe("URL of the source's llms.txt (https)"),
+      llms_txt_url: z.string().url().describe("URL of the source's llms.txt (https)"),
     },
   },
   async ({ name, llms_txt_url }) => {
