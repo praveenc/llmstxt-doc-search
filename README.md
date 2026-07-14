@@ -244,5 +244,5 @@ Commit messages follow the [Conventional Commits](https://www.conventionalcommit
 ---
 
 <div align="center">
-  <sub>Built for the Claude developer community ❤️</sub>
+  <sub>Built for the MCP community ❤️</sub>
 </div>
