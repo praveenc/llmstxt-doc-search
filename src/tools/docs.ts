@@ -94,7 +94,9 @@ export async function searchDocs(
   collected.sort((a, b) => b.score - a.score);
   const top = collected.slice(0, k);
 
-  // Hydrate the very top hits with content for snippets.
+  // Hydrate the very top hits with content for snippets. Only ensurePage
+  // accesses update LRU recency; these search-hit reads intentionally do not,
+  // so a result surfaced but never opened does not pin a page in the cache.
   for (const t of top.slice(0, Math.min(top.length, SNIPPET_HYDRATE_MAX))) {
     if (!t.st.urlCache.get(t.uri)) await ensurePage(t.st, t.uri);
   }

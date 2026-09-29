@@ -15,6 +15,17 @@ export const REGISTRY_PATH =
 /** Max number of search results hydrated with content for snippets. */
 export const SNIPPET_HYDRATE_MAX = Number(process.env.LLMSTXT_SNIPPET_HYDRATE_MAX || 5);
 
+/**
+ * Max number of fetched pages kept in memory per source, evicted least-recently
+ * used. Bounds the page cache in long sessions. Set to 0 to disable the cap.
+ */
+export const PAGE_CACHE_MAX = (() => {
+  const raw = process.env.LLMSTXT_PAGE_CACHE_MAX;
+  if (raw === undefined || raw.trim() === "") return 50;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 50;
+})();
+
 /** Seed sources written to the registry on first run. */
 export const DEFAULT_SOURCES: { name: string; url: string }[] = [
   { name: "strands", url: "https://strandsagents.com/llms.txt" },

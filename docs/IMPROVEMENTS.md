@@ -60,10 +60,14 @@ Status: fixed in #1 (`looksLikeHtml()` checks the first 8 KB).
 
 ## 5. Unbounded page cache
 
+Status: fixed in `feat/bounded-url-cache` (issue #4).
+
 - `urlCache` in `store.ts` keeps every fetched page for the process lifetime,
   each up to 10 MB (`MAX_BODY_BYTES`). Only path that grows in long sessions.
-- Fix: LRU cap (e.g. 50 pages or a byte budget), keep `null` placeholders out
-  of the cap.
+- Fix: per-source LRU cap on fetched pages (`LLMSTXT_PAGE_CACHE_MAX`, default
+  50, 0 disables). Eviction resets a page to its `null` placeholder, so known
+  URLs stay recognized and re-fetch on next access; placeholders never count
+  toward the cap.
 
 ## 6. Ranking correctness
 
