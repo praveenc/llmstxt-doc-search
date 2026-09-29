@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 const state = vi.hoisted(() => ({ cap: 3 }));
 const mocks = vi.hoisted(() => ({
@@ -10,6 +10,7 @@ vi.mock("../src/config.js", () => ({
   get PAGE_CACHE_MAX() {
     return state.cap;
   },
+  INDEX_RETRY_BACKOFF_MS: 60_000,
 }));
 
 vi.mock("../src/utils/doc-fetcher.js", () => ({
@@ -17,7 +18,7 @@ vi.mock("../src/utils/doc-fetcher.js", () => ({
   parseLlmsTxt: mocks.parseLlmsTxt,
 }));
 
-import { ensureSourceIndexed, ensurePage, dropSourceState, SourceState } from "../src/utils/store.js";
+import { ensureSourceIndexed, ensurePage, dropSourceState, getSourceState, SourceState } from "../src/utils/store.js";
 import { Source } from "../src/utils/registry.js";
 
 const ORIGIN = "https://docs.example.com/";
@@ -128,5 +129,68 @@ describe("ensureSourceIndexed with alternate titles", () => {
     expect(hits[0].doc.uri).toBe(`${ORIGIN}hitl/index.md`);
     expect(hits[0].doc.displayTitle).toBe("Pause for input and control");
     expect(hits.filter((h) => h.doc.uri === `${ORIGIN}hitl/index.md`)).toHaveLength(1);
+  });
+});
+
+describe("ensureSourceIndexed failure backoff (issue #12)", () => {
+  const src = { name: "broken", url: `${ORIGIN}llms.txt` } as Source;
+
+  beforeEach(() => {
+    dropSourceState("broken");
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("records the failure and names the source", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    await expect(ensureSourceIndexed(src)).rejects.toThrow(
+      "source 'broken' failed to index: HTTP 404 (retry in 60s, or call refresh_doc_source)"
+    );
+
+    const st = getSourceState("broken");
+    expect(st?.indexed).toBe(false);
+    expect(st?.lastError).toBe("HTTP 404");
+    expect(st?.failedAt).toBe(Date.now());
+  });
+
+  it("fails fast within the backoff without re-fetching the llms.txt", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    await expect(ensureSourceIndexed(src)).rejects.toThrow();
+
+    vi.advanceTimersByTime(30_000);
+    await expect(ensureSourceIndexed(src)).rejects.toThrow(/HTTP 404 \(retry in 30s, or call refresh_doc_source\)/);
+    expect(mocks.parseLlmsTxt).toHaveBeenCalledTimes(1);
+  });
+
+  it("retries after the backoff and clears the failure on success", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    await expect(ensureSourceIndexed(src)).rejects.toThrow();
+
+    vi.advanceTimersByTime(60_000);
+    mocks.parseLlmsTxt.mockResolvedValueOnce([["Page 0", urlOf(0)]]);
+    const st = await ensureSourceIndexed(src);
+    expect(mocks.parseLlmsTxt).toHaveBeenCalledTimes(2);
+    expect(st.indexed).toBe(true);
+    expect(st.lastError).toBeUndefined();
+    expect(st.failedAt).toBeUndefined();
+  });
+
+  it("retries immediately once the state is dropped", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    await expect(ensureSourceIndexed(src)).rejects.toThrow();
+
+    dropSourceState("broken");
+    mocks.parseLlmsTxt.mockResolvedValueOnce([["Page 0", urlOf(0)]]);
+    expect((await ensureSourceIndexed(src)).indexed).toBe(true);
+  });
+
+  it("gives a readable reason when the error message is empty", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error(""));
+    await expect(ensureSourceIndexed(src)).rejects.toThrow("source 'broken' failed to index: Error");
+    expect(getSourceState("broken")?.lastError).toBe("Error");
   });
 });

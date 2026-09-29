@@ -26,6 +26,13 @@ export const PAGE_CACHE_MAX = (() => {
   return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 50;
 })();
 
+/**
+ * How long a source whose llms.txt failed to index is skipped before it is
+ * retried, so a broken source does not slow every search. refresh_doc_source
+ * retries immediately.
+ */
+export const INDEX_RETRY_BACKOFF_MS = 5 * 60 * 1000;
+
 /** Seed sources written to the registry on first run. */
 export const DEFAULT_SOURCES: { name: string; url: string }[] = [
   { name: "strands", url: "https://strandsagents.com/llms.txt" },

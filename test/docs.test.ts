@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, afterAll, vi } from "vitest";
+
+// Per-file registry, set before config.ts reads it, so parallel test files
+// never share (and race on deleting) one registry file.
+const TMP = vi.hoisted(() => {
+  const path = `/tmp/llmstxt-test-docs-${process.pid}.json`;
+  process.env.LLMSTXT_REGISTRY_PATH = path;
+  return path;
+});
 
 const mocks = vi.hoisted(() => ({
   parseLlmsTxt: vi.fn(),
@@ -10,15 +18,20 @@ vi.mock("../src/utils/doc-fetcher.js", () => ({
   fetchAndClean: mocks.fetchAndClean,
 }));
 
-import { addDocSource, fetchDoc, topUniqueByUrl } from "../src/tools/docs.js";
+import {
+  addDocSource,
+  fetchDoc,
+  listDocSources,
+  refreshDocSource,
+  searchDocs,
+  topUniqueByUrl,
+} from "../src/tools/docs.js";
 import { addSourceEntry, getSource, getSources, _resetRegistryCache } from "../src/utils/registry.js";
 import { dropSourceState, ensurePage, ensureSourceIndexed } from "../src/utils/store.js";
-import { existsSync, rmSync } from "node:fs";
-
-const TMP = process.env.LLMSTXT_REGISTRY_PATH || "/tmp/llmstxt-test-sources.json";
+import { rmSync } from "node:fs";
 
 beforeEach(() => {
-  if (existsSync(TMP)) rmSync(TMP);
+  rmSync(TMP, { force: true });
   _resetRegistryCache();
   for (const s of getSources()) dropSourceState(s.name);
   mocks.parseLlmsTxt.mockReset();
@@ -27,6 +40,10 @@ beforeEach(() => {
 
 afterEach(() => {
   for (const s of getSources()) dropSourceState(s.name);
+});
+
+afterAll(() => {
+  rmSync(TMP, { force: true });
 });
 
 describe("topUniqueByUrl", () => {
@@ -207,5 +224,61 @@ describe("fetchDoc source authorization", () => {
     const res = await fetchDoc("https://docs.example.com/guide/intro.md");
     expect(res.source).toBe("flaky");
     expect(res.error).toBe("failed to fetch document");
+  });
+});
+
+describe("failing sources in search and listing (issues #12, #13)", () => {
+  const GOOD = "https://good.example.com/llms.txt";
+  const BAD = "https://bad.example.com/llms.txt";
+
+  beforeEach(() => {
+    mocks.parseLlmsTxt.mockImplementation(async (url: string) => {
+      if (url === GOOD) return [["Agent loop", "https://good.example.com/agent-loop.md"]];
+      throw new Error(`HTTP 404 for ${url}`);
+    });
+    mocks.fetchAndClean.mockImplementation(async (url: string) => ({ url, title: "t", content: "body" }));
+    addSourceEntry("good", GOOD);
+    addSourceEntry("bad", BAD);
+  });
+
+  it("reports a scoped search on a failing source as an error", async () => {
+    await expect(searchDocs("agent", "bad", 5)).rejects.toThrow(/source 'bad' failed to index: HTTP 404/);
+  });
+
+  it("skips a failing source in unscoped search and does not re-fetch it on the next search", async () => {
+    const first = await searchDocs("agent loop", undefined, 5);
+    expect(first.results.map((r) => r.source)).toEqual(["good"]);
+    await searchDocs("agent loop", undefined, 5);
+
+    const badCalls = mocks.parseLlmsTxt.mock.calls.filter(([u]) => u === BAD);
+    expect(badCalls).toHaveLength(1);
+  });
+
+  it("surfaces the failure in list_doc_sources", async () => {
+    await searchDocs("agent loop", undefined, 5);
+    const bad = listDocSources().sources.find((s) => s.name === "bad");
+    expect(bad?.indexed).toBe(false);
+    expect(bad?.lastError).toBe(`HTTP 404 for ${BAD}`);
+    expect(bad?.lastFailedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    const good = listDocSources().sources.find((s) => s.name === "good");
+    expect(good?.lastError).toBeUndefined();
+  });
+
+  it("refresh_doc_source retries a failed source immediately", async () => {
+    await expect(searchDocs("agent", "bad", 5)).rejects.toThrow();
+    await expect(refreshDocSource("bad")).rejects.toThrow(/HTTP 404/);
+    const badCalls = mocks.parseLlmsTxt.mock.calls.filter(([u]) => u === BAD);
+    expect(badCalls).toHaveLength(2);
+  });
+
+  it("fetch_doc still fetches a prefix-authorized page while its source is in backoff", async () => {
+    const PAGE = "https://bad.example.com/guide/intro.md";
+    for (let i = 0; i < 2; i++) {
+      const res = await fetchDoc(PAGE);
+      expect(res.error).toBeUndefined();
+      expect(res.source).toBe("bad");
+    }
+    const badCalls = mocks.parseLlmsTxt.mock.calls.filter(([u]) => u === BAD);
+    expect(badCalls).toHaveLength(1);
   });
 });

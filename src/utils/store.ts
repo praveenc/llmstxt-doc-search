@@ -6,7 +6,7 @@ import { parseLlmsTxt, fetchAndClean, Page } from "./doc-fetcher.js";
 import { IndexSearch } from "./indexer.js";
 import { normalize, indexTitleVariants, formatDisplayTitle } from "./text-processor.js";
 import { Source } from "./registry.js";
-import { PAGE_CACHE_MAX } from "../config.js";
+import { PAGE_CACHE_MAX, INDEX_RETRY_BACKOFF_MS } from "../config.js";
 import { logger } from "./logger.js";
 
 export interface SourceState {
@@ -22,6 +22,10 @@ export interface SourceState {
   indexed: boolean;
   docCount: number;
   lastIndexed?: string;
+  /** Why the last index attempt failed; cleared by a successful index. */
+  lastError?: string;
+  /** When the last index attempt failed (epoch ms). */
+  failedAt?: number;
 }
 
 const states = new Map<string, SourceState>();
@@ -37,15 +41,30 @@ function fresh(): SourceState {
   };
 }
 
-/** Build (once) the title index for a source. Idempotent and cached in memory. */
+/**
+ * Build (once) the title index for a source. Idempotent and cached in memory.
+ * A failed attempt is remembered, and further calls within
+ * INDEX_RETRY_BACKOFF_MS fail fast with the remembered reason instead of
+ * re-fetching the llms.txt.
+ */
 export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
   const existing = states.get(src.name);
   if (existing && existing.indexed) return existing;
+  if (existing?.failedAt !== undefined && Date.now() - existing.failedAt < INDEX_RETRY_BACKOFF_MS) {
+    throw indexFailure(src.name, existing.lastError, existing.failedAt + INDEX_RETRY_BACKOFF_MS - Date.now());
+  }
 
   const st = fresh();
   states.set(src.name, st);
 
-  const links = await parseLlmsTxt(src.url);
+  let links: Awaited<ReturnType<typeof parseLlmsTxt>>;
+  try {
+    links = await parseLlmsTxt(src.url);
+  } catch (e) {
+    st.lastError = describeError(e);
+    st.failedAt = Date.now();
+    throw indexFailure(src.name, st.lastError, INDEX_RETRY_BACKOFF_MS, e);
+  }
   for (const [title, url, otherTitles] of links) {
     st.urlTitles.set(url, title);
     if (!st.urlCache.has(url)) st.urlCache.set(url, null);
@@ -65,6 +84,20 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
 
 export function getSourceState(name: string): SourceState | undefined {
   return states.get(name);
+}
+
+/** A readable reason for a failure, even when the error's message is empty. */
+function describeError(e: unknown): string {
+  if (e instanceof Error) return e.message || e.name || "unknown error";
+  return String(e) || "unknown error";
+}
+
+function indexFailure(name: string, reason: string | undefined, retryInMs: number, cause?: unknown): Error {
+  const retryIn = Math.ceil(retryInMs / 1000);
+  return new Error(
+    `source '${name}' failed to index: ${reason} (retry in ${retryIn}s, or call refresh_doc_source)`,
+    { cause }
+  );
 }
 
 /**
