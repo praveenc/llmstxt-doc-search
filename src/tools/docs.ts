@@ -110,7 +110,9 @@ export async function searchDocs(
       continue;
     }
     for (const r of st.index.search(query, k)) {
-      collected.push({ score: r.score, uri: r.doc.uri, title: r.doc.displayTitle, src, st });
+      // Merge on relevance, not raw BM25: raw scores scale with each source's
+      // IDF, so a large source would outrank a small one for the same match.
+      collected.push({ score: r.relevance, uri: r.doc.uri, title: r.doc.displayTitle, src, st });
     }
   }
 
@@ -138,8 +140,9 @@ export async function searchDocs(
     scope: source ?? "all",
     count: results.length,
     hint:
-      "Ranked by BM25 (stemming + bigrams + markdown weighting). Scores are within-source; " +
-      "use fetch_doc(url) to read a winner. Content is fetched live and may change.",
+      "Ranked by BM25 (stemming + bigrams + markdown weighting). score is 0-1: the fraction of " +
+      "the best score this query could reach in that source, so it is comparable across sources. " +
+      "Use fetch_doc(url) to read a winner. Content is fetched live and may change.",
     results,
   };
 }
