@@ -86,7 +86,7 @@ add_doc_source("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt")
 | `list_doc_sources()` | List sources with their `llms.txt` URL and index status. |
 | `search_docs(query, source?, k?)` | BM25 search. Omit `source` to search all, or scope to one. Returns ranked `{source, url, title, score, snippet}`. `k` defaults to 5 (max 50). |
 | `fetch_doc(url)` | Fetch the full content of a result URL. The URL must belong to a registered source. |
-| `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. |
+| `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. |
 | `remove_doc_source(name)` | Remove a registered source. |
 | `refresh_doc_source(name)` | Re-index a source to pick up new or changed docs. |
 

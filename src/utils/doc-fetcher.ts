@@ -123,27 +123,54 @@ function readCapped(res: IncomingMessage): Promise<string> {
 }
 
 /**
- * Parse an llms.txt file into [title, absoluteUrl] tuples.
- * Relative links are resolved against the llms.txt URL; only http(s) links are kept.
+ * An llms.txt entry: [title, absoluteUrl, otherTitles]. `otherTitles` holds
+ * the titles of any later entries for the same URL, so they stay searchable.
  */
-export async function parseLlmsTxt(llmsTxtUrl: string): Promise<[string, string][]> {
+export type LlmsTxtLink = [title: string, url: string, otherTitles?: string[]];
+
+/**
+ * Parse an llms.txt file into unique links.
+ * Relative links are resolved against the llms.txt URL; only http(s) links are kept.
+ * Throws if the file yields no links, so an HTML page or empty file is not
+ * silently registered as a source with zero documents.
+ */
+export async function parseLlmsTxt(llmsTxtUrl: string): Promise<LlmsTxtLink[]> {
   const base = assertPublicHttpUrl(llmsTxtUrl);
   const txt = await fetchUrl(base);
-  const links: [string, string][] = [];
-  let match: RegExpExecArray | null;
-  MD_LINK_RE.lastIndex = 0;
-  while ((match = MD_LINK_RE.exec(txt)) !== null) {
+  return extractLlmsTxtLinks(txt, base);
+}
+
+/**
+ * Extract unique links from llms.txt text. A URL listed more than once keeps
+ * the title of its first occurrence; later distinct titles go to `otherTitles`.
+ */
+export function extractLlmsTxtLinks(txt: string, base: string): LlmsTxtLink[] {
+  const links: LlmsTxtLink[] = [];
+  const byUrl = new Map<string, LlmsTxtLink>();
+  for (const match of txt.matchAll(MD_LINK_RE)) {
     const title = (match[1] || "").trim() || (match[2] || "").trim();
     const href = (match[2] || "").trim();
     if (!href) continue;
+    let abs: string;
     try {
-      const abs = new URL(href, base).toString();
-      if (abs.startsWith("http://") || abs.startsWith("https://")) {
-        links.push([title, abs]);
-      }
+      abs = new URL(href, base).toString();
     } catch {
-      /* skip unparseable */
+      continue;
     }
+    if (!abs.startsWith("http://") && !abs.startsWith("https://")) continue;
+    const existing = byUrl.get(abs);
+    if (existing) {
+      const others = (existing[2] ??= []);
+      if (title !== existing[0] && !others.includes(title)) others.push(title);
+      continue;
+    }
+    const link: LlmsTxtLink = [title, abs];
+    byUrl.set(abs, link);
+    links.push(link);
+  }
+  if (links.length === 0) {
+    const hint = looksLikeHtml(txt) ? " (the response is an HTML page, not an llms.txt)" : "";
+    throw new Error(`no markdown links found in ${base}${hint}`);
   }
   return links;
 }

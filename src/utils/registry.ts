@@ -102,6 +102,14 @@ export function findSourceForUrl(url: string): Source | undefined {
   });
 }
 
+function sameLlmsTxtUrl(a: string, b: string): boolean {
+  try {
+    return new URL(a).toString() === new URL(b).toString();
+  } catch {
+    return a === b;
+  }
+}
+
 export function addSourceEntry(name: string, url: string): Source {
   if (!/^[a-z0-9][a-z0-9._-]*$/i.test(name)) {
     throw new URLValidationError(
@@ -112,6 +120,12 @@ export function addSourceEntry(name: string, url: string): Source {
   const list = loadRegistry();
   if (list.some((s) => s.name === name)) {
     throw new URLValidationError(`source '${name}' already exists`);
+  }
+  const sameUrl = list.find((s) => sameLlmsTxtUrl(s.url, normalized));
+  if (sameUrl) {
+    throw new URLValidationError(
+      `llms.txt ${normalized} is already registered as source '${sameUrl.name}'`
+    );
   }
   const src = makeSource(name, normalized);
   list.push(src);
