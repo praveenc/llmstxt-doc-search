@@ -416,7 +416,7 @@ Live: `skip source 'gone' (index failed) [{}]` now reads
 
 Issue: #16
 
-Status: fixed on `fix/agent-plural-stemming`. `agent` and `agents` are
+Status: fixed in #28. `agent` and `agents` are
 no longer in `PRESERVE_TERMS`, so the Porter stemmer maps both (and
 `agentic`, as before) to `agent`; `AgentCore` stays whole. Live on herdr:
 `search_docs("agent")` now returns "Agents" first, and "agents" also
