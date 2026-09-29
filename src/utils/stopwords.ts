@@ -32,7 +32,8 @@ export const STOP_WORDS: ReadonlySet<string> = new Set([
 export const PRESERVE_TERMS: ReadonlySet<string> = new Set([
   "mcp", "json", "rpc", "sse", "stdio", "http", "https", "uri", "url", "api",
   "sdk", "cli", "llm", "ai", "ml", "aws", "pydantic", "zod", "typescript", "ts",
-  // agent / AWS domain terms (kept whole so they match exactly)
+  // agent / AWS domain terms (kept whole so they match exactly). "agent" is
+  // left to the stemmer, which maps "agents" (and "agentic") to it.
   "bedrock", "agentcore", "strands", "kiro", "s3", "iam", "ec2", "eks", "ecs",
-  "lambda", "vpc", "kms", "sqs", "sns", "a2a", "rag", "bm25", "agent", "agents",
+  "lambda", "vpc", "kms", "sqs", "sns", "a2a", "rag", "bm25",
 ]);

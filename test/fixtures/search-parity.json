@@ -2002,43 +2002,43 @@
       "results": [
         {
           "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
-          "score": 15.278486645223948
+          "score": 14.70229180439398
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 10.588491152463199
+        },
+        {
+          "uri": "https://kiro.dev/docs/custom-agents.md",
+          "score": 4.6585497598661405
         },
         {
           "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
-          "score": 5.258635228406779
-        },
-        {
-          "uri": "https://strandsagents.com/docs/user-guide/migrate/choosing-an-agent-foundation/index.md",
-          "score": 5.125501733526788
-        },
-        {
-          "uri": "https://kiro.dev/docs/custom-agents/examples.md",
-          "score": 5.049278223289479
-        },
-        {
-          "uri": "https://kiro.dev/docs/skills.md",
-          "score": 5.049278223289479
-        },
-        {
-          "uri": "https://strandsagents.com/docs/user-guide/sdk/memory/managing-memory/index.md",
-          "score": 4.975288596327672
+          "score": 4.6585497598661405
         },
         {
           "uri": "https://strandsagents.com/docs/user-guide/sdk/multi-agent/multi-agent-patterns/index.md",
-          "score": 4.903436068209008
+          "score": 4.622751095827466
         },
         {
-          "uri": "https://kiro.dev/docs/custom-agents/configuration-reference.md",
-          "score": 4.903436068209008
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/operating-agents-in-production/index.md",
+          "score": 4.622751095827466
         },
         {
-          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentic-ai-lens.md",
-          "score": 4.903436068209008
+          "uri": "https://strandsagents.com/docs/user-guide/migrate/choosing-an-agent-foundation/index.md",
+          "score": 4.540608700320311
         },
         {
-          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03.md",
-          "score": 4.903436068209008
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 4.518581857217197
+        },
+        {
+          "uri": "https://kiro.dev/docs/custom-agents/built-in.md",
+          "score": 4.47308338245951
+        },
+        {
+          "uri": "https://kiro.dev/docs/custom-agents/examples.md",
+          "score": 4.47308338245951
         }
       ]
     },
@@ -2463,20 +2463,20 @@
       "k": 10,
       "results": [
         {
-          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02.md",
-          "score": 20.584708291355227
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 20.83050771783907
         },
         {
-          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
-          "score": 20.19972017730405
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02.md",
+          "score": 20.025156125699166
         },
         {
           "uri": "https://example.com/content/doc-05",
-          "score": 14.59635969722468
+          "score": 14.348010176836269
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp01.md",
-          "score": 9.547846913918143
+          "score": 9.046247107772626
         },
         {
           "uri": "https://strandsagents.com/docs/user-guide/harness/configure/tools-and-instructions/index.md",
@@ -2510,27 +2510,27 @@
       "results": [
         {
           "uri": "https://strandsagents.com/docs/user-guide/sdk/multi-agent/multi-agent-patterns/index.md",
-          "score": 24.958145671859846
+          "score": 24.677460699478303
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05.md",
-          "score": 24.516996173862616
+          "score": 23.957444008206558
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp02.md",
-          "score": 22.666697376274207
+          "score": 22.15851861283887
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
-          "score": 21.97779096013523
+          "score": 21.47619115398971
         },
         {
           "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
-          "score": 15.278486645223948
+          "score": 14.70229180439398
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01.md",
-          "score": 13.646472790237834
+          "score": 13.094886567424528
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.md",
@@ -2545,8 +2545,8 @@
           "score": 8.451873635834234
         },
         {
-          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
-          "score": 5.258635228406779
+          "uri": "https://example.com/content/doc-15",
+          "score": 6.059001172197263
         }
       ]
     },
@@ -2646,11 +2646,11 @@
       "results": [
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentic-ai-lens.md",
-          "score": 48.55100381031717
+          "score": 47.99145164466111
         },
         {
           "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01.md",
-          "score": 24.602834453199655
+          "score": 24.05124823038635
         },
         {
           "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/responsible-ai/index.md",
@@ -2661,28 +2661,28 @@
           "score": 8.868930774786577
         },
         {
+          "uri": "https://kiro.dev/docs/custom-agents.md",
+          "score": 4.6585497598661405
+        },
+        {
           "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
-          "score": 5.258635228406779
+          "score": 4.6585497598661405
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/multi-agent/multi-agent-patterns/index.md",
+          "score": 4.622751095827466
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/operating-agents-in-production/index.md",
+          "score": 4.622751095827466
         },
         {
           "uri": "https://strandsagents.com/docs/user-guide/migrate/choosing-an-agent-foundation/index.md",
-          "score": 5.125501733526788
+          "score": 4.540608700320311
         },
         {
-          "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
-          "score": 5.049278223289479
-        },
-        {
-          "uri": "https://kiro.dev/docs/custom-agents/examples.md",
-          "score": 5.049278223289479
-        },
-        {
-          "uri": "https://kiro.dev/docs/skills.md",
-          "score": 5.049278223289479
-        },
-        {
-          "uri": "https://strandsagents.com/docs/user-guide/sdk/memory/managing-memory/index.md",
-          "score": 4.975288596327672
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 4.518581857217197
         }
       ]
     },
@@ -2734,19 +2734,19 @@
         },
         {
           "uri": "https://example.com/content/doc-19",
-          "score": 7.907463733272573
+          "score": 7.515913398995084
+        },
+        {
+          "uri": "https://example.com/content/doc-20",
+          "score": 6.811666349102629
         },
         {
           "uri": "https://kiro.dev/docs/custom-agents.md",
-          "score": 7.470721324449482
+          "score": 4.6585497598661405
         },
         {
-          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/operating-agents-in-production/index.md",
-          "score": 7.41331250483687
-        },
-        {
-          "uri": "https://kiro.dev/docs/custom-agents/built-in.md",
-          "score": 7.17329665538253
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
+          "score": 4.6585497598661405
         }
       ]
     },
