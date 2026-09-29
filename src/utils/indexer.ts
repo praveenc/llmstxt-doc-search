@@ -39,7 +39,15 @@ export interface Doc {
 }
 
 export interface SearchResult {
+  /** Raw BM25 score; only comparable within one index. */
   score: number;
+  /**
+   * `score` as a fraction (0-1) of the highest BM25 score this query could
+   * reach in this index. Raw scores scale with each index's IDF (corpus size),
+   * so this is the value to compare across indexes. Ranking within one index
+   * is the same by either value.
+   */
+  relevance: number;
   doc: Doc;
 }
 
@@ -268,11 +276,35 @@ export class IndexSearch {
     }
 
     // Sort by score descending
+    const maxScore = this.maxQueryScore(qTokens);
     const ranked = Array.from(scores.entries())
-      .map(([idx, score]) => ({ score, doc: this.docs[idx] }))
+      .map(([idx, score]) => ({
+        score,
+        relevance: maxScore > 0 ? score / maxScore : 0,
+        doc: this.docs[idx],
+      }))
       .sort((a, b) => b.score - a.score);
 
     return ranked.slice(0, k);
+  }
+
+  /**
+   * Upper bound on a document's score for these query tokens in this index:
+   * each token contributes at most idf * (K1 + 1), the limit of the BM25 TF
+   * component as term frequency grows. Tokens absent from this index are
+   * counted too, so a page matching only part of the query cannot look like
+   * a full match just because its source lacks the other terms.
+   */
+  private maxQueryScore(qTokens: string[]): number {
+    let max = 0;
+    for (const qt of qTokens) max += this.idf(qt) * (K1 + 1);
+    return max;
+  }
+
+  private idf(token: string): number {
+    const nDocs = Math.max(this.docs.length, 1);
+    const df = this.docFrequency.get(token) || 0;
+    return Math.log((nDocs - df + 0.5) / (df + 0.5) + 1.0);
   }
 
   /**
@@ -288,9 +320,7 @@ export class IndexSearch {
     const avgLen = Math.max(this.avgDocLength, 1);
 
     // BM25 IDF
-    const nDocs = Math.max(this.docs.length, 1);
-    const df = this.docFrequency.get(token) || 0;
-    const idf = Math.log((nDocs - df + 0.5) / (df + 0.5) + 1.0);
+    const idf = this.idf(token);
 
     // BM25 TF with length normalization
     const tfComponent =

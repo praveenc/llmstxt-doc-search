@@ -200,3 +200,73 @@ describe("BM25 ranking bug fixes (issue #2)", () => {
     expect(adj).toBeLessThan(nonAdj);
   });
 });
+
+describe("relevance: score normalized per index (issue #11)", () => {
+  const doc = (uri: string, title: string) => ({ uri, displayTitle: title, content: "", indexTitle: title });
+
+  /** An index of `n` one-word filler titles plus one page titled `title`. */
+  function indexWith(n: number, title: string): IndexSearch {
+    const ix = new IndexSearch();
+    for (let i = 0; i < n; i++) ix.add(doc(`filler-${i}`, `filler${i}`));
+    ix.add(doc("target", title));
+    return ix;
+  }
+
+  it("gives the same match the same relevance regardless of corpus size", () => {
+    const small = indexWith(5, "Sampling").search("sampling", 1)[0];
+    const large = indexWith(500, "Sampling").search("sampling", 1)[0];
+
+    // Raw BM25 grows with corpus size through IDF...
+    expect(large.score).toBeGreaterThan(small.score * 1.5);
+    // ...but the fraction of the best possible score does not.
+    expect(large.relevance).toBeCloseTo(small.relevance, 2);
+  });
+
+  it("is between 0 and 1 and orders results exactly like the raw score", () => {
+    const ix = new IndexSearch();
+    ix.add(doc("a", "Prompt caching"));
+    ix.add(doc("b", "Prompt engineering guide"));
+    ix.add(doc("c", "Context and caching"));
+    ix.add(doc("d", "Unrelated page"));
+    const hits = ix.search("prompt caching", 10);
+
+    expect(hits.length).toBe(3);
+    for (const h of hits) {
+      expect(h.relevance).toBeGreaterThan(0);
+      expect(h.relevance).toBeLessThan(1);
+    }
+    const byRelevance = [...hits].sort((x, y) => y.relevance - x.relevance).map((h) => h.doc.uri);
+    expect(byRelevance).toEqual(hits.map((h) => h.doc.uri));
+    expect(hits[0].doc.uri).toBe("a");
+  });
+
+  it("rates a full match above a partial one", () => {
+    const ix = new IndexSearch();
+    ix.add(doc("full", "Prompt caching"));
+    ix.add(doc("partial", "Caching"));
+    const [full, partial] = ix.search("prompt caching", 2);
+    expect(full.doc.uri).toBe("full");
+    expect(partial.relevance).toBeLessThan(full.relevance / 2);
+  });
+
+  it("returns no results (and no NaN) for a query with no indexable terms", () => {
+    const ix = indexWith(3, "Sampling");
+    expect(ix.search("the and of", 5)).toEqual([]);
+    expect(ix.search("", 5)).toEqual([]);
+    expect(ix.search("xyzzy", 5)).toEqual([]);
+  });
+
+  it("does not rate a partial match as full when its index lacks the other query terms", () => {
+    const withBoth = new IndexSearch();
+    withBoth.add(doc("full", "Prompt caching"));
+    withBoth.add(doc("other", "Model access"));
+    const withoutCaching = new IndexSearch();
+    withoutCaching.add(doc("partial", "Prompts"));
+    withoutCaching.add(doc("other", "Model access"));
+
+    const full = withBoth.search("prompt caching", 1)[0];
+    const partial = withoutCaching.search("prompt caching", 1)[0];
+    expect(partial.doc.uri).toBe("partial");
+    expect(partial.relevance).toBeLessThan(full.relevance / 2);
+  });
+});
