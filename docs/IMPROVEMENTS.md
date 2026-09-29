@@ -318,7 +318,7 @@ first paragraph of the page.
 
 Issue: #11
 
-Status: fixed on `fix/unscoped-score-merge`. Each hit now carries a
+Status: fixed in #27. Each hit now carries a
 `relevance`: its BM25 score divided by the highest score the query could
 reach in that source (the sum of `idf * (K1 + 1)` over the query's terms
 and bigrams). Unscoped search merges on it, and `search_docs` reports it
