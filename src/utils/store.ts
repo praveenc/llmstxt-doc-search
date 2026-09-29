@@ -67,6 +67,19 @@ export function getSourceState(name: string): SourceState | undefined {
   return states.get(name);
 }
 
+/**
+ * A source's state for page fetches, whether or not its index is built. Used
+ * when a source authorizes a URL by prefix but its llms.txt cannot be indexed.
+ */
+export function pageStateFor(name: string): SourceState {
+  let st = states.get(name);
+  if (!st) {
+    st = fresh();
+    states.set(name, st);
+  }
+  return st;
+}
+
 export function dropSourceState(name: string): void {
   states.delete(name);
 }

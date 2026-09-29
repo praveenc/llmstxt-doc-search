@@ -184,4 +184,28 @@ describe("fetchDoc source authorization", () => {
     expect(res.source).toBe("root");
     expect(mocks.parseLlmsTxt).not.toHaveBeenCalledWith(MIRROR);
   });
+
+  it("fetches a prefix-authorized URL when its source fails to index", async () => {
+    const DOCS = "https://docs.example.com/llms.txt";
+    const PAGE = "https://docs.example.com/guide/intro.md";
+    stubIndexes({});
+    addSourceEntry("flaky", DOCS);
+
+    const res = await fetchDoc(PAGE);
+    expect(res.error).toBeUndefined();
+    expect(res.source).toBe("flaky");
+    expect(res.content).toBe(`body of ${PAGE}`);
+    expect(mocks.parseLlmsTxt).toHaveBeenCalledWith(DOCS);
+  });
+
+  it("returns a non-empty error when the page fetch also fails", async () => {
+    const DOCS = "https://docs.example.com/llms.txt";
+    stubIndexes({});
+    addSourceEntry("flaky", DOCS);
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error(""));
+
+    const res = await fetchDoc("https://docs.example.com/guide/intro.md");
+    expect(res.source).toBe("flaky");
+    expect(res.error).toBe("failed to fetch document");
+  });
 });

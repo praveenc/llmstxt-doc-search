@@ -12,6 +12,7 @@ import {
 import {
   ensureSourceIndexed,
   ensurePage,
+  pageStateFor,
   dropSourceState,
   getSourceState,
   SourceState,
@@ -143,7 +144,9 @@ export async function searchDocs(
  * Find the source that authorizes fetching `url`, in order:
  *  1. an indexed source whose llms.txt lists it, preferring one that already
  *     has the page cached (so a snippet fetch is reused, not repeated);
- *  2. the source with the longest base prefix covering it;
+ *  2. the source with the longest base prefix covering it; if that source
+ *     fails to index, the page is still fetched, since the prefix alone
+ *     authorizes it;
  *  3. any not-yet-indexed source whose llms.txt lists it (indexed on demand;
  *     sources that fail to index are skipped).
  * Listed links can live on another host (e.g. raw.githubusercontent.com),
@@ -162,7 +165,14 @@ async function resolveFetchSource(url: string): Promise<{ src: Source; st: Sourc
   if (listed) return listed;
 
   const prefixed = findSourceForUrl(url);
-  if (prefixed) return { src: prefixed, st: await ensureSourceIndexed(prefixed) };
+  if (prefixed) {
+    try {
+      return { src: prefixed, st: await ensureSourceIndexed(prefixed) };
+    } catch (e) {
+      logger.warn(`source '${prefixed.name}' failed to index; fetching without its index`, e);
+      return { src: prefixed, st: pageStateFor(prefixed.name) };
+    }
+  }
 
   for (const src of sources) {
     if (getSourceState(src.name)?.indexed) continue;
