@@ -25,6 +25,12 @@ const TITLE_BOOST_SHORT = 5;
 const TITLE_BOOST_LONG = 3;
 const SHORT_PAGE_THRESHOLD = 800;
 
+/** Field weights, mirroring the previous scoring multipliers. */
+const HEADER_WEIGHT = 4;
+const CODE_WEIGHT = 2;
+const LINK_WEIGHT = 2;
+const CONTENT_WEIGHT = 1;
+
 export interface Doc {
   uri: string;
   displayTitle: string;
@@ -115,20 +121,6 @@ function getTitleBoost(doc: Doc): number {
 }
 
 /**
- * Count non-overlapping occurrences of a token in text.
- * Both `text` and `token` are expected to already be lowercased by the caller.
- */
-function countOccurrences(text: string, token: string): number {
-  let count = 0;
-  let pos = 0;
-  while ((pos = text.indexOf(token, pos)) !== -1) {
-    count++;
-    pos += token.length;
-  }
-  return count;
-}
-
-/**
  * Extract all matches from regex and join them.
  */
 function extractMatches(text: string, regex: RegExp): string {
@@ -142,18 +134,19 @@ function extractMatches(text: string, regex: RegExp): string {
 }
 
 /**
- * Precomputed, lowercased scoring fields for one document. Built once per doc
- * at add() time and read by scoring, so BM25 never re-lowercases or re-runs the
- * Markdown regex extraction per (query token x candidate doc). Kept off the
- * public Doc in a private parallel array.
+ * Add every token (and the bigrams within the token list) to a per-doc
+ * weighted term-frequency map, each occurrence contributing `weight`. Bigrams
+ * are taken over the field's own token list, so an adjacent-term (phrase) match
+ * within a field carries that field's weight.
  */
-interface DocScoreFields {
-  contentLower: string;
-  titleLower: string;
-  headersLower: string;
-  codeLower: string;
-  linkLower: string;
-  titleBoost: number;
+function accumulateWeightedTf(
+  tf: Map<string, number>,
+  tokens: string[],
+  weight: number
+): void {
+  if (weight <= 0 || tokens.length === 0) return;
+  for (const t of tokens) tf.set(t, (tf.get(t) || 0) + weight);
+  for (const bg of generateBigrams(tokens)) tf.set(bg, (tf.get(bg) || 0) + weight);
 }
 
 /**
@@ -164,7 +157,7 @@ export class IndexSearch {
   private docFrequency: Map<string, number> = new Map();
   private docIndices: Map<string, number[]> = new Map();
   private docLengths: number[] = [];
-  private scoreFields: DocScoreFields[] = [];
+  private termFreqs: Map<string, number>[] = [];
   private totalDocLength: number = 0;
   private avgDocLength: number = 0;
 
@@ -175,13 +168,11 @@ export class IndexSearch {
     const idx = this.docs.length;
     this.docs.push(doc);
 
-    const seen = new Set<string>();
-
-    // Precompute lowercased fields + Markdown extracts once. Scoring reads these
-    // instead of recomputing them per (query token x candidate doc) per query.
-    // store.ts always passes content: "", so header/code/link weighting is dead
-    // in production; skip the regex extraction entirely when content is empty
-    // (extractMatches over "" yields "", so the result is unchanged).
+    // Precompute lowercased fields + Markdown extracts once. store.ts always
+    // passes content: "", so header/code/link weighting is dead in production;
+    // skip the regex extraction entirely when content is empty (extractMatches
+    // over "" yields "", so the result is unchanged).
+    const titleBoost = getTitleBoost(doc);
     const titleLower = doc.indexTitle.toLowerCase();
     const hasContent = doc.content.length > 0;
     const contentLower = hasContent ? doc.content.toLowerCase() : "";
@@ -190,35 +181,60 @@ export class IndexSearch {
     const inlineLower = hasContent ? extractMatches(doc.content, MD_INLINE_CODE_RE).toLowerCase() : "";
     const linkLower = hasContent ? extractMatches(doc.content, MD_LINK_TEXT_RE).toLowerCase() : "";
 
-    this.scoreFields.push({
-      contentLower,
-      titleLower,
-      headersLower,
-      codeLower,
-      linkLower,
-      titleBoost: getTitleBoost(doc),
-    });
+    // Tokenize each field once. The field order matches the previous single
+    // haystack (title, headers, link, code, inline, content), so concatenating
+    // the field token lists reproduces the old tokenize(haystack) stream exactly
+    // (tokenization is per whitespace-separated run and independent of context).
+    // Postings, document frequencies, and document lengths are therefore
+    // unchanged from before.
+    const titleTokens = tokenize(titleLower);
+    const headerTokens = tokenize(headersLower);
+    const linkTokens = tokenize(linkLower);
+    const codeTokens = tokenize(codeLower);
+    const inlineTokens = tokenize(inlineLower);
+    const contentTokens = tokenize(contentLower);
 
-    // Build weighted haystack (same field order as before, so tokenization,
-    // bigrams, doc frequencies, and doc lengths are all identical).
-    const haystack = [titleLower, headersLower, linkLower, codeLower, inlineLower, contentLower]
-      .filter(Boolean)
-      .join(" ");
+    // Per-doc weighted term frequencies, built from the same tokens used for
+    // indexing rather than by substring-scanning raw text. Field weights mirror
+    // the previous scoring: title x its length-based boost, headers x4, code x2,
+    // link x2, content x1. As before, header/code/link/inline text also appears
+    // inside `content`, so those matches accumulate the field weight on top of
+    // the content weight. Inline code gets no separate weight (its text is
+    // already counted via `content`), matching the old scoring which never read
+    // the inline extract. Because the map is keyed by the indexed tokens, bigram
+    // and stemmed matches now score instead of being silently dropped by the old
+    // substring counting.
+    const termFreq = new Map<string, number>();
+    accumulateWeightedTf(termFreq, titleTokens, titleBoost);
+    accumulateWeightedTf(termFreq, headerTokens, HEADER_WEIGHT);
+    accumulateWeightedTf(termFreq, codeTokens, CODE_WEIGHT);
+    accumulateWeightedTf(termFreq, linkTokens, LINK_WEIGHT);
+    accumulateWeightedTf(termFreq, contentTokens, CONTENT_WEIGHT);
+    this.termFreqs.push(termFreq);
 
-    // Tokenize and generate bigrams
-    const unigrams = tokenize(haystack);
+    // Full unigram stream (haystack order) plus bigrams over the whole stream.
+    const unigrams = [
+      ...titleTokens,
+      ...headerTokens,
+      ...linkTokens,
+      ...codeTokens,
+      ...inlineTokens,
+      ...contentTokens,
+    ];
     const bigrams = generateBigrams(unigrams);
     const allTokens = [...unigrams, ...bigrams];
 
+    // Record each token in the posting list at most once per document, so a
+    // term repeated within a document is not scored once per occurrence during
+    // search. Document frequency is likewise counted once per document.
+    const seen = new Set<string>();
     for (const tok of allTokens) {
+      if (seen.has(tok)) continue;
+      seen.add(tok);
       const indices = this.docIndices.get(tok) || [];
       indices.push(idx);
       this.docIndices.set(tok, indices);
-
-      if (!seen.has(tok)) {
-        this.docFrequency.set(tok, (this.docFrequency.get(tok) || 0) + 1);
-        seen.add(tok);
-      }
+      this.docFrequency.set(tok, (this.docFrequency.get(tok) || 0) + 1);
     }
 
     // Store document length and maintain a running total, so the average is
@@ -260,32 +276,12 @@ export class IndexSearch {
   }
 
   /**
-   * Calculate BM25 score for a token in a document, reading the precomputed
-   * lowercased fields rather than recomputing them on every call.
+   * Calculate the BM25 score for a token in a document, reading the precomputed
+   * weighted term frequency rather than scanning raw text.
    */
   private calculateBM25Score(token: string, docIdx: number): number {
-    const fields = this.scoreFields[docIdx];
-
-    // Term frequencies (fields are already lowercased)
-    const contentTf = countOccurrences(fields.contentLower, token);
-    const titleTf = countOccurrences(fields.titleLower, token);
-
-    // Header matches (4x weight)
-    const headerTf = countOccurrences(fields.headersLower, token);
-
-    // Code matches (2x weight)
-    const codeTf = countOccurrences(fields.codeLower, token);
-
-    // Link text matches (2x weight)
-    const linkTf = countOccurrences(fields.linkLower, token);
-
-    // Combined weighted TF
-    const weightedTf =
-      contentTf +
-      titleTf * fields.titleBoost +
-      headerTf * 4 +
-      codeTf * 2 +
-      linkTf * 2;
+    const weightedTf = this.termFreqs[docIdx].get(token) || 0;
+    if (weightedTf === 0) return 0;
 
     // Document length
     const docLength = this.docLengths[docIdx] || 1;
