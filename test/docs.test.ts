@@ -282,3 +282,53 @@ describe("failing sources in search and listing (issues #12, #13)", () => {
     expect(badCalls).toHaveLength(1);
   });
 });
+
+describe("unscoped search merges sources by relevance (issue #11)", () => {
+  const SMALL = "https://small.example.com/llms.txt";
+  const LARGE = "https://large.example.com/llms.txt";
+
+  beforeEach(() => {
+    const large: [string, string][] = Array.from({ length: 400 }, (_, i) => [
+      `Topic ${i}`,
+      `https://large.example.com/topic-${i}.md`,
+    ]);
+    large.push(["Sampling rates for telemetry exporters", "https://large.example.com/sampling-rates.md"]);
+    const small: [string, string][] = [
+      ["Sampling", "https://small.example.com/sampling.md"],
+      ["Roots", "https://small.example.com/roots.md"],
+      ["Tools", "https://small.example.com/tools.md"],
+    ];
+    mocks.parseLlmsTxt.mockImplementation(async (url: string) => {
+      if (url === SMALL) return small;
+      if (url === LARGE) return large;
+      throw new Error(`unreachable: ${url}`);
+    });
+    mocks.fetchAndClean.mockImplementation(async (url: string) => ({ url, title: "t", content: "body" }));
+    addSourceEntry("small", SMALL);
+    addSourceEntry("large", LARGE);
+  });
+
+  it("ranks an exact title match in a small source above a partial match in a large one", async () => {
+    const res = await searchDocs("sampling", undefined, 2);
+    expect(res.results.map((r) => r.url)).toEqual([
+      "https://small.example.com/sampling.md",
+      "https://large.example.com/sampling-rates.md",
+    ]);
+  });
+
+  it("reports scores between 0 and 1", async () => {
+    const res = await searchDocs("sampling", undefined, 2);
+    for (const r of res.results) {
+      expect(r.score).toBeGreaterThan(0);
+      expect(r.score).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("keeps a scoped search in the same order as before", async () => {
+    const scoped = await searchDocs("topic sampling", "large", 3);
+    const st = await ensureSourceIndexed(getSource("large")!);
+    expect(scoped.results.map((r) => r.url)).toEqual(
+      st.index.search("topic sampling", 3).map((h) => h.doc.uri)
+    );
+  });
+});
