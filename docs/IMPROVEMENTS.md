@@ -371,7 +371,7 @@ re-requested on every call; that is 9.7 (#12).
 
 Issue: #15
 
-Status: fixed on `fix/logger-error-serialization`. Each extra log argument
+Status: fixed in #25. Each extra log argument
 is formatted on its own: an `Error` becomes `name: message`, with
 `(code=...)` when present, its `cause` chain and any `AggregateError`
 sub-errors (up to 3 levels); strings print as-is and other values as JSON.
