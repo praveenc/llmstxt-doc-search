@@ -181,14 +181,31 @@ function extractHtmlTitle(rawHtml: string): string | null {
 }
 
 /**
+ * Cheap HTML sniff over a bounded prefix instead of lowercasing the whole body
+ * (which can be up to MAX_BODY_BYTES = 10 MB). 8 KB comfortably covers a
+ * doctype, leading comments, and whitespace before <html>/<head>/<body>.
+ *
+ * Matching semantics are otherwise unchanged from the previous full-body scan:
+ * a case-insensitive substring check for "<html", "<head", or "<body". The only
+ * behavioral change is that markers appearing past the first 8 KB no longer
+ * trigger HTML handling.
+ */
+const HTML_SNIFF_PREFIX_BYTES = 8192;
+
+export function looksLikeHtml(raw: string): boolean {
+  const prefix = raw.length > HTML_SNIFF_PREFIX_BYTES ? raw.slice(0, HTML_SNIFF_PREFIX_BYTES) : raw;
+  const lower = prefix.toLowerCase();
+  return lower.includes("<html") || lower.includes("<head") || lower.includes("<body");
+}
+
+/**
  * Fetch a doc URL and return cleaned content. Handles markdown (plain) and HTML.
  * Caller is responsible for authorizing the URL against the registry.
  */
 export async function fetchAndClean(pageUrl: string): Promise<Page> {
   const url = assertPublicHttpUrl(pageUrl);
   const raw = await fetchUrl(url);
-  const lower = raw.toLowerCase();
-  if (lower.includes("<html") || lower.includes("<head") || lower.includes("<body")) {
+  if (looksLikeHtml(raw)) {
     const extractedTitle = extractHtmlTitle(raw);
     const content = htmlToText(raw);
     const title = extractedTitle || url.split("/").pop() || url;
