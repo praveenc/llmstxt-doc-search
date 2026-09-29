@@ -198,6 +198,10 @@ is tracked as a GitHub issue (#6-#20).
 
 Issue: #6
 
+Status: fixed on `fix/dedupe-snippets-empty-source`. `parseLlmsTxt` throws
+when a file yields no links (naming an HTML response), so `add_doc_source`
+rolls the source back and reports the reason.
+
 - `add_doc_source("b-herdr", "https://herdr.dev/docs/llms.txt")` returns
   `{docCount: 0}` with `isError: false`. That URL serves an HTML page with no
   markdown links; the source is written to `sources.json`, listed as
@@ -226,6 +230,13 @@ Issue: #7
 ### 9.3 Duplicate URLs are indexed and returned more than once (Medium)
 
 Issue: #8
+
+Status: fixed on `fix/dedupe-snippets-empty-source`. Links are deduped by
+URL at parse time (first title is the display title; later distinct titles
+are added to the index title so they stay searchable), merged results keep
+one hit per URL, and `add_doc_source` rejects an `llms.txt` that is already
+registered. Live: Strands 893, MCP 349, Kiro 250 docs; "example servers"
+and "hooks" return distinct URLs.
 
 - Repeated URLs inside one llms.txt are each indexed as a separate doc:
   Strands 895 links / 893 unique, MCP 354 / 349, Kiro 259 / 250.
@@ -263,6 +274,12 @@ Issue: #9
 ### 9.5 Snippets are boilerplate, frontmatter or raw HTML (Medium)
 
 Issue: #10
+
+Status: fixed on `fix/dedupe-snippets-empty-source`. `makeSnippet` strips
+leading frontmatter and empty `<a name|id>` anchors, and skips blockquotes,
+`:::` containers, tag-only lines and horizontal rules; list items must be
+followed by a space. Live snippets for MCP, Vite+ and Bedrock now show the
+first paragraph of the page.
 
 - modelcontextprotocol.io (Mintlify): every snippet is the same
   `> ## Documentation Index > Fetch the complete documentation index at ...`
