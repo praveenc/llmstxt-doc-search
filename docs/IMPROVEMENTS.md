@@ -27,6 +27,8 @@ v0.1.0 running via `npx`. Each item lists the evidence and the fix.
 
 ## 2. Dependency bloat: `natural`
 
+Status: fixed in #1 (vendored Porter stemmer; `natural` removed).
+
 - Used only for `PorterStemmer` (`src/utils/indexer.ts`).
 - Import alone adds ~117 MB RSS / ~54 MB heap (node baseline 41 MB -> 158 MB).
 - Pulls mongoose, mongodb, bson, redis, pg, memjs, wordnet-db (~100 MB of a
@@ -37,6 +39,8 @@ v0.1.0 running via `npx`. Each item lists the evidence and the fix.
 - Fix: replace with a small zero-dependency Porter stemmer.
 
 ## 3. Indexer wasted work
+
+Status: fixed in #1.
 
 - `calculateBM25Score` re-lowercases content/title and re-runs three regex
   extractions per query token, per candidate doc, per query.
@@ -49,6 +53,8 @@ v0.1.0 running via `npx`. Each item lists the evidence and the fix.
 
 ## 4. Fetcher: full-body lowercase copy
 
+Status: fixed in #1 (`looksLikeHtml()` checks the first 8 KB).
+
 - `fetchAndClean` lowercases the whole body (up to 10 MB) just to detect HTML.
 - Fix: check only a bounded prefix (first few KB).
 
@@ -59,15 +65,25 @@ v0.1.0 running via `npx`. Each item lists the evidence and the fix.
 - Fix: LRU cap (e.g. 50 pages or a byte budget), keep `null` placeholders out
   of the cap.
 
-## 6. Ranking correctness (tracked in a GitHub issue)
+## 6. Ranking correctness
 
-- Posting lists contain duplicate doc ids (one push per token occurrence), so
-  `search()` adds a doc's score once per duplicate.
-- Bigram tokens (`a_b`) and stemmed tokens are counted by substring against
+Status: fixed in `fix/bm25-ranking` (issue #2).
+
+- Posting lists contained duplicate doc ids (one push per token occurrence),
+  so `search()` added a doc's score once per duplicate and a repeated term
+  scored linearly instead of saturating.
+- Bigram tokens (`a_b`) and stemmed tokens were counted by substring against
   raw lowercased text, which never contains `_` and often not the stem, so
-  bigrams contribute nothing and stems undercount.
-- Fix: dedupe postings; store per-doc term-frequency maps built from the same
-  token stream used for indexing, and score from those.
+  bigrams scored 0 and stems like `queri` (from `query`) scored 0.
+- Fix: postings are recorded once per doc; `add()` builds a per-doc weighted
+  term-frequency map from the same token stream used for indexing (title x
+  boost, headers x4, code/link x2, content x1), and scoring reads it.
+- Effect on the parity corpus: 15/40 queries changed top-1 and 23/40 changed
+  top-5, mostly promoting exact title matches. The parity fixture is now
+  regenerated with `test/fixtures/generate-search-parity.ts`.
+- Left as-is: header/code/link text is also counted inside `content`, so those
+  matches get field weight + 1; cross-field bigrams are indexed but score 0.
+  Neither affects production, where `content` is always `""`.
 
 ## 7. Other
 
