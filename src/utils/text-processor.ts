@@ -8,6 +8,28 @@ const WHITESPACE_RE = /\s+/g;
 /** Regex to match code fences */
 const CODE_FENCE_RE = /```[\s\S]*?```/g;
 
+/** Leading YAML frontmatter block (`---` ... `---`). */
+const FRONTMATTER_RE = /^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/;
+
+/** Empty named anchors such as `<a name="x"></a>` that AWS markdown embeds. */
+const EMPTY_ANCHOR_RE = /<a\s+(?:name|id)=["'][^"']*["']\s*>\s*<\/a>/gi;
+
+const LIST_ITEM_RE = /^(?:[-*+]\s|\d+[.)]\s)/;
+const HORIZONTAL_RULE_RE = /^(?:[-*_]\s*){3,}$/;
+const TAG_ONLY_LINE_RE = /^(?:<[^>]*>\s*)+$/;
+
+/** Lines that are structure rather than prose: headings, quotes, containers, lists, rules, bare tags. */
+function isNonProseLine(line: string): boolean {
+  return (
+    line.startsWith("#") ||
+    line.startsWith(">") ||
+    line.startsWith(":::") ||
+    LIST_ITEM_RE.test(line) ||
+    HORIZONTAL_RULE_RE.test(line) ||
+    TAG_ONLY_LINE_RE.test(line)
+  );
+}
+
 /**
  * Normalize whitespace in a string.
  */
@@ -96,6 +118,10 @@ function normalizeForComparison(s: string): string {
 
 /**
  * Create a contextual snippet from page content.
+ *
+ * Skips leading YAML frontmatter, blockquotes (e.g. site-wide "documentation
+ * index" banners), headings, list items, horizontal rules and tag-only HTML
+ * lines, then returns the first prose paragraph.
  */
 export function makeSnippet(
   content: string | null,
@@ -104,9 +130,9 @@ export function makeSnippet(
 ): string {
   if (!content) return displayTitle;
 
-  let text = content.trim();
-  // Remove fenced code blocks
+  let text = content.trim().replace(FRONTMATTER_RE, "");
   text = text.replace(CODE_FENCE_RE, "");
+  text = text.replace(EMPTY_ANCHOR_RE, "");
 
   const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
 
@@ -122,12 +148,9 @@ export function makeSnippet(
     }
   }
 
-  // Skip headings/TOC bullets, collect first paragraph
   const buf: string[] = [];
   for (const line of lines) {
-    const trimmed = line.trimStart();
-    // Skip headings and list items
-    if (trimmed.startsWith("#") || trimmed.startsWith("-") || trimmed.startsWith("*") || /^\d+\./.test(trimmed)) {
+    if (isNonProseLine(line)) {
       if (buf.length > 0) break;
       continue;
     }
