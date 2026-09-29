@@ -109,3 +109,94 @@ describe("index build scaling and avgDocLength", () => {
     expect(internals.avgDocLength).toBeCloseTo(total / docs.length, 12);
   });
 });
+
+describe("BM25 ranking bug fixes (issue #2)", () => {
+  // --- Bug 1: duplicate postings made a repeated term score once per occurrence. ---
+
+  it("does not add duplicate posting ids for a term repeated in one document", () => {
+    const ix = new IndexSearch();
+    ix.add({ uri: "a", displayTitle: "", content: "", indexTitle: "Agent Agent Agent" });
+    ix.add({ uri: "b", displayTitle: "", content: "", indexTitle: "Agent" });
+
+    const postings = (ix as unknown as { docIndices: Map<string, number[]> }).docIndices.get("agent") ?? [];
+    // Each document appears at most once in the posting list (was [0,0,0,1]).
+    expect(postings).toEqual([0, 1]);
+    expect(new Set(postings).size).toBe(postings.length);
+  });
+
+  it("saturates a repeated term instead of scaling linearly with occurrences", () => {
+    const ix = new IndexSearch();
+    ix.add({ uri: "a", displayTitle: "", content: "", indexTitle: "Agent Agent Agent" });
+    ix.add({ uri: "b", displayTitle: "", content: "", indexTitle: "Agent" });
+
+    const r = ix.search("agent", 8);
+    const a = r.find((x) => x.doc.uri === "a")!.score;
+    const b = r.find((x) => x.doc.uri === "b")!.score;
+
+    // Before the fix a was ~3x b (one score per duplicate posting). After it,
+    // BM25 saturation collapses that: two documents made entirely of the same
+    // term score equally under length normalization, nowhere near 3x.
+    expect(a).toBeLessThan(1.2 * b);
+  });
+
+  it("ranks more occurrences above fewer at equal length, but sub-linearly", () => {
+    // Equal-length documents so length normalization does not cancel the term
+    // frequency difference (with pure single-term documents it exactly does).
+    const ix = new IndexSearch();
+    ix.add({ uri: "a", displayTitle: "", content: "", indexTitle: "agent agent agent" });
+    ix.add({ uri: "b", displayTitle: "", content: "", indexTitle: "agent model tool" });
+
+    const r = ix.search("agent", 8);
+    const a = r.find((x) => x.doc.uri === "a")!.score;
+    const b = r.find((x) => x.doc.uri === "b")!.score;
+
+    expect(a).toBeGreaterThan(b);
+    // Saturated: far below the old linear 3x for three occurrences vs one.
+    expect(a).toBeLessThan(3 * b);
+  });
+
+  // --- Bug 2: term frequency was counted by substring over raw text, so stems
+  //     that are not substrings of the surface form, and bigram tokens (which
+  //     contain "_"), never matched. ---
+
+  function kbIndex(): IndexSearch {
+    const ix = new IndexSearch();
+    ix.add({ uri: "kb-phrase", displayTitle: "", content: "", indexTitle: "Query a knowledge base" });
+    ix.add({ uri: "kb-nonadj", displayTitle: "", content: "", indexTitle: "knowledge overview base" });
+    return ix;
+  }
+
+  it("matches a query whose stem differs from the surface form (query -> queri)", () => {
+    const ix = kbIndex();
+    const r = ix.search("query", 8);
+    const hit = r.find((x) => x.doc.uri === "kb-phrase");
+    // Was 0: "queri" is not a substring of "query a knowledge base".
+    expect(hit).toBeDefined();
+    expect(hit!.score).toBeGreaterThan(0);
+  });
+
+  it("scores an adjacent phrase above the sum of its individual terms", () => {
+    const ix = kbIndex();
+    const scoreOf = (q: string) =>
+      ix.search(q, 8).find((x) => x.doc.uri === "kb-phrase")?.score ?? 0;
+
+    const phrase = scoreOf("knowledge base");
+    const parts = scoreOf("knowledge") + scoreOf("base");
+
+    // The bigram "knowledg_base" now contributes; before it added nothing.
+    expect(phrase).toBeGreaterThan(parts);
+  });
+
+  it("ranks a document with the adjacent phrase above one with the words apart", () => {
+    const ix = kbIndex();
+    const r = ix.search("knowledge base", 8);
+    const rankOf = (uri: string) => r.findIndex((x) => x.doc.uri === uri);
+
+    const adj = rankOf("kb-phrase");
+    const nonAdj = rankOf("kb-nonadj");
+    expect(adj).toBeGreaterThanOrEqual(0);
+    expect(nonAdj).toBeGreaterThanOrEqual(0);
+    // Lower index == higher rank.
+    expect(adj).toBeLessThan(nonAdj);
+  });
+});
