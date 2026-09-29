@@ -105,8 +105,13 @@ server.registerTool(
     },
   },
   async ({ url }) => {
-    const res = await fetchDoc(url);
-    return json(res, !!res.error);
+    try {
+      const res = await fetchDoc(url);
+      return json(res, !!res.error);
+    } catch (e) {
+      logger.error("fetch_doc failed", e);
+      return json({ url, error: "fetch failed", message: String(e) }, true);
+    }
   }
 );
 
