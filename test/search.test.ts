@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { IndexSearch, tokenize } from "../src/utils/indexer.js";
+import { PRESERVE_TERMS } from "../src/utils/stopwords.js";
 
 interface Doc {
   uri: string;
@@ -268,5 +269,38 @@ describe("relevance: score normalized per index (issue #11)", () => {
     const partial = withoutCaching.search("prompt caching", 1)[0];
     expect(partial.doc.uri).toBe("partial");
     expect(partial.relevance).toBeLessThan(full.relevance / 2);
+  });
+});
+
+describe("agent / agents match each other (issue #16)", () => {
+  const doc = (uri: string, title: string) => ({ uri, displayTitle: title, content: "", indexTitle: title });
+
+  it("stems agent, agents and agentic to the same token", () => {
+    expect(tokenize("agents")).toEqual(["agent"]);
+    expect(tokenize("Agents")).toEqual(["agent"]);
+    expect(tokenize("agent")).toEqual(["agent"]);
+    expect(tokenize("agentic")).toEqual(["agent"]);
+  });
+
+  it("keeps AgentCore whole", () => {
+    expect(tokenize("AgentCore")).toEqual(["agentcore"]);
+    expect(tokenize("agentcore")).toEqual(["agentcore"]);
+  });
+
+  it("does not preserve both a term and its plural, which would keep them from matching", () => {
+    const distinct = new Set(["http"]); // http and https are different terms
+    const pairs = [...PRESERVE_TERMS].filter((t) => PRESERVE_TERMS.has(`${t}s`) && !distinct.has(t));
+    expect(pairs).toEqual([]);
+  });
+
+  it("finds an 'Agents' page for 'agent' and an 'Agent' page for 'agents'", () => {
+    const ix = new IndexSearch();
+    ix.add(doc("plural", "Agents"));
+    ix.add(doc("singular", "Agent loop"));
+    ix.add(doc("other", "Terminal panes"));
+
+    expect(ix.search("agent", 5).map((h) => h.doc.uri)).toEqual(expect.arrayContaining(["plural", "singular"]));
+    expect(ix.search("agents", 5).map((h) => h.doc.uri)).toEqual(expect.arrayContaining(["plural", "singular"]));
+    expect(ix.search("agent", 5)[0].doc.uri).toBe("plural");
   });
 });
