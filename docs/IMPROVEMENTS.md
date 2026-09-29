@@ -219,7 +219,7 @@ rolls the source back and reports the reason.
 
 Issue: #7
 
-Status: fixed on `fix/cross-host-doc-links`. `fetch_doc` also authorizes
+Status: fixed in #23. `fetch_doc` also authorizes
 any URL a registered source's llms.txt lists exactly, on any host; the
 prefix rule still covers everything else. Unlisted URLs on other hosts are
 still rejected. Live: `raw.githubusercontent.com` results from
@@ -269,7 +269,7 @@ MCP 349, Kiro 250 docs; "example servers" and "hooks" return distinct URLs.
 
 Issue: #9
 
-Status: fixed on `fix/cross-host-doc-links`. `fetch_doc` first uses an
+Status: fixed in #23. `fetch_doc` first uses an
 indexed source whose llms.txt lists the URL, preferring one that already has
 the page cached, so a page fetched for a snippet is reused rather than
 fetched again. Otherwise the longest matching base wins. A source is indexed
