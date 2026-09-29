@@ -65,6 +65,15 @@ describe("registry", () => {
   it("rejects a duplicate source name", () => {
     expect(() => addSourceEntry("strands", "https://strandsagents.com/llms.txt")).toThrow();
   });
+
+  it("rejects an llms.txt url that is already registered under another name", () => {
+    expect(() => addSourceEntry("strands-2", "https://strandsagents.com/llms.txt")).toThrow(
+      /already registered as source 'strands'/
+    );
+    expect(() => addSourceEntry("strands-3", "HTTPS://StrandsAgents.com/llms.txt")).toThrow(
+      /already registered/
+    );
+  });
 });
 
 describe("assertPublicHttpUrl", () => {

@@ -46,11 +46,14 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
   states.set(src.name, st);
 
   const links = await parseLlmsTxt(src.url);
-  for (const [title, url] of links) {
+  for (const [title, url, otherTitles] of links) {
     st.urlTitles.set(url, title);
     if (!st.urlCache.has(url)) st.urlCache.set(url, null);
     const displayTitle = normalize(title);
-    const indexTitle = indexTitleVariants(displayTitle, url);
+    const variants = indexTitleVariants(displayTitle, url);
+    const indexTitle = otherTitles?.length
+      ? normalize([variants, ...otherTitles].join(" "))
+      : variants;
     st.index.add({ uri: url, displayTitle, content: "", indexTitle });
   }
   st.indexed = true;

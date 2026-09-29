@@ -70,6 +70,24 @@ function requireSource(name: string): Source {
   return s;
 }
 
+/**
+ * Highest-scoring `k` hits with at most one hit per URL. Sources can overlap
+ * (e.g. two llms.txt files that list the same page), so the same URL may be
+ * collected more than once; the best-scoring copy is kept.
+ */
+export function topUniqueByUrl<T extends { score: number; uri: string }>(hits: T[], k: number): T[] {
+  const sorted = [...hits].sort((a, b) => b.score - a.score);
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const h of sorted) {
+    if (seen.has(h.uri)) continue;
+    seen.add(h.uri);
+    out.push(h);
+    if (out.length >= k) break;
+  }
+  return out;
+}
+
 export async function searchDocs(
   query: string,
   source: string | undefined,
@@ -91,8 +109,7 @@ export async function searchDocs(
     }
   }
 
-  collected.sort((a, b) => b.score - a.score);
-  const top = collected.slice(0, k);
+  const top = topUniqueByUrl(collected, k);
 
   // Hydrate the very top hits with content for snippets. Only ensurePage
   // accesses update LRU recency; these search-hit reads intentionally do not,

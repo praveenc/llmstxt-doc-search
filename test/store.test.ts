@@ -113,3 +113,20 @@ describe("ensurePage LRU page cache (issue #4)", () => {
     expect(nonNullPages(st)).toBe(5);
   });
 });
+
+describe("ensureSourceIndexed with alternate titles", () => {
+  it("indexes one doc per URL and keeps alternate titles searchable", async () => {
+    dropSourceState("alt");
+    mocks.parseLlmsTxt.mockResolvedValueOnce([
+      ["Pause for input and control", `${ORIGIN}hitl/index.md`, ["Human in the loop"]],
+      ["Agent loop", `${ORIGIN}agent-loop/index.md`],
+    ]);
+    const st = await ensureSourceIndexed({ name: "alt", url: `${ORIGIN}llms.txt` } as Source);
+
+    expect(st.docCount).toBe(2);
+    const hits = st.index.search("human in the loop", 5);
+    expect(hits[0].doc.uri).toBe(`${ORIGIN}hitl/index.md`);
+    expect(hits[0].doc.displayTitle).toBe("Pause for input and control");
+    expect(hits.filter((h) => h.doc.uri === `${ORIGIN}hitl/index.md`)).toHaveLength(1);
+  });
+});
