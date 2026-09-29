@@ -371,6 +371,14 @@ re-requested on every call; that is 9.7 (#12).
 
 Issue: #15
 
+Status: fixed in #25. Each extra log argument
+is formatted on its own: an `Error` becomes `name: message`, with
+`(code=...)` when present, its `cause` chain and any `AggregateError`
+sub-errors (up to 3 levels); strings print as-is and other values as JSON.
+Live: `skip source 'gone' (index failed) [{}]` now reads
+`... Error: HTTP 404`, and a DNS failure reads
+`Error: getaddrinfo ENOTFOUND no-such-host.invalid (code=ENOTFOUND)`.
+
 - `src/utils/logger.ts:37` does `JSON.stringify(args)`, which turns an `Error` into
   `{}`: logs read `fetch failed: ... [{}]` and
   `skip source 'x' (index failed) [{}]`. The README asks users to attach
