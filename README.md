@@ -108,6 +108,7 @@ All configuration is via environment variables; none are required.
 |----------|---------|---------|
 | `LLMSTXT_REGISTRY_PATH` | `~/.config/llmstxt-doc-search/sources.json` | Where the source registry is persisted. |
 | `LLMSTXT_SNIPPET_HYDRATE_MAX` | `5` | How many top hits to fetch when building result snippets. |
+| `LLMSTXT_PAGE_CACHE_MAX` | `50` | Max fetched pages kept in memory per source (LRU); least-recently-used pages are evicted past this. `0` disables the cap. |
 | `LLMSTXT_LOG_LEVEL` | `info` | Log verbosity: `debug`, `info`, `warn`, or `error`. Logs go to stderr only. |
 
 ---
