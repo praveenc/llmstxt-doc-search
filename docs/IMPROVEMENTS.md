@@ -351,7 +351,7 @@ Issue: #13
 
 Issue: #14
 
-Status: fixed on `fix/fetch-doc-index-failure`. When the source whose
+Status: fixed in #24. When the source whose
 directory covers the URL fails to index, `fetch_doc` logs a warning and
 fetches the page anyway, since the prefix alone authorizes it; a failed
 page fetch returns `"failed to fetch document"`. The `fetch_doc` handler
