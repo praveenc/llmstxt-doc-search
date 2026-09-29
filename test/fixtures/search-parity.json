@@ -1,0 +1,3077 @@
+{
+  "_description": "IndexSearch.search(q,10) baseline captured on main. Corpus is snapshotted so the test is offline; scores must match within 1e-12.",
+  "docCount": 320,
+  "docs": [
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/index.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview Harness"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/quickstart/index.md",
+      "displayTitle": "quickstart",
+      "content": "",
+      "indexTitle": "quickstart"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/composing-with-sdk/index.md",
+      "displayTitle": "Compose with the Strands Harness SDK",
+      "content": "",
+      "indexTitle": "Compose with the Strands Harness SDK Composing With Sdk"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/model/index.md",
+      "displayTitle": "model",
+      "content": "",
+      "indexTitle": "model"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/tools-and-instructions/index.md",
+      "displayTitle": "tools-and-instructions",
+      "content": "",
+      "indexTitle": "tools-and-instructions Tools And Instructions"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/subagents/index.md",
+      "displayTitle": "subagents",
+      "content": "",
+      "indexTitle": "subagents"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/skills/index.md",
+      "displayTitle": "skills",
+      "content": "",
+      "indexTitle": "skills"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/sessions/index.md",
+      "displayTitle": "sessions",
+      "content": "",
+      "indexTitle": "sessions"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/memory/index.md",
+      "displayTitle": "memory",
+      "content": "",
+      "indexTitle": "memory"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/checkpoints-and-memory/index.md",
+      "displayTitle": "checkpoints-and-memory",
+      "content": "",
+      "indexTitle": "checkpoints-and-memory Checkpoints And Memory"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/context-and-caching/index.md",
+      "displayTitle": "context-and-caching",
+      "content": "",
+      "indexTitle": "context-and-caching Context And Caching"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/interventions/index.md",
+      "displayTitle": "interventions",
+      "content": "",
+      "indexTitle": "interventions"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/mcp-servers/index.md",
+      "displayTitle": "mcp-servers",
+      "content": "",
+      "indexTitle": "mcp-servers Mcp Servers"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/configure/background-tasks/index.md",
+      "displayTitle": "background-tasks",
+      "content": "",
+      "indexTitle": "background-tasks Background Tasks"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/tools/shell-and-files/index.md",
+      "displayTitle": "shell-and-files",
+      "content": "",
+      "indexTitle": "shell-and-files Shell And Files"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/tools/web-access/index.md",
+      "displayTitle": "web-access",
+      "content": "",
+      "indexTitle": "web-access Web Access"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/tools/programmatic-tool-calling/index.md",
+      "displayTitle": "programmatic-tool-calling",
+      "content": "",
+      "indexTitle": "programmatic-tool-calling Programmatic Tool Calling"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/tools/todos-and-environment/index.md",
+      "displayTitle": "todos-and-environment",
+      "content": "",
+      "indexTitle": "todos-and-environment Todos And Environment"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/production/index.md",
+      "displayTitle": "Take Strands harness to production",
+      "content": "",
+      "indexTitle": "Take Strands harness to production Production"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/reference/configuration/index.md",
+      "displayTitle": "configuration",
+      "content": "",
+      "indexTitle": "configuration"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/harness/versioning/index.md",
+      "displayTitle": "versioning",
+      "content": "",
+      "indexTitle": "versioning"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/index.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview Sdk"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/quickstart/python/index.md",
+      "displayTitle": "Quickstart",
+      "content": "",
+      "indexTitle": "Quickstart Python"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/quickstart/typescript/index.md",
+      "displayTitle": "Quickstart",
+      "content": "",
+      "indexTitle": "Quickstart Typescript"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/migrate/choosing-an-agent-foundation/index.md",
+      "displayTitle": "Choosing an agent foundation",
+      "content": "",
+      "indexTitle": "Choosing an agent foundation"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/migrate/openai/index.md",
+      "displayTitle": "Migrate from OpenAI",
+      "content": "",
+      "indexTitle": "Migrate from OpenAI Openai"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/index.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview Tools"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/using-tools/index.md",
+      "displayTitle": "Attach and invoke tools",
+      "content": "",
+      "indexTitle": "Attach and invoke tools Using Tools"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/mcp-tools/index.md",
+      "displayTitle": "Use MCP tools",
+      "content": "",
+      "indexTitle": "Use MCP tools Mcp Tools"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/custom-tools/index.md",
+      "displayTitle": "Create custom tools",
+      "content": "",
+      "indexTitle": "Create custom tools Custom Tools"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/agents/session-management/index.md",
+      "displayTitle": "Persist state across sessions",
+      "content": "",
+      "indexTitle": "Persist state across sessions Session Management"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/memory/overview/index.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/memory/managing-memory/index.md",
+      "displayTitle": "Control what the agent remembers",
+      "content": "",
+      "indexTitle": "Control what the agent remembers Managing Memory"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/agents/structured-output/index.md",
+      "displayTitle": "Return structured output",
+      "content": "",
+      "indexTitle": "Return structured output Structured Output"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/streaming/index.md",
+      "displayTitle": "Stream responses",
+      "content": "",
+      "indexTitle": "Stream responses Streaming"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/context-management/index.md",
+      "displayTitle": "Manage the context window",
+      "content": "",
+      "indexTitle": "Manage the context window Context Management"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/agents/interventions/human-in-the-loop/index.md",
+      "displayTitle": "Pause for input and control",
+      "content": "",
+      "indexTitle": "Pause for input and control Human In The Loop"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/multi-agent/multi-agent-patterns/index.md",
+      "displayTitle": "Coordinate multiple agents",
+      "content": "",
+      "indexTitle": "Coordinate multiple agents Multi Agent Patterns"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
+      "displayTitle": "Build a voice agent",
+      "content": "",
+      "indexTitle": "Build a voice agent Quickstart"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/operating-agents-in-production/index.md",
+      "displayTitle": "operating-agents-in-production",
+      "content": "",
+      "indexTitle": "operating-agents-in-production Operating Agents In Production"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/index.md",
+      "displayTitle": "deploy_to_bedrock_agentcore",
+      "content": "",
+      "indexTitle": "deploy_to_bedrock_agentcore Deploy To Bedrock Agentcore"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/python/index.md",
+      "displayTitle": "python",
+      "content": "",
+      "indexTitle": "python"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/typescript/index.md",
+      "displayTitle": "typescript",
+      "content": "",
+      "indexTitle": "typescript"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_aws_lambda/index.md",
+      "displayTitle": "deploy_to_aws_lambda",
+      "content": "",
+      "indexTitle": "deploy_to_aws_lambda Deploy To Aws Lambda"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_aws_fargate/index.md",
+      "displayTitle": "deploy_to_aws_fargate",
+      "content": "",
+      "indexTitle": "deploy_to_aws_fargate Deploy To Aws Fargate"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_aws_apprunner/index.md",
+      "displayTitle": "deploy_to_aws_apprunner",
+      "content": "",
+      "indexTitle": "deploy_to_aws_apprunner Deploy To Aws Apprunner"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_amazon_eks/index.md",
+      "displayTitle": "deploy_to_amazon_eks",
+      "content": "",
+      "indexTitle": "deploy_to_amazon_eks Deploy To Amazon Eks"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_amazon_ec2/index.md",
+      "displayTitle": "deploy_to_amazon_ec2",
+      "content": "",
+      "indexTitle": "deploy_to_amazon_ec2 Deploy To Amazon Ec2"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_docker/index.md",
+      "displayTitle": "deploy_to_docker",
+      "content": "",
+      "indexTitle": "deploy_to_docker Deploy To Docker"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_docker/python/index.md",
+      "displayTitle": "python",
+      "content": "",
+      "indexTitle": "python"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_docker/typescript/index.md",
+      "displayTitle": "typescript",
+      "content": "",
+      "indexTitle": "typescript"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_kubernetes/index.md",
+      "displayTitle": "deploy_to_kubernetes",
+      "content": "",
+      "indexTitle": "deploy_to_kubernetes Deploy To Kubernetes"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_terraform/index.md",
+      "displayTitle": "deploy_to_terraform",
+      "content": "",
+      "indexTitle": "deploy_to_terraform Deploy To Terraform"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_with_nx_plugin_for_aws/index.md",
+      "displayTitle": "deploy_with_nx_plugin_for_aws",
+      "content": "",
+      "indexTitle": "deploy_with_nx_plugin_for_aws Deploy With Nx Plugin For Aws"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/observability-evaluation/observability/index.md",
+      "displayTitle": "observability",
+      "content": "",
+      "indexTitle": "observability"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/observability-evaluation/metrics/index.md",
+      "displayTitle": "metrics",
+      "content": "",
+      "indexTitle": "metrics"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/observability-evaluation/traces/index.md",
+      "displayTitle": "traces",
+      "content": "",
+      "indexTitle": "traces"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/observability-evaluation/logs/index.md",
+      "displayTitle": "logs",
+      "content": "",
+      "indexTitle": "logs"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/responsible-ai/index.md",
+      "displayTitle": "responsible-ai",
+      "content": "",
+      "indexTitle": "responsible-ai Responsible Ai"
+    },
+    {
+      "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/guardrails/index.md",
+      "displayTitle": "guardrails",
+      "content": "",
+      "indexTitle": "guardrails"
+    },
+    {
+      "uri": "https://kiro.dev/docs/getting-started/installation.md",
+      "displayTitle": "Installation",
+      "content": "",
+      "indexTitle": "Installation Installation.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/getting-started/first-project.md",
+      "displayTitle": "Your first project",
+      "content": "",
+      "indexTitle": "Your first project First Project.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/how-kiro-works.md",
+      "displayTitle": "How Kiro works",
+      "content": "",
+      "indexTitle": "How Kiro works How Kiro Works.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs.md",
+      "displayTitle": "Specs",
+      "content": "",
+      "indexTitle": "Specs Specs.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/steering.md",
+      "displayTitle": "Steering",
+      "content": "",
+      "indexTitle": "Steering Steering.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks.md",
+      "displayTitle": "Hooks",
+      "content": "",
+      "indexTitle": "Hooks Hooks.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp.md",
+      "displayTitle": "Model Context Protocol (MCP)",
+      "content": "",
+      "indexTitle": "Model Context Protocol (MCP) Mcp.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/models.md",
+      "displayTitle": "Models",
+      "content": "",
+      "indexTitle": "Models Models.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/billing.md",
+      "displayTitle": "Billing",
+      "content": "",
+      "indexTitle": "Billing Billing.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/getting-started/installation.md",
+      "displayTitle": "Installation",
+      "content": "",
+      "indexTitle": "Installation Installation.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/getting-started/authentication.md",
+      "displayTitle": "Authentication",
+      "content": "",
+      "indexTitle": "Authentication Authentication.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/getting-started/first-project.md",
+      "displayTitle": "Your first project",
+      "content": "",
+      "indexTitle": "Your first project First Project.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/models.md",
+      "displayTitle": "Models",
+      "content": "",
+      "indexTitle": "Models Models.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/models/available-models.md",
+      "displayTitle": "Available models",
+      "content": "",
+      "indexTitle": "Available models Available Models.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/models/effort.md",
+      "displayTitle": "Reasoning effort",
+      "content": "",
+      "indexTitle": "Reasoning effort Effort.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/how-kiro-works.md",
+      "displayTitle": "How Kiro works",
+      "content": "",
+      "indexTitle": "How Kiro works How Kiro Works.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs.md",
+      "displayTitle": "Specs",
+      "content": "",
+      "indexTitle": "Specs Specs.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/feature-specs.md",
+      "displayTitle": "Feature Specs",
+      "content": "",
+      "indexTitle": "Feature Specs Feature Specs.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/feature-specs/requirements-first.md",
+      "displayTitle": "Requirements-First Workflow",
+      "content": "",
+      "indexTitle": "Requirements-First Workflow Requirements First.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/feature-specs/tech-design-first.md",
+      "displayTitle": "Design-First Workflow",
+      "content": "",
+      "indexTitle": "Design-First Workflow Tech Design First.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/bugfix-specs.md",
+      "displayTitle": "Bugfix Specs",
+      "content": "",
+      "indexTitle": "Bugfix Specs Bugfix Specs.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/quick-spec.md",
+      "displayTitle": "Quick Spec",
+      "content": "",
+      "indexTitle": "Quick Spec Quick Spec.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/plan.md",
+      "displayTitle": "Plan mode",
+      "content": "",
+      "indexTitle": "Plan mode Plan.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/analyze-requirements.md",
+      "displayTitle": "Analyze Requirements",
+      "content": "",
+      "indexTitle": "Analyze Requirements Analyze Requirements.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/correctness.md",
+      "displayTitle": "Correctness with Property-based tests",
+      "content": "",
+      "indexTitle": "Correctness with Property-based tests Correctness.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/specs/best-practices.md",
+      "displayTitle": "Best practices",
+      "content": "",
+      "indexTitle": "Best practices Best Practices.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/steering.md",
+      "displayTitle": "Steering",
+      "content": "",
+      "indexTitle": "Steering Steering.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks.md",
+      "displayTitle": "Hooks",
+      "content": "",
+      "indexTitle": "Hooks Hooks.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks/types.md",
+      "displayTitle": "Hook types",
+      "content": "",
+      "indexTitle": "Hook types Types.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks/actions.md",
+      "displayTitle": "Hook actions",
+      "content": "",
+      "indexTitle": "Hook actions Actions.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks/examples.md",
+      "displayTitle": "Hook examples",
+      "content": "",
+      "indexTitle": "Hook examples Examples.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks/management.md",
+      "displayTitle": "Hook management",
+      "content": "",
+      "indexTitle": "Hook management Management.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/hooks/best-practices.md",
+      "displayTitle": "Best practices",
+      "content": "",
+      "indexTitle": "Best practices Best Practices.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp.md",
+      "displayTitle": "Model Context Protocol (MCP)",
+      "content": "",
+      "indexTitle": "Model Context Protocol (MCP) Mcp.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/configuration.md",
+      "displayTitle": "Configuration",
+      "content": "",
+      "indexTitle": "Configuration Configuration.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/servers.md",
+      "displayTitle": "Server directory",
+      "content": "",
+      "indexTitle": "Server directory Servers.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/usage.md",
+      "displayTitle": "Tools",
+      "content": "",
+      "indexTitle": "Tools Usage.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/tool-search.md",
+      "displayTitle": "Tool Search",
+      "content": "",
+      "indexTitle": "Tool Search Tool Search.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/examples.md",
+      "displayTitle": "Examples",
+      "content": "",
+      "indexTitle": "Examples Examples.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/security.md",
+      "displayTitle": "Best practices",
+      "content": "",
+      "indexTitle": "Best practices Security.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/mcp/registry.md",
+      "displayTitle": "MCP registry",
+      "content": "",
+      "indexTitle": "MCP registry Registry.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/permissions.md",
+      "displayTitle": "Permissions",
+      "content": "",
+      "indexTitle": "Permissions Permissions.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents.md",
+      "displayTitle": "Custom agents",
+      "content": "",
+      "indexTitle": "Custom agents Custom Agents.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents/built-in.md",
+      "displayTitle": "Built-in agents",
+      "content": "",
+      "indexTitle": "Built-in agents Built In.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents/creating.md",
+      "displayTitle": "Creating custom agents",
+      "content": "",
+      "indexTitle": "Creating custom agents Creating.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents/configuration-reference.md",
+      "displayTitle": "Agent configuration reference",
+      "content": "",
+      "indexTitle": "Agent configuration reference Configuration Reference.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents/subagents.md",
+      "displayTitle": "Invoking as sub-agents",
+      "content": "",
+      "indexTitle": "Invoking as sub-agents Subagents.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/custom-agents/examples.md",
+      "displayTitle": "Agent examples",
+      "content": "",
+      "indexTitle": "Agent examples Examples.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/skills.md",
+      "displayTitle": "Agent Skills",
+      "content": "",
+      "indexTitle": "Agent Skills Skills.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/powers.md",
+      "displayTitle": "Powers",
+      "content": "",
+      "indexTitle": "Powers Powers.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/powers/installation.md",
+      "displayTitle": "Install powers",
+      "content": "",
+      "indexTitle": "Install powers Installation.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/powers/create.md",
+      "displayTitle": "Create powers",
+      "content": "",
+      "indexTitle": "Create powers Create.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/cloud-sessions.md",
+      "displayTitle": "Cloud sessions",
+      "content": "",
+      "indexTitle": "Cloud sessions Cloud Sessions.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/compaction.md",
+      "displayTitle": "Compaction",
+      "content": "",
+      "indexTitle": "Compaction Compaction.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/kiroignore.md",
+      "displayTitle": "Kiroignore",
+      "content": "",
+      "indexTitle": "Kiroignore Kiroignore.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/checkpoints.md",
+      "displayTitle": "Checkpoints and rewind",
+      "content": "",
+      "indexTitle": "Checkpoints and rewind Checkpoints.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/tools.md",
+      "displayTitle": "Built-in tools",
+      "content": "",
+      "indexTitle": "Built-in tools Tools.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/tools/web.md",
+      "displayTitle": "Web tools",
+      "content": "",
+      "indexTitle": "Web tools Web.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/tools/code-intelligence.md",
+      "displayTitle": "Code intelligence",
+      "content": "",
+      "indexTitle": "Code intelligence Code Intelligence.md"
+    },
+    {
+      "uri": "https://kiro.dev/docs/configuration.md",
+      "displayTitle": "Configuration scopes",
+      "content": "",
+      "indexTitle": "Configuration scopes Configuration.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview What Is Bedrock.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.md",
+      "displayTitle": "Quickstart",
+      "content": "",
+      "indexTitle": "Quickstart Getting Started.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/glossary.md",
+      "displayTitle": "AWS Glossary",
+      "content": "",
+      "indexTitle": "AWS Glossary Glossary.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-ug-doc-history.md",
+      "displayTitle": "Document history",
+      "content": "",
+      "indexTitle": "Document history Bedrock Ug Doc History.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards.md",
+      "displayTitle": "Models at a glance",
+      "content": "",
+      "indexTitle": "Models at a glance Model Cards.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-ai21-labs.md",
+      "displayTitle": "AI21 Labs",
+      "content": "",
+      "indexTitle": "AI21 Labs AI to 1 Labs Model Cards Ai21 Labs.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-ai21-labs-jamba-1-5-large.md",
+      "displayTitle": "Jamba 1.5 Large",
+      "content": "",
+      "indexTitle": "Jamba 1.5 Large Model Card Ai21 Labs Jamba 1 5 Large.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-ai21-labs-jamba-1-5-mini.md",
+      "displayTitle": "Jamba 1.5 Mini",
+      "content": "",
+      "indexTitle": "Jamba 1.5 Mini Model Card Ai21 Labs Jamba 1 5 Mini.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-amazon.md",
+      "displayTitle": "Amazon",
+      "content": "",
+      "indexTitle": "Amazon Model Cards Amazon.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-2-lite.md",
+      "displayTitle": "Nova 2 Lite",
+      "content": "",
+      "indexTitle": "Nova 2 Lite Model Card Amazon Nova 2 Lite.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-2-sonic.md",
+      "displayTitle": "Nova 2 Sonic",
+      "content": "",
+      "indexTitle": "Nova 2 Sonic Model Card Amazon Nova 2 Sonic.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-premier.md",
+      "displayTitle": "Nova Premier",
+      "content": "",
+      "indexTitle": "Nova Premier Model Card Amazon Nova Premier.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-sonic.md",
+      "displayTitle": "Nova Sonic",
+      "content": "",
+      "indexTitle": "Nova Sonic Model Card Amazon Nova Sonic.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-lite.md",
+      "displayTitle": "Nova Lite",
+      "content": "",
+      "indexTitle": "Nova Lite Model Card Amazon Nova Lite.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-micro.md",
+      "displayTitle": "Nova Micro",
+      "content": "",
+      "indexTitle": "Nova Micro Model Card Amazon Nova Micro.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-pro.md",
+      "displayTitle": "Nova Pro",
+      "content": "",
+      "indexTitle": "Nova Pro Model Card Amazon Nova Pro.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-amazon-nova-multimodal-embeddings.md",
+      "displayTitle": "Amazon Nova Multimodal Embeddings",
+      "content": "",
+      "indexTitle": "Amazon Nova Multimodal Embeddings Model Card Amazon Amazon Nova Multimodal Embeddings.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-canvas.md",
+      "displayTitle": "Nova Canvas",
+      "content": "",
+      "indexTitle": "Nova Canvas Model Card Amazon Nova Canvas.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-nova-reel.md",
+      "displayTitle": "Nova Reel",
+      "content": "",
+      "indexTitle": "Nova Reel Model Card Amazon Nova Reel.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.md",
+      "displayTitle": "Titan Text Embeddings V2",
+      "content": "",
+      "indexTitle": "Titan Text Embeddings V2 Model Card Amazon Titan Text Embeddings V2.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-image-generator-g1-v2.md",
+      "displayTitle": "Titan Image Generator G1 v2",
+      "content": "",
+      "indexTitle": "Titan Image Generator G1 v2 Model Card Amazon Titan Image Generator G1 V2.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-multimodal-embeddings-g1.md",
+      "displayTitle": "Titan Multimodal Embeddings G1",
+      "content": "",
+      "indexTitle": "Titan Multimodal Embeddings G1 Model Card Amazon Titan Multimodal Embeddings G1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-embeddings-g1---text.md",
+      "displayTitle": "Titan Embeddings G1 - Text",
+      "content": "",
+      "indexTitle": "Titan Embeddings G1 - Text Model Card Amazon Titan Embeddings G1 Text.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2-2.md",
+      "displayTitle": "Titan Embeddings G1 - Text v2",
+      "content": "",
+      "indexTitle": "Titan Embeddings G1 - Text v2 Model Card Amazon Titan Text Embeddings V2 2.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-anthropic.md",
+      "displayTitle": "Anthropic",
+      "content": "",
+      "indexTitle": "Anthropic Model Cards Anthropic.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-5-5.md",
+      "displayTitle": "Claude Opus 5.5",
+      "content": "",
+      "indexTitle": "Claude Opus 5.5 Model Card Anthropic Claude Opus 5 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-fable-5-1.md",
+      "displayTitle": "Claude Fable 5.1",
+      "content": "",
+      "indexTitle": "Claude Fable 5.1 Model Card Anthropic Claude Fable 5 1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-mythos-5-1.md",
+      "displayTitle": "Claude Mythos 5.1",
+      "content": "",
+      "indexTitle": "Claude Mythos 5.1 Model Card Anthropic Claude Mythos 5 1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-5.md",
+      "displayTitle": "Claude Opus 5",
+      "content": "",
+      "indexTitle": "Claude Opus 5 Model Card Anthropic Claude Opus 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-5.md",
+      "displayTitle": "Claude Sonnet 5",
+      "content": "",
+      "indexTitle": "Claude Sonnet 5 Model Card Anthropic Claude Sonnet 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-mythos-5.md",
+      "displayTitle": "Claude Mythos 5",
+      "content": "",
+      "indexTitle": "Claude Mythos 5 Model Card Anthropic Claude Mythos 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-fable-5.md",
+      "displayTitle": "Claude Fable 5",
+      "content": "",
+      "indexTitle": "Claude Fable 5 Model Card Anthropic Claude Fable 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-8.md",
+      "displayTitle": "Claude Opus 4.8",
+      "content": "",
+      "indexTitle": "Claude Opus 4.8 Model Card Anthropic Claude Opus 4 8.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-7.md",
+      "displayTitle": "Claude Opus 4.7",
+      "content": "",
+      "indexTitle": "Claude Opus 4.7 Model Card Anthropic Claude Opus 4 7.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.md",
+      "displayTitle": "Claude Sonnet 4.6",
+      "content": "",
+      "indexTitle": "Claude Sonnet 4.6 Model Card Anthropic Claude Sonnet 4 6.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-6.md",
+      "displayTitle": "Claude Opus 4.6",
+      "content": "",
+      "indexTitle": "Claude Opus 4.6 Model Card Anthropic Claude Opus 4 6.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-5.md",
+      "displayTitle": "Claude Opus 4.5",
+      "content": "",
+      "indexTitle": "Claude Opus 4.5 Model Card Anthropic Claude Opus 4 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-haiku-4-5.md",
+      "displayTitle": "Claude Haiku 4.5",
+      "content": "",
+      "indexTitle": "Claude Haiku 4.5 Model Card Anthropic Claude Haiku 4 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-5.md",
+      "displayTitle": "Claude Sonnet 4.5",
+      "content": "",
+      "indexTitle": "Claude Sonnet 4.5 Model Card Anthropic Claude Sonnet 4 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-opus-4-1.md",
+      "displayTitle": "Claude Opus 4.1",
+      "content": "",
+      "indexTitle": "Claude Opus 4.1 Model Card Anthropic Claude Opus 4 1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4.md",
+      "displayTitle": "Claude Sonnet 4",
+      "content": "",
+      "indexTitle": "Claude Sonnet 4 Model Card Anthropic Claude Sonnet 4.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-3-5-haiku.md",
+      "displayTitle": "Claude 3.5 Haiku",
+      "content": "",
+      "indexTitle": "Claude 3.5 Haiku Model Card Anthropic Claude 3 5 Haiku.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-3-haiku.md",
+      "displayTitle": "Claude 3 Haiku",
+      "content": "",
+      "indexTitle": "Claude 3 Haiku Model Card Anthropic Claude 3 Haiku.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-cohere.md",
+      "displayTitle": "Cohere",
+      "content": "",
+      "indexTitle": "Cohere Model Cards Cohere.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-embed-v4.md",
+      "displayTitle": "Embed v4",
+      "content": "",
+      "indexTitle": "Embed v4 Model Card Cohere Embed V4.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-rerank-3-5.md",
+      "displayTitle": "Rerank 3.5",
+      "content": "",
+      "indexTitle": "Rerank 3.5 Model Card Cohere Rerank 3 5.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-command-r.md",
+      "displayTitle": "Command R",
+      "content": "",
+      "indexTitle": "Command R Model Card Cohere Command R.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-command-r-plus.md",
+      "displayTitle": "Command R+",
+      "content": "",
+      "indexTitle": "Command R+ Model Card Cohere Command R Plus.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-embed-english.md",
+      "displayTitle": "Embed English",
+      "content": "",
+      "indexTitle": "Embed English Model Card Cohere Embed English.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-cohere-embed-multilingual.md",
+      "displayTitle": "Embed Multilingual",
+      "content": "",
+      "indexTitle": "Embed Multilingual Model Card Cohere Embed Multilingual.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-deepseek.md",
+      "displayTitle": "DeepSeek",
+      "content": "",
+      "indexTitle": "DeepSeek Model Cards Deepseek.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-deepseek-deepseek-v3-2.md",
+      "displayTitle": "DeepSeek V3.2",
+      "content": "",
+      "indexTitle": "DeepSeek V3.2 Model Card Deepseek Deepseek V3 2.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-deepseek-deepseek-v3-1.md",
+      "displayTitle": "DeepSeek-V3.1",
+      "content": "",
+      "indexTitle": "DeepSeek-V3.1 Model Card Deepseek Deepseek V3 1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-deepseek-deepseek-r1.md",
+      "displayTitle": "DeepSeek-R1",
+      "content": "",
+      "indexTitle": "DeepSeek-R1 Model Card Deepseek Deepseek R1.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-google.md",
+      "displayTitle": "Google",
+      "content": "",
+      "indexTitle": "Google Model Cards Google.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-google-gemma-4-31b.md",
+      "displayTitle": "Gemma 4 31B",
+      "content": "",
+      "indexTitle": "Gemma 4 31B Model Card Google Gemma 4 31b.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-google-gemma-4-26b-a4b.md",
+      "displayTitle": "Gemma 4 26B-A4B",
+      "content": "",
+      "indexTitle": "Gemma 4 26B-A4B Model Card Google Gemma 4 26b A4b.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-google-gemma-4-e2b.md",
+      "displayTitle": "Gemma 4 E2B",
+      "content": "",
+      "indexTitle": "Gemma 4 E2B Gemma 4 E to B Model Card Google Gemma 4 E2b.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-google-gemma-3-12b-it.md",
+      "displayTitle": "Gemma 3 12B IT",
+      "content": "",
+      "indexTitle": "Gemma 3 12B IT Gemma 3 1 to B IT Model Card Google Gemma 3 12b It.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-google-gemma-3-27b-pt.md",
+      "displayTitle": "Gemma 3 27B PT",
+      "content": "",
+      "indexTitle": "Gemma 3 27B PT Model Card Google Gemma 3 27b Pt.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentic-ai-lens.md",
+      "displayTitle": "Abstract and introduction",
+      "content": "",
+      "indexTitle": "Abstract and introduction Agentic Ai Lens.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/definitions.md",
+      "displayTitle": "Definitions",
+      "content": "",
+      "indexTitle": "Definitions Definitions.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/design-principles.md",
+      "displayTitle": "Design principles",
+      "content": "",
+      "indexTitle": "Design principles Design Principles.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/conclusion.md",
+      "displayTitle": "Conclusion",
+      "content": "",
+      "indexTitle": "Conclusion Conclusion.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/contributors.md",
+      "displayTitle": "Contributors",
+      "content": "",
+      "indexTitle": "Contributors Contributors.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/appendix-a.md",
+      "displayTitle": "Appendix A: Best practice reference",
+      "content": "",
+      "indexTitle": "Appendix A: Best practice reference Appendix A.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/document-revisions.md",
+      "displayTitle": "Document revisions",
+      "content": "",
+      "indexTitle": "Document revisions Document Revisions.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/notices.md",
+      "displayTitle": "Notices",
+      "content": "",
+      "indexTitle": "Notices Notices.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/glossary.md",
+      "displayTitle": "AWS Glossary",
+      "content": "",
+      "indexTitle": "AWS Glossary Glossary.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/operational-excellence.md",
+      "displayTitle": "Operational excellence",
+      "content": "",
+      "indexTitle": "Operational excellence Operational Excellence.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/operational-excellence-design-principles.md",
+      "displayTitle": "Design principles",
+      "content": "",
+      "indexTitle": "Design principles Operational Excellence Design Principles.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01.md",
+      "displayTitle": "Operational practices for agentic AI systems",
+      "content": "",
+      "indexTitle": "Operational practices for agentic AI systems Agentops01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp01.md",
+      "displayTitle": "AGENTOPS01-BP01 Establish well-defined agent roles, responsibilities, and success criteria",
+      "content": "",
+      "indexTitle": "AGENTOPS01-BP01 Establish well-defined agent roles, responsibilities, and success criteria Agentops01 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp02.md",
+      "displayTitle": "AGENTOPS01-BP02 Design multi-agent handoff procedures with human-in-the-loop escalation",
+      "content": "",
+      "indexTitle": "AGENTOPS01-BP02 Design multi-agent handoff procedures with human-in-the-loop escalation Agentops01 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp03.md",
+      "displayTitle": "AGENTOPS01-BP03 Develop test scenarios that accurately capture failures of dependent components, orchestration protocols, and business processes",
+      "content": "",
+      "indexTitle": "AGENTOPS01-BP03 Develop test scenarios that accurately capture failures of dependent components, orchestration protocols, and business processes Agentops01 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02.md",
+      "displayTitle": "Prompt and configuration lifecycle management",
+      "content": "",
+      "indexTitle": "Prompt and configuration lifecycle management Agentops02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp01.md",
+      "displayTitle": "AGENTOPS02-BP01 Evolve agent prompts, tool calls, and configurations to reflect evolving business needs",
+      "content": "",
+      "indexTitle": "AGENTOPS02-BP01 Evolve agent prompts, tool calls, and configurations to reflect evolving business needs Agentops02 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp02.md",
+      "displayTitle": "AGENTOPS02-BP02 Implement configuration drift detection and remediation",
+      "content": "",
+      "indexTitle": "AGENTOPS02-BP02 Implement configuration drift detection and remediation Agentops02 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp03.md",
+      "displayTitle": "AGENTOPS02-BP03 Implement agent behavior versioning and rollback capabilities",
+      "content": "",
+      "indexTitle": "AGENTOPS02-BP03 Implement agent behavior versioning and rollback capabilities Agentops02 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp04.md",
+      "displayTitle": "AGENTOPS02-BP04 Maintain feedback control loops for continuous improvement",
+      "content": "",
+      "indexTitle": "AGENTOPS02-BP04 Maintain feedback control loops for continuous improvement Agentops02 Bp04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03.md",
+      "displayTitle": "Agent lifecycle and deployment processes",
+      "content": "",
+      "indexTitle": "Agent lifecycle and deployment processes Agentops03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp01.md",
+      "displayTitle": "AGENTOPS03-BP01 Define an agent lifecycle with clear SME ownership, testing, and governance",
+      "content": "",
+      "indexTitle": "AGENTOPS03-BP01 Define an agent lifecycle with clear SME ownership, testing, and governance Agentops03 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
+      "displayTitle": "AGENTOPS03-BP02 Implement CI/CD pipelines tailored to agentic system deployment (AgentOps)",
+      "content": "",
+      "indexTitle": "AGENTOPS03-BP02 Implement CI/CD pipelines tailored to agentic system deployment (AgentOps) Agentops03 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp03.md",
+      "displayTitle": "AGENTOPS03-BP03 Implement agent-specific scaling policies and capacity planning",
+      "content": "",
+      "indexTitle": "AGENTOPS03-BP03 Implement agent-specific scaling policies and capacity planning Agentops03 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp04.md",
+      "displayTitle": "AGENTOPS03-BP04 Implement organizational agent portfolio management and governance at scale",
+      "content": "",
+      "indexTitle": "AGENTOPS03-BP04 Implement organizational agent portfolio management and governance at scale Agentops03 Bp04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops04.md",
+      "displayTitle": "Tool integration and management practices",
+      "content": "",
+      "indexTitle": "Tool integration and management practices Agentops04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops04-bp01.md",
+      "displayTitle": "AGENTOPS04-BP01 Implement tool registry and catalog management",
+      "content": "",
+      "indexTitle": "AGENTOPS04-BP01 Implement tool registry and catalog management Agentops04 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops04-bp02.md",
+      "displayTitle": "AGENTOPS04-BP02 Establish standardized tool integration protocols (MCP, A2A)",
+      "content": "",
+      "indexTitle": "AGENTOPS04-BP02 Establish standardized tool integration protocols (MCP, A2A) AGENTOPS04-BP02 Establish standardized tool integration protocols (MCP, A to A) Agentops04 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops04-bp03.md",
+      "displayTitle": "AGENTOPS04-BP03 Develop fallback behavior and error handling for tool invocations",
+      "content": "",
+      "indexTitle": "AGENTOPS04-BP03 Develop fallback behavior and error handling for tool invocations Agentops04 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05.md",
+      "displayTitle": "Observability and monitoring for agentic systems",
+      "content": "",
+      "indexTitle": "Observability and monitoring for agentic systems Agentops05.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp01.md",
+      "displayTitle": "AGENTOPS05-BP01 Establish end-to-end tracing and telemetry for agent operations",
+      "content": "",
+      "indexTitle": "AGENTOPS05-BP01 Establish end-to-end tracing and telemetry for agent operations Agentops05 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp02.md",
+      "displayTitle": "AGENTOPS05-BP02 Monitor agent behavior patterns and detect anomalies",
+      "content": "",
+      "indexTitle": "AGENTOPS05-BP02 Monitor agent behavior patterns and detect anomalies Agentops05 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp03.md",
+      "displayTitle": "AGENTOPS05-BP03 Implement structured logging and comprehensive audit trails",
+      "content": "",
+      "indexTitle": "AGENTOPS05-BP03 Implement structured logging and comprehensive audit trails Agentops05 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.md",
+      "displayTitle": "AGENTOPS05-BP04 Define and track KPIs for agent workflows",
+      "content": "",
+      "indexTitle": "AGENTOPS05-BP04 Define and track KPIs for agent workflows Agentops05 Bp04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp05.md",
+      "displayTitle": "AGENTOPS05-BP05 Create workflow-specific dashboards for operational health",
+      "content": "",
+      "indexTitle": "AGENTOPS05-BP05 Create workflow-specific dashboards for operational health Agentops05 Bp05.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06.md",
+      "displayTitle": "Testing, evaluation, and validation frameworks",
+      "content": "",
+      "indexTitle": "Testing, evaluation, and validation frameworks Agentops06.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp01.md",
+      "displayTitle": "AGENTOPS06-BP01 Design multi-layered testing frameworks",
+      "content": "",
+      "indexTitle": "AGENTOPS06-BP01 Design multi-layered testing frameworks Agentops06 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp02.md",
+      "displayTitle": "AGENTOPS06-BP02 Evaluate and track ongoing agent performance",
+      "content": "",
+      "indexTitle": "AGENTOPS06-BP02 Evaluate and track ongoing agent performance Agentops06 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp03.md",
+      "displayTitle": "AGENTOPS06-BP03 Establish SME-driven validation and business approval workflows",
+      "content": "",
+      "indexTitle": "AGENTOPS06-BP03 Establish SME-driven validation and business approval workflows Agentops06 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07.md",
+      "displayTitle": "Operational recovery and consumption monitoring",
+      "content": "",
+      "indexTitle": "Operational recovery and consumption monitoring Agentops07.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp01.md",
+      "displayTitle": "AGENTOPS07-BP01 Implement automated response and recovery mechanisms",
+      "content": "",
+      "indexTitle": "AGENTOPS07-BP01 Implement automated response and recovery mechanisms Agentops07 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp02.md",
+      "displayTitle": "AGENTOPS07-BP02 Establish operational knowledge management systems",
+      "content": "",
+      "indexTitle": "AGENTOPS07-BP02 Establish operational knowledge management systems Agentops07 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp03.md",
+      "displayTitle": "AGENTOPS07-BP03 Augment change management to accommodate technical improvements and business requirements",
+      "content": "",
+      "indexTitle": "AGENTOPS07-BP03 Augment change management to accommodate technical improvements and business requirements Agentops07 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp04.md",
+      "displayTitle": "AGENTOPS07-BP04 Implement break-glass operational runbooks",
+      "content": "",
+      "indexTitle": "AGENTOPS07-BP04 Implement break-glass operational runbooks Agentops07 Bp04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/security.md",
+      "displayTitle": "Security",
+      "content": "",
+      "indexTitle": "Security Security.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/security-design-principles.md",
+      "displayTitle": "Design principles",
+      "content": "",
+      "indexTitle": "Design principles Security Design Principles.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec01.md",
+      "displayTitle": "Secure agent memory and state",
+      "content": "",
+      "indexTitle": "Secure agent memory and state Agentsec01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec01-bp01.md",
+      "displayTitle": "AGENTSEC01-BP01 Implement memory isolation and integrity controls",
+      "content": "",
+      "indexTitle": "AGENTSEC01-BP01 Implement memory isolation and integrity controls Agentsec01 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec01-bp02.md",
+      "displayTitle": "AGENTSEC01-BP02 Validate and sanitize memory inputs",
+      "content": "",
+      "indexTitle": "AGENTSEC01-BP02 Validate and sanitize memory inputs Agentsec01 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec01-bp03.md",
+      "displayTitle": "AGENTSEC01-BP03 Monitor for hallucination propagation",
+      "content": "",
+      "indexTitle": "AGENTSEC01-BP03 Monitor for hallucination propagation Agentsec01 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02.md",
+      "displayTitle": "Secure agent tool usage",
+      "content": "",
+      "indexTitle": "Secure agent tool usage Agentsec02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02-bp01.md",
+      "displayTitle": "AGENTSEC02-BP01 Implement tool authorization",
+      "content": "",
+      "indexTitle": "AGENTSEC02-BP01 Implement tool authorization Agentsec02 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02-bp02.md",
+      "displayTitle": "AGENTSEC02-BP02 Validate tool inputs and outputs",
+      "content": "",
+      "indexTitle": "AGENTSEC02-BP02 Validate tool inputs and outputs Agentsec02 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02-bp03.md",
+      "displayTitle": "AGENTSEC02-BP03 Maintain approved tool registry with security assessments",
+      "content": "",
+      "indexTitle": "AGENTSEC02-BP03 Maintain approved tool registry with security assessments Agentsec02 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03.md",
+      "displayTitle": "Agent identity and permission management",
+      "content": "",
+      "indexTitle": "Agent identity and permission management Agentsec03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp01.md",
+      "displayTitle": "AGENTSEC03-BP01 Implement strong authentication for agent identities",
+      "content": "",
+      "indexTitle": "AGENTSEC03-BP01 Implement strong authentication for agent identities Agentsec03 Bp01.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp02.md",
+      "displayTitle": "AGENTSEC03-BP02 Separate agent and human user permission",
+      "content": "",
+      "indexTitle": "AGENTSEC03-BP02 Separate agent and human user permission Agentsec03 Bp02.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp03.md",
+      "displayTitle": "AGENTSEC03-BP03 Implement least privilege with dynamic boundaries",
+      "content": "",
+      "indexTitle": "AGENTSEC03-BP03 Implement least privilege with dynamic boundaries Agentsec03 Bp03.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp04.md",
+      "displayTitle": "AGENTSEC03-BP04 Regular permission audits and access reviews",
+      "content": "",
+      "indexTitle": "AGENTSEC03-BP04 Regular permission audits and access reviews Agentsec03 Bp04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec04.md",
+      "displayTitle": "Agent goal alignment and manipulation prevention",
+      "content": "",
+      "indexTitle": "Agent goal alignment and manipulation prevention Agentsec04.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.md",
+      "displayTitle": "Overview",
+      "content": "",
+      "indexTitle": "Overview What Is Bedrock Agentcore.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-regions.md",
+      "displayTitle": "Supported AWS Regions",
+      "content": "",
+      "indexTitle": "Supported AWS Regions Agentcore Regions.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-get-started-cli.md",
+      "displayTitle": "Get started with AgentCore",
+      "content": "",
+      "indexTitle": "Get started with AgentCore Agentcore Get Started Cli.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/develop-agents.md",
+      "displayTitle": "Understand the available interfaces for using AgentCore",
+      "content": "",
+      "indexTitle": "Understand the available interfaces for using AgentCore Develop Agents.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-getting-started.md",
+      "displayTitle": "AgentCore MCP Server: Vibe coding with your coding assistant",
+      "content": "",
+      "indexTitle": "AgentCore MCP Server: Vibe coding with your coding assistant Mcp Getting Started.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-cli-reference.md",
+      "displayTitle": "AgentCore CLI reference",
+      "content": "",
+      "indexTitle": "AgentCore CLI reference Agentcore Cli Reference.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-python-sdk-reference.md",
+      "displayTitle": "AgentCore Python SDK reference",
+      "content": "",
+      "indexTitle": "AgentCore Python SDK reference Agentcore Python Sdk Reference.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-typescript-sdk-reference.md",
+      "displayTitle": "AgentCore TypeScript SDK reference",
+      "content": "",
+      "indexTitle": "AgentCore TypeScript SDK reference Agentcore Typescript Sdk Reference.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/tagging.md",
+      "displayTitle": "Tagging resources",
+      "content": "",
+      "indexTitle": "Tagging resources Tagging.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/bedrock-agentcore-limits.md",
+      "displayTitle": "Quotas",
+      "content": "",
+      "indexTitle": "Quotas Bedrock Agentcore Limits.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/release-notes.md",
+      "displayTitle": "Release notes",
+      "content": "",
+      "indexTitle": "Release notes Release Notes.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness.md",
+      "displayTitle": "AgentCore harness",
+      "content": "",
+      "indexTitle": "AgentCore harness Harness.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-get-started.md",
+      "displayTitle": "Get started",
+      "content": "",
+      "indexTitle": "Get started Harness Get Started.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-models.md",
+      "displayTitle": "Models and instructions",
+      "content": "",
+      "indexTitle": "Models and instructions Harness Models.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-tools.md",
+      "displayTitle": "Tools",
+      "content": "",
+      "indexTitle": "Tools Harness Tools.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-lifecycle-hooks.md",
+      "displayTitle": "Lifecycle hooks",
+      "content": "",
+      "indexTitle": "Lifecycle hooks Harness Lifecycle Hooks.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-skills.md",
+      "displayTitle": "Skills",
+      "content": "",
+      "indexTitle": "Skills Harness Skills.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-memory.md",
+      "displayTitle": "Memory",
+      "content": "",
+      "indexTitle": "Memory Harness Memory.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-environment.md",
+      "displayTitle": "Environment and filesystem",
+      "content": "",
+      "indexTitle": "Environment and filesystem Harness Environment.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-command-shell.md",
+      "displayTitle": "Interactive shells",
+      "content": "",
+      "indexTitle": "Interactive shells Harness Command Shell.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-operations.md",
+      "displayTitle": "Observability and cost controls",
+      "content": "",
+      "indexTitle": "Observability and cost controls Harness Operations.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-versioning.md",
+      "displayTitle": "Versioning and endpoints",
+      "content": "",
+      "indexTitle": "Versioning and endpoints Harness Versioning.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-export.md",
+      "displayTitle": "Export to code",
+      "content": "",
+      "indexTitle": "Export to code Harness Export.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-security.md",
+      "displayTitle": "Security",
+      "content": "",
+      "indexTitle": "Security Harness Security.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-vs-runtime.md",
+      "displayTitle": "Harness vs. Runtime",
+      "content": "",
+      "indexTitle": "Harness vs. Runtime Harness Vs Runtime.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+      "displayTitle": "AgentCore Runtime: Host agent or tools",
+      "content": "",
+      "indexTitle": "AgentCore Runtime: Host agent or tools Agents Tools Runtime.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-compute-how-it-works.md",
+      "displayTitle": "How it works",
+      "content": "",
+      "indexTitle": "How it works Runtime Compute How It Works.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.md",
+      "displayTitle": "microVMs",
+      "content": "",
+      "indexTitle": "microVMs Runtime How It Works.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances-how-it-works.md",
+      "displayTitle": "Instances",
+      "content": "",
+      "indexTitle": "Instances Runtime Instances How It Works.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-service-contract.md",
+      "displayTitle": "Understand the AgentCore Runtime service contract",
+      "content": "",
+      "indexTitle": "Understand the AgentCore Runtime service contract Runtime Service Contract.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.md",
+      "displayTitle": "HTTP protocol contract",
+      "content": "",
+      "indexTitle": "HTTP protocol contract Runtime Http Protocol Contract.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-mcp-protocol-contract.md",
+      "displayTitle": "MCP protocol contract",
+      "content": "",
+      "indexTitle": "MCP protocol contract Runtime Mcp Protocol Contract.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-a2a-protocol-contract.md",
+      "displayTitle": "A2A protocol contract",
+      "content": "",
+      "indexTitle": "A2A protocol contract A to A protocol contract Runtime A2a Protocol Contract.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-agui-protocol-contract.md",
+      "displayTitle": "AG-UI protocol contract",
+      "content": "",
+      "indexTitle": "AG-UI protocol contract Runtime Agui Protocol Contract.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.md",
+      "displayTitle": "IAM Permissions for AgentCore Runtime",
+      "content": "",
+      "indexTitle": "IAM Permissions for AgentCore Runtime Runtime Permissions.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-getting-started.md",
+      "displayTitle": "Get started with AgentCore Runtime",
+      "content": "",
+      "indexTitle": "Get started with AgentCore Runtime Runtime Getting Started.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-cli.md",
+      "displayTitle": "Get started with AgentCore CLI",
+      "content": "",
+      "indexTitle": "Get started with AgentCore CLI Runtime Get Started Cli.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-cli-typescript.md",
+      "displayTitle": "Get started with AgentCore CLI (TypeScript)",
+      "content": "",
+      "indexTitle": "Get started with AgentCore CLI (TypeScript) Runtime Get Started Cli Typescript.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/getting-started-custom.md",
+      "displayTitle": "Get started without the AgentCore CLI",
+      "content": "",
+      "indexTitle": "Get started without the AgentCore CLI Getting Started Custom.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances-getting-started.md",
+      "displayTitle": "Get started with Instances",
+      "content": "",
+      "indexTitle": "Get started with Instances Runtime Instances Getting Started.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances-get-started-console.md",
+      "displayTitle": "Using the console",
+      "content": "",
+      "indexTitle": "Using the console Runtime Instances Get Started Console.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances-get-started-cli.md",
+      "displayTitle": "Using the AWS CLI or SDK",
+      "content": "",
+      "indexTitle": "Using the AWS CLI or SDK Runtime Instances Get Started Cli.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy.md",
+      "displayTitle": "Get started with direct code deployment",
+      "content": "",
+      "indexTitle": "Get started with direct code deployment Runtime Get Started Code Deploy.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.md",
+      "displayTitle": "Direct code deployment for Python",
+      "content": "",
+      "indexTitle": "Direct code deployment for Python Runtime Get Started Code Deploy Python.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-node.md",
+      "displayTitle": "Direct code deployment for Node.js",
+      "content": "",
+      "indexTitle": "Direct code deployment for Node.js Runtime Get Started Code Deploy Node.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-supported-runtimes.md",
+      "displayTitle": "Supported runtimes and deprecation",
+      "content": "",
+      "indexTitle": "Supported runtimes and deprecation Runtime Code Deploy Supported Runtimes.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-common-issues.md",
+      "displayTitle": "Troubleshooting",
+      "content": "",
+      "indexTitle": "Troubleshooting Runtime Code Deploy Common Issues.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.md",
+      "displayTitle": "Get started with bidirectional streaming using WebSocket",
+      "content": "",
+      "indexTitle": "Get started with bidirectional streaming using WebSocket Runtime Get Started Websocket.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-v2-optimize.md",
+      "displayTitle": "Optimize your agent",
+      "content": "",
+      "indexTitle": "Optimize your agent Runtime V2 Optimize.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
+      "displayTitle": "Use any agent framework",
+      "content": "",
+      "indexTitle": "Use any agent framework Using Any Agent Framework.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-model.md",
+      "displayTitle": "Use any foundation model",
+      "content": "",
+      "indexTitle": "Use any foundation model Using Any Model.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-mcp.md",
+      "displayTitle": "Deploy MCP servers",
+      "content": "",
+      "indexTitle": "Deploy MCP servers Runtime Mcp.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-stateful-features.md",
+      "displayTitle": "Stateful MCP features",
+      "content": "",
+      "indexTitle": "Stateful MCP features Mcp Stateful Features.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-a2a.md",
+      "displayTitle": "Deploy A2A servers",
+      "content": "",
+      "indexTitle": "Deploy A2A servers Deploy A to A servers Runtime A2a.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-agui.md",
+      "displayTitle": "Deploy AG-UI servers",
+      "content": "",
+      "indexTitle": "Deploy AG-UI servers Runtime Agui.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-sessions.md",
+      "displayTitle": "Use isolated sessions for agents",
+      "content": "",
+      "indexTitle": "Use isolated sessions for agents Runtime Sessions.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-lifecycle-settings.md",
+      "displayTitle": "Configure lifecycle settings",
+      "content": "",
+      "indexTitle": "Configure lifecycle settings Runtime Lifecycle Settings.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-stop-session.md",
+      "displayTitle": "Stop a running session",
+      "content": "",
+      "indexTitle": "Stop a running session Runtime Stop Session.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-filesystem-configurations.md",
+      "displayTitle": "File system configurations",
+      "content": "",
+      "indexTitle": "File system configurations Runtime Filesystem Configurations.md"
+    },
+    {
+      "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-long-run.md",
+      "displayTitle": "Handle asynchronous and long running agents",
+      "content": "",
+      "indexTitle": "Handle asynchronous and long running agents Runtime Long Run.md"
+    },
+    {
+      "uri": "https://example.com/content/doc-01",
+      "displayTitle": "Prompt Caching",
+      "content": "# Prompt Caching\n\nPrompt caching reduces cost and latency by reusing tokens across requests.\n\n## How it works\n\nMark a prefix as cacheable and the model reuses it. Use `cachePoint` in the request.\n\n```json\n{ \"cachePoint\": { \"type\": \"default\" } }\n```\n\nSee the [Bedrock guide](https://example.com/bedrock/prompt-caching) for details.",
+      "indexTitle": "Prompt Caching Doc 01"
+    },
+    {
+      "uri": "https://example.com/content/doc-02",
+      "displayTitle": "Streaming Responses",
+      "content": "# Streaming Responses\n\nStream tokens as they are generated with the Converse API.\n\n## Server-sent events\n\n```python\nfor event in stream:\n    print(event['contentBlockDelta'])\n```\n\nInline `ConverseStream` returns an event stream. Read the [streaming docs](https://example.com/streaming).",
+      "indexTitle": "Streaming Responses Doc 02"
+    },
+    {
+      "uri": "https://example.com/content/doc-03",
+      "displayTitle": "Knowledge Bases",
+      "content": "# Knowledge Bases\n\nRetrieval augmented generation grounds responses in your data.\n\n## Ingestion\n\nChunk documents, embed them, and store vectors. Query with `Retrieve`.\n\n```bash\naws bedrock-agent retrieve --knowledge-base-id KB123\n```\n\n[Knowledge base setup](https://example.com/kb).",
+      "indexTitle": "Knowledge Bases Doc 03"
+    },
+    {
+      "uri": "https://example.com/content/doc-04",
+      "displayTitle": "Guardrails",
+      "content": "# Guardrails\n\nGuardrails filter harmful content and block denied topics.\n\n## Configuration\n\nDefine content filters and word policies. Apply with `guardrailIdentifier`.\n\n```json\n{ \"guardrailIdentifier\": \"gr-123\", \"guardrailVersion\": \"1\" }\n```\n\n[Guardrails reference](https://example.com/guardrails).",
+      "indexTitle": "Guardrails Doc 04"
+    },
+    {
+      "uri": "https://example.com/content/doc-05",
+      "displayTitle": "Agent Tools",
+      "content": "# Agent Tools\n\nAgents call tools to take actions and fetch data.\n\n## Tool use\n\nDeclare a tool schema and handle `toolUse` blocks.\n\n```typescript\nconst tools = [{ name: 'search', inputSchema: {} }];\n```\n\nSee [tool use](https://example.com/tools) and inline `toolResult` handling.",
+      "indexTitle": "Agent Tools Doc 05"
+    },
+    {
+      "uri": "https://example.com/content/doc-06",
+      "displayTitle": "Model Inference",
+      "content": "# Model Inference\n\nInvoke foundation models for text generation.\n\n## Latency\n\nUse cross-region inference profiles to reduce throttling.\n\n```python\nclient.invoke_model(modelId='anthropic.claude')\n```\n\n[Inference docs](https://example.com/inference).",
+      "indexTitle": "Model Inference Doc 06"
+    },
+    {
+      "uri": "https://example.com/content/doc-07",
+      "displayTitle": "Bedrock Converse API",
+      "content": "# Bedrock Converse API\n\nA unified API for multi-turn conversations.\n\n## Messages\n\nSend a list of messages with roles.\n\n```json\n{ \"messages\": [{ \"role\": \"user\", \"content\": [] }] }\n```\n\nThe `Converse` operation is provider-agnostic. [Converse](https://example.com/converse).",
+      "indexTitle": "Bedrock Converse API Doc 07"
+    },
+    {
+      "uri": "https://example.com/content/doc-08",
+      "displayTitle": "S3 Vectors",
+      "content": "# S3 Vectors\n\nStore and query vector embeddings at scale in s3.\n\n## Indexing\n\nCreate a vector bucket and insert embeddings.\n\n```bash\naws s3vectors put-vectors --bucket vb\n```\n\n[S3 vectors](https://example.com/s3-vectors) with inline `putVectors`.",
+      "indexTitle": "S3 Vectors Doc 08"
+    },
+    {
+      "uri": "https://example.com/content/doc-09",
+      "displayTitle": "OpenSearch Serverless",
+      "content": "# OpenSearch Serverless\n\nA serverless vector engine for similarity search.\n\n## Collections\n\nCreate a collection of type VECTORSEARCH.\n\n```bash\naws opensearchserverless create-collection --name c1\n```\n\n[OpenSearch](https://example.com/opensearch).",
+      "indexTitle": "OpenSearch Serverless Doc 09"
+    },
+    {
+      "uri": "https://example.com/content/doc-10",
+      "displayTitle": "Lambda Functions",
+      "content": "# Lambda Functions\n\nRun code without provisioning servers.\n\n## Handler\n\n```python\ndef handler(event, context):\n    return {'statusCode': 200}\n```\n\nUse `boto3` inside the function. [Lambda](https://example.com/lambda).",
+      "indexTitle": "Lambda Functions Doc 10"
+    },
+    {
+      "uri": "https://example.com/content/doc-11",
+      "displayTitle": "IAM Policies",
+      "content": "# IAM Policies\n\nControl access with least-privilege policies.\n\n## Statements\n\n```json\n{ \"Effect\": \"Allow\", \"Action\": \"bedrock:InvokeModel\" }\n```\n\nAttach the policy to a role. [IAM](https://example.com/iam).",
+      "indexTitle": "IAM Policies Doc 11"
+    },
+    {
+      "uri": "https://example.com/content/doc-12",
+      "displayTitle": "DynamoDB Streams",
+      "content": "# DynamoDB Streams\n\nCapture item-level changes and process them.\n\n## Triggers\n\n```python\ndef handler(event):\n    for record in event['Records']:\n        print(record['eventName'])\n```\n\n[Streams](https://example.com/ddb-streams) forward to a `Lambda`.",
+      "indexTitle": "DynamoDB Streams Doc 12"
+    },
+    {
+      "uri": "https://example.com/content/doc-13",
+      "displayTitle": "Step Functions",
+      "content": "# Step Functions\n\nOrchestrate workflows as state machines.\n\n## States\n\n```json\n{ \"StartAt\": \"First\", \"States\": {} }\n```\n\nUse a `Map` state for fan-out. [Step Functions](https://example.com/sfn).",
+      "indexTitle": "Step Functions Doc 13"
+    },
+    {
+      "uri": "https://example.com/content/doc-14",
+      "displayTitle": "MCP Server",
+      "content": "# MCP Server\n\nExpose tools over the Model Context Protocol.\n\n## Transport\n\nUse stdio or sse transport for json rpc.\n\n```typescript\nconst server = new McpServer({ name: 'x' });\n```\n\n[MCP](https://example.com/mcp) speaks `json` `rpc`.",
+      "indexTitle": "MCP Server Doc 14"
+    },
+    {
+      "uri": "https://example.com/content/doc-15",
+      "displayTitle": "Tokenization",
+      "content": "# Tokenization\n\nSplit text into tokens for indexing and search.\n\n## Stemming\n\nThe Porter stemmer reduces running to run.\n\n```typescript\ntokenize('Building agents');\n```\n\n[Tokenization](https://example.com/tokenize) removes stopwords.",
+      "indexTitle": "Tokenization Doc 15"
+    },
+    {
+      "uri": "https://example.com/content/doc-16",
+      "displayTitle": "BM25 Ranking",
+      "content": "# BM25 Ranking\n\nRank documents by term frequency and inverse document frequency.\n\n## Parameters\n\nTune `k1` and `b` for length normalization.\n\n```text\nscore = idf * tf / (tf + k1 * (1 - b + b * dl/avgdl))\n```\n\n[BM25](https://example.com/bm25).",
+      "indexTitle": "BM25 Ranking BM to 5 Ranking Doc 16"
+    },
+    {
+      "uri": "https://example.com/content/doc-17",
+      "displayTitle": "Vector Embeddings",
+      "content": "# Vector Embeddings\n\nRepresent text as dense vectors for similarity.\n\n## Cosine similarity\n\n```python\nimport numpy as np\nnp.dot(a, b)\n```\n\nStore embeddings for retrieval. [Embeddings](https://example.com/embeddings).",
+      "indexTitle": "Vector Embeddings Doc 17"
+    },
+    {
+      "uri": "https://example.com/content/doc-18",
+      "displayTitle": "RAG Pipeline",
+      "content": "# RAG Pipeline\n\nRetrieve context then generate a grounded answer.\n\n## Steps\n\nEmbed the query, retrieve top-k, and augment the prompt.\n\n```python\nctx = retrieve(query)\nanswer = generate(prompt, ctx)\n```\n\n[RAG](https://example.com/rag) with a knowledge base.",
+      "indexTitle": "RAG Pipeline Doc 18"
+    },
+    {
+      "uri": "https://example.com/content/doc-19",
+      "displayTitle": "TypeScript SDK",
+      "content": "# TypeScript SDK\n\nBuild agents in TypeScript with the AWS SDK.\n\n## Install\n\n```bash\nnpm install @aws-sdk/client-bedrock-runtime\n```\n\nUse `BedrockRuntimeClient`. [TS SDK](https://example.com/ts-sdk).",
+      "indexTitle": "TypeScript SDK Doc 19"
+    },
+    {
+      "uri": "https://example.com/content/doc-20",
+      "displayTitle": "Python SDK",
+      "content": "# Python SDK\n\nUse boto3 to call Bedrock from Python.\n\n## Install\n\n```bash\npip install boto3\n```\n\nCall `client.converse(...)`. [Python SDK](https://example.com/py-sdk).",
+      "indexTitle": "Python SDK Doc 20"
+    }
+  ],
+  "queries": [
+    {
+      "q": "typescript quickstart",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-19",
+          "score": 21.98110543142672
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/quickstart/typescript/index.md",
+          "score": 17.701286261915833
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-typescript-sdk-reference.md",
+          "score": 16.099665785520962
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-cli-typescript.md",
+          "score": 16.099665785520962
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/quickstart/index.md",
+          "score": 9.635921655728426
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/quickstart/python/index.md",
+          "score": 9.488228976811461
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/getting-started.md",
+          "score": 9.344995412217598
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
+          "score": 9.206022021805602
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/typescript/index.md",
+          "score": 8.340900788407263
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_docker/typescript/index.md",
+          "score": 8.340900788407263
+        }
+      ]
+    },
+    {
+      "q": "prompt caching",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 78.56123317446455
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/configure/context-and-caching/index.md",
+          "score": 23.07189779986526
+        },
+        {
+          "uri": "https://example.com/content/doc-18",
+          "score": 15.14214696587196
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02.md",
+          "score": 9.381266962358241
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp01.md",
+          "score": 8.409656826546257
+        }
+      ]
+    },
+    {
+      "q": "build an agent",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
+          "score": 15.278486645223948
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 12.64676010592332
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
+          "score": 10.517270456813558
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 9.927647761455185
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 5.249883070558577
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
+          "score": 5.225335830936172
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.md",
+          "score": 5.222963469299437
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp02.md",
+          "score": 5.222963469299437
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp01.md",
+          "score": 5.222963469299437
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec03-bp02.md",
+          "score": 5.222963469299437
+        }
+      ]
+    },
+    {
+      "q": "bedrock model providers",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-07",
+          "score": 17.092568763409528
+        },
+        {
+          "uri": "https://example.com/content/doc-06",
+          "score": 11.351095761862295
+        },
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 10.046617531742838
+        },
+        {
+          "uri": "https://example.com/content/doc-19",
+          "score": 9.407873966959645
+        },
+        {
+          "uri": "https://example.com/content/doc-11",
+          "score": 8.613520113753186
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/index.md",
+          "score": 7.910004054383718
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.md",
+          "score": 7.650041136777125
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.md",
+          "score": 7.53627413030228
+        },
+        {
+          "uri": "https://kiro.dev/docs/models.md",
+          "score": 7.468214884691884
+        },
+        {
+          "uri": "https://kiro.dev/docs/models.md",
+          "score": 7.468214884691884
+        }
+      ]
+    },
+    {
+      "q": "knowledge base",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 119.53918931876022
+        },
+        {
+          "uri": "https://kiro.dev/docs/specs/correctness.md",
+          "score": 9.933750391093318
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp02.md",
+          "score": 9.391241599468236
+        },
+        {
+          "uri": "https://example.com/content/doc-18",
+          "score": 2.731041831630955
+        }
+      ]
+    },
+    {
+      "q": "guardrails",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-04",
+          "score": 65.62283414248768
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/guardrails/index.md",
+          "score": 11.504150532518482
+        }
+      ]
+    },
+    {
+      "q": "streaming responses",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 104.08961699871985
+        },
+        {
+          "uri": "https://example.com/content/doc-12",
+          "score": 53.84075074388177
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/streaming/index.md",
+          "score": 29.39933372365858
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/responsible-ai/index.md",
+          "score": 18.53126349820109
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.md",
+          "score": 9.117907484323428
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp01.md",
+          "score": 8.104682440630233
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp01.md",
+          "score": 7.88925571770439
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.060546968999095
+        }
+      ]
+    },
+    {
+      "q": "vector search",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-08",
+          "score": 102.26344535795964
+        },
+        {
+          "uri": "https://example.com/content/doc-17",
+          "score": 27.050495338829972
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp/tool-search.md",
+          "score": 20.12166988581318
+        },
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 10.631895023108052
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 9.113465791277672
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 1.7665170887157051
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.1605535096981887
+        }
+      ]
+    },
+    {
+      "q": "rag pipeline",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-18",
+          "score": 74.05308079215968
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
+          "score": 9.568002928735813
+        }
+      ]
+    },
+    {
+      "q": "mcp server",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-14",
+          "score": 83.39339863796295
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/configure/mcp-servers/index.md",
+          "score": 32.54791948344753
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-mcp.md",
+          "score": 23.3154794295628
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-getting-started.md",
+          "score": 22.428329389691847
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp/servers.md",
+          "score": 16.72791137468009
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-a2a.md",
+          "score": 16.221511156473554
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/mcp-tools/index.md",
+          "score": 15.820008108767436
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp.md",
+          "score": 15.576870143277015
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp.md",
+          "score": 15.576870143277015
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/mcp-stateful-features.md",
+          "score": 15.45808238176497
+        }
+      ]
+    },
+    {
+      "q": "lambda function",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-10",
+          "score": 76.86910990527574
+        },
+        {
+          "uri": "https://example.com/content/doc-13",
+          "score": 44.71287474443709
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_aws_lambda/index.md",
+          "score": 10.736483133661208
+        },
+        {
+          "uri": "https://example.com/content/doc-12",
+          "score": 1.2289010564465443
+        }
+      ]
+    },
+    {
+      "q": "iam policy",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-11",
+          "score": 88.97870452633698
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.md",
+          "score": 10.521492493952392
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp03.md",
+          "score": 9.141617457276555
+        },
+        {
+          "uri": "https://example.com/content/doc-04",
+          "score": 1.5093475732901298
+        }
+      ]
+    },
+    {
+      "q": "dynamodb streams",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 86.89547864223341
+        },
+        {
+          "uri": "https://example.com/content/doc-12",
+          "score": 75.9623831444433
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/streaming/index.md",
+          "score": 20.438217705068887
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-websocket.md",
+          "score": 9.117907484323428
+        }
+      ]
+    },
+    {
+      "q": "step functions",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-13",
+          "score": 89.42574948887416
+        },
+        {
+          "uri": "https://example.com/content/doc-10",
+          "score": 30.545161570203337
+        },
+        {
+          "uri": "https://example.com/content/doc-18",
+          "score": 9.890054324616058
+        }
+      ]
+    },
+    {
+      "q": "converse api",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-07",
+          "score": 95.46440967208503
+        },
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 4.022913801012154
+        },
+        {
+          "uri": "https://example.com/content/doc-20",
+          "score": 1.7925551098449304
+        }
+      ]
+    },
+    {
+      "q": "s3 vectors",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-08",
+          "score": 185.23447798233352
+        },
+        {
+          "uri": "https://example.com/content/doc-17",
+          "score": 27.050495338829972
+        },
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 2.595178473023916
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.1605535096981887
+        }
+      ]
+    },
+    {
+      "q": "opensearch serverless",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 96.07432018519658
+        }
+      ]
+    },
+    {
+      "q": "python sdk",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-20",
+          "score": 76.18236794219868
+        },
+        {
+          "uri": "https://example.com/content/doc-19",
+          "score": 68.67284155069791
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-python-sdk-reference.md",
+          "score": 32.02531589264963
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/composing-with-sdk/index.md",
+          "score": 17.57688568412904
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-typescript-sdk-reference.md",
+          "score": 17.18080751316541
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.md",
+          "score": 14.733837439455964
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/index.md",
+          "score": 8.764589165377702
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-instances-get-started-cli.md",
+          "score": 8.026446555095381
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_bedrock_agentcore/python/index.md",
+          "score": 7.690629935766188
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/deploy_to_docker/python/index.md",
+          "score": 7.690629935766188
+        }
+      ]
+    },
+    {
+      "q": "tokenization bm25",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 88.25836861375025
+        },
+        {
+          "uri": "https://example.com/content/doc-16",
+          "score": 49.31649720949683
+        },
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 1.5093475732901298
+        },
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 1.4103175924022024
+        }
+      ]
+    },
+    {
+      "q": "agent tools",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 85.938839004435
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 17.207222841545896
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/configure/tools-and-instructions/index.md",
+          "score": 12.423942374375258
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/using-tools/index.md",
+          "score": 12.423942374375258
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/mcp-tools/index.md",
+          "score": 12.423942374375258
+        },
+        {
+          "uri": "https://kiro.dev/docs/tools.md",
+          "score": 12.423942374375258
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-tools.md",
+          "score": 12.423942374375258
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/tools/custom-tools/index.md",
+          "score": 12.327731150825377
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp/tool-search.md",
+          "score": 12.327731150825377
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/tools/programmatic-tool-calling/index.md",
+          "score": 12.232998599156726
+        }
+      ]
+    },
+    {
+      "q": "how to build a multi agent system",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/bidirectional-streaming/quickstart/index.md",
+          "score": 15.278486645223948
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/multi-agent/multi-agent-patterns/index.md",
+          "score": 15.20174757647538
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05.md",
+          "score": 14.15834266699851
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01.md",
+          "score": 13.991274927391451
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp02.md",
+          "score": 13.663793438334316
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
+          "score": 13.239532651680904
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 12.64676010592332
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
+          "score": 10.517270456813558
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 9.927647761455185
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-filesystem-configurations.md",
+          "score": 9.441498833569206
+        }
+      ]
+    },
+    {
+      "q": "prompt engineering",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 34.629280646258714
+        },
+        {
+          "uri": "https://example.com/content/doc-18",
+          "score": 15.14214696587196
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02.md",
+          "score": 9.381266962358241
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops02-bp01.md",
+          "score": 8.409656826546257
+        },
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 1.8575836110119863
+        }
+      ]
+    },
+    {
+      "q": "model inference latency",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-06",
+          "score": 88.00786752155261
+        },
+        {
+          "uri": "https://kiro.dev/docs/models.md",
+          "score": 7.468214884691884
+        },
+        {
+          "uri": "https://kiro.dev/docs/models.md",
+          "score": 7.468214884691884
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-model.md",
+          "score": 7.409929537372191
+        },
+        {
+          "uri": "https://kiro.dev/docs/models/available-models.md",
+          "score": 7.352546915517844
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards.md",
+          "score": 7.352546915517844
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-models.md",
+          "score": 7.352546915517844
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/configure/model/index.md",
+          "score": 3.6947521860894583
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-amazon.md",
+          "score": 3.478187897986525
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-anthropic.md",
+          "score": 3.478187897986525
+        }
+      ]
+    },
+    {
+      "q": "cost optimization",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-v2-optimize.md",
+          "score": 25.10746448567778
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-operations.md",
+          "score": 10.673442641292596
+        },
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 1.6217374219238154
+        }
+      ]
+    },
+    {
+      "q": "well architected agentic ai lens",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentic-ai-lens.md",
+          "score": 26.081132099795912
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/responsible-ai/index.md",
+          "score": 20.27870855382885
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01.md",
+          "score": 14.42614409640088
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.md",
+          "score": 10.517270456813558
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-ai21-labs.md",
+          "score": 9.992587638251685
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 9.927647761455185
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agents-tools-runtime.md",
+          "score": 5.249883070558577
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops03-bp02.md",
+          "score": 5.225335830936172
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops05-bp04.md",
+          "score": 5.222963469299437
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops06-bp02.md",
+          "score": 5.222963469299437
+        }
+      ]
+    },
+    {
+      "q": "kiro ide",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://kiro.dev/docs/how-kiro-works.md",
+          "score": 23.253377741045167
+        },
+        {
+          "uri": "https://kiro.dev/docs/how-kiro-works.md",
+          "score": 23.253377741045167
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 10.787068438121695
+        }
+      ]
+    },
+    {
+      "q": "strands agents sdk",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-19",
+          "score": 69.71302112890069
+        },
+        {
+          "uri": "https://example.com/content/doc-20",
+          "score": 40.869998094615774
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/composing-with-sdk/index.md",
+          "score": 28.250328325421634
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-python-sdk-reference.md",
+          "score": 17.18080751316541
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/agentcore-typescript-sdk-reference.md",
+          "score": 17.18080751316541
+        },
+        {
+          "uri": "https://kiro.dev/docs/custom-agents.md",
+          "score": 14.941442648898963
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/deploy/operating-agents-in-production/index.md",
+          "score": 14.82662500967374
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/production/index.md",
+          "score": 10.990901226513317
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 8.86861995838471
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/index.md",
+          "score": 8.764589165377702
+        }
+      ]
+    },
+    {
+      "q": "embeddings similarity",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-17",
+          "score": 63.86662257184453
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-amazon-nova-multimodal-embeddings.md",
+          "score": 16.802186442630923
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.md",
+          "score": 16.802186442630923
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-multimodal-embeddings-g1.md",
+          "score": 16.802186442630923
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-embeddings-g1---text.md",
+          "score": 16.802186442630923
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2-2.md",
+          "score": 16.558909096319642
+        },
+        {
+          "uri": "https://example.com/content/doc-08",
+          "score": 3.685583887240332
+        },
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 1.6807469452989334
+        }
+      ]
+    },
+    {
+      "q": "json rpc stdio transport",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-14",
+          "score": 30.158234581434737
+        },
+        {
+          "uri": "https://example.com/content/doc-13",
+          "score": 3.4540199491404184
+        },
+        {
+          "uri": "https://example.com/content/doc-11",
+          "score": 2.9118437696323434
+        },
+        {
+          "uri": "https://example.com/content/doc-07",
+          "score": 2.651696417090429
+        },
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 2.6051470712339104
+        },
+        {
+          "uri": "https://example.com/content/doc-04",
+          "score": 2.6051470712339104
+        }
+      ]
+    },
+    {
+      "q": "http api gateway",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-07",
+          "score": 30.776430473200833
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-http-protocol-contract.md",
+          "score": 24.727428233411253
+        },
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 1.5153334174781932
+        }
+      ]
+    },
+    {
+      "q": "caching responses",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-01",
+          "score": 43.931952528205834
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/harness/configure/context-and-caching/index.md",
+          "score": 23.07189779986526
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/safety-security/responsible-ai/index.md",
+          "score": 18.53126349820109
+        },
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 17.194138356486427
+        },
+        {
+          "uri": "https://strandsagents.com/docs/user-guide/sdk/streaming/index.md",
+          "score": 8.961116018589692
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops07-bp01.md",
+          "score": 8.104682440630233
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentops01-bp01.md",
+          "score": 7.88925571770439
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.060546968999095
+        }
+      ]
+    },
+    {
+      "q": "fetch document content",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/document-revisions.md",
+          "score": 20.12166988581318
+        },
+        {
+          "uri": "https://example.com/content/doc-07",
+          "score": 11.67964185429417
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-ug-doc-history.md",
+          "score": 9.247712593343946
+        },
+        {
+          "uri": "https://example.com/content/doc-04",
+          "score": 5.722383943237363
+        },
+        {
+          "uri": "https://example.com/content/doc-16",
+          "score": 3.9332525810139614
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 1.5716487740416751
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.1605535096981887
+        }
+      ]
+    },
+    {
+      "q": "search ranking algorithm",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-16",
+          "score": 43.18788112696126
+        },
+        {
+          "uri": "https://kiro.dev/docs/mcp/tool-search.md",
+          "score": 20.12166988581318
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 9.113465791277672
+        },
+        {
+          "uri": "https://example.com/content/doc-09",
+          "score": 8.036716550084137
+        },
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 1.7665170887157051
+        }
+      ]
+    },
+    {
+      "q": "porter stemming",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://example.com/content/doc-15",
+          "score": 16.80376733854997
+        }
+      ]
+    },
+    {
+      "q": "bigram phrase matching",
+      "k": 10,
+      "results": []
+    },
+    {
+      "q": "code blocks",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://kiro.dev/docs/tools/code-intelligence.md",
+          "score": 16.59837014112516
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy.md",
+          "score": 16.099665785520962
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.md",
+          "score": 15.979637213265457
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-node.md",
+          "score": 15.861385105823645
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-export.md",
+          "score": 7.85200704116776
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-common-issues.md",
+          "score": 7.628440256406877
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-supported-runtimes.md",
+          "score": 7.417252061285743
+        },
+        {
+          "uri": "https://example.com/content/doc-10",
+          "score": 3.357482951594969
+        },
+        {
+          "uri": "https://example.com/content/doc-04",
+          "score": 1.6217374219238154
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 1.4220322899028388
+        }
+      ]
+    },
+    {
+      "q": "inline code",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://kiro.dev/docs/tools/code-intelligence.md",
+          "score": 16.59837014112516
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy.md",
+          "score": 16.099665785520962
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-python.md",
+          "score": 15.979637213265457
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-code-deploy-node.md",
+          "score": 15.861385105823645
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/harness-export.md",
+          "score": 7.85200704116776
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-common-issues.md",
+          "score": 7.628440256406877
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-code-deploy-supported-runtimes.md",
+          "score": 7.417252061285743
+        },
+        {
+          "uri": "https://example.com/content/doc-10",
+          "score": 3.357482951594969
+        },
+        {
+          "uri": "https://example.com/content/doc-02",
+          "score": 2.820635184804405
+        },
+        {
+          "uri": "https://example.com/content/doc-05",
+          "score": 2.646964862362145
+        }
+      ]
+    },
+    {
+      "q": "markdown links",
+      "k": 10,
+      "results": []
+    },
+    {
+      "q": "title boost weighting",
+      "k": 10,
+      "results": []
+    },
+    {
+      "q": "document length normalization",
+      "k": 10,
+      "results": [
+        {
+          "uri": "https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/document-revisions.md",
+          "score": 20.12166988581318
+        },
+        {
+          "uri": "https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-ug-doc-history.md",
+          "score": 9.247712593343946
+        },
+        {
+          "uri": "https://example.com/content/doc-16",
+          "score": 6.65724966876938
+        },
+        {
+          "uri": "https://example.com/content/doc-03",
+          "score": 1.1605535096981887
+        }
+      ]
+    }
+  ]
+}
