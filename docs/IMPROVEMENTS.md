@@ -330,6 +330,13 @@ Issue: #11
 
 Issue: #12
 
+Status: fixed on `fix/failing-source-backoff`. A failed index attempt is
+remembered with its reason; for the next 5 minutes
+(`INDEX_RETRY_BACKOFF_MS`) the source fails fast without re-fetching its
+llms.txt, and `refresh_doc_source` retries at once. `list_doc_sources`
+shows `lastError` and `lastFailedAt`. Live, with Strands plus a 404
+source: warm unscoped search 10-13 ms before, 1 ms after.
+
 - A source whose llms.txt 404s or times out is re-fetched on every unscoped
   search: warm unscoped latency goes from ~1 ms to ~330 ms (404) or ~505 ms
   (connect timeout).
@@ -341,6 +348,11 @@ Issue: #12
 ### 9.8 Scoped search on a failing source reports success (Low-Medium)
 
 Issue: #13
+
+Status: fixed on `fix/failing-source-backoff`. `search_docs` with a
+`source` that fails to index returns `isError` with the reason (e.g.
+`source 'broken' failed to index: HTTP 404`); unscoped search still skips
+failing sources.
 
 - `search_docs(q, source: "<broken>")` returns `{count: 0}` with
   `isError: false`, because the index error is caught and the source skipped
@@ -357,8 +369,8 @@ fetches the page anyway, since the prefix alone authorizes it; a failed
 page fetch returns `"failed to fetch document"`. The `fetch_doc` handler
 also catches unexpected errors and returns a JSON error with the message,
 like the other tools. Live: with the source's llms.txt returning 404, a
-Strands page fetches (6,189 chars). The failing llms.txt is still
-re-requested on every call; that is 9.7 (#12).
+Strands page fetches (6,189 chars). Repeated calls no longer re-request
+the failing llms.txt since 9.7 (#12) was fixed.
 
 - `fetch_doc` for a URL under a source whose llms.txt fails returns
   `{"content":[{"type":"text","text":""}],"isError":true}`: `fetchDoc`
