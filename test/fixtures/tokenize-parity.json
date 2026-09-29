@@ -192,7 +192,7 @@
         "rag",
         "bm25",
         "agent",
-        "agents"
+        "agent"
       ]
     ],
     [
@@ -235,7 +235,7 @@
       "Building agents with Bedrock and streaming responses",
       [
         "build",
-        "agents",
+        "agent",
         "bedrock",
         "stream",
         "respons"
@@ -513,7 +513,7 @@
       [
         "lesson",
         "1",
-        "agents",
+        "agent",
         "realli"
       ]
     ],
@@ -712,7 +712,7 @@
         "learn",
         "build",
         "product",
-        "agents"
+        "agent"
       ]
     ],
     [
@@ -1136,7 +1136,7 @@
       [
         "amazon",
         "bedrock",
-        "agents"
+        "agent"
       ]
     ],
     [
@@ -1223,7 +1223,7 @@
       [
         "amazon",
         "bedrock",
-        "agents"
+        "agent"
       ]
     ],
     [
@@ -1384,7 +1384,7 @@
         "bp01",
         "design",
         "special",
-        "agents",
+        "agent",
         "explicit",
         "resourc",
         "boundari"
