@@ -50,6 +50,13 @@ describe("registry", () => {
     expect(findSourceForUrl("https://langchain-ai.github.io/langgraph/x.md")?.name).toBe("lg");
   });
 
+  it("prefers the most specific base when several sources cover a url", () => {
+    addSourceEntry("docs-root", "https://docs.example.com/llms.txt");
+    addSourceEntry("docs-guide", "https://docs.example.com/guide/llms.txt");
+    expect(findSourceForUrl("https://docs.example.com/guide/intro.md")?.name).toBe("docs-guide");
+    expect(findSourceForUrl("https://docs.example.com/other.md")?.name).toBe("docs-root");
+  });
+
   it("adds and removes a source at runtime", () => {
     const added = addSourceEntry("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt");
     expect(added.base).toBe("https://langchain-ai.github.io/langgraph/");
