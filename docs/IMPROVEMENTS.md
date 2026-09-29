@@ -351,6 +351,15 @@ Issue: #13
 
 Issue: #14
 
+Status: fixed on `fix/fetch-doc-index-failure`. When the source whose
+directory covers the URL fails to index, `fetch_doc` logs a warning and
+fetches the page anyway, since the prefix alone authorizes it; a failed
+page fetch returns `"failed to fetch document"`. The `fetch_doc` handler
+also catches unexpected errors and returns a JSON error with the message,
+like the other tools. Live: with the source's llms.txt returning 404, a
+Strands page fetches (6,189 chars). The failing llms.txt is still
+re-requested on every call; that is 9.7 (#12).
+
 - `fetch_doc` for a URL under a source whose llms.txt fails returns
   `{"content":[{"type":"text","text":""}],"isError":true}`: `fetchDoc`
   awaits `ensureSourceIndexed` (`src/tools/docs.ts:138`) without a catch,
