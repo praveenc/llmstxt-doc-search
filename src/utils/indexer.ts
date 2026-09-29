@@ -2,10 +2,8 @@
  * BM25 search index with Porter stemming and bigram support.
  */
 
-import natural from "natural";
+import { PorterStemmer } from "./porter-stemmer.js";
 import { STOP_WORDS, PRESERVE_TERMS } from "./stopwords.js";
-
-const { PorterStemmer } = natural;
 
 /** Tokenization patterns */
 const TOKEN_RE = /[A-Za-z0-9_]+(?:-[A-Za-z0-9_]+)*/g;
