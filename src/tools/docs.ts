@@ -37,6 +37,8 @@ function sourceSummary(s: Source) {
     indexed: !!st?.indexed,
     docCount: st?.docCount,
     lastIndexed: st?.lastIndexed,
+    lastError: st?.lastError,
+    lastFailedAt: st?.failedAt !== undefined ? new Date(st.failedAt).toISOString() : undefined,
   };
 }
 
@@ -102,6 +104,8 @@ export async function searchDocs(
     try {
       st = await ensureSourceIndexed(src);
     } catch (e) {
+      // A named source that cannot be indexed is an error, not an empty result.
+      if (source) throw e;
       logger.warn(`skip source '${src.name}' (index failed)`, e);
       continue;
     }
