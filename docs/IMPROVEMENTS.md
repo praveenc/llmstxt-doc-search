@@ -96,7 +96,9 @@ Status: fixed in #3 (issue #2).
 
 - The same pattern (depth-mismatched `$HOME` symlink) is starting to inflate
   other npx caches on the same machine (e.g. `@playwright/mcp`, 505 KB).
-- The server has not been migrated to the latest MCP specification revision.
+- The server has not been migrated to the latest MCP specification revision
+  (2026-07-28). Status: planned; see
+  [mcp-spec-migration-0728.md](mcp-spec-migration-0728.md).
 
 ## 8. Benchmark: v0.1.0 (npm) vs main after #1, #3, #5
 
@@ -235,8 +237,9 @@ Status: fixed on `fix/dedupe-snippets-empty-source`. Links are deduped by
 URL at parse time (first title is the display title; later distinct titles
 are added to the index title so they stay searchable), merged results keep
 one hit per URL, and `add_doc_source` rejects an `llms.txt` that is already
-registered. Live: Strands 893, MCP 349, Kiro 250 docs; "example servers"
-and "hooks" return distinct URLs.
+registered. Because only the first title is stored per URL, `fetch_doc` and
+search now report the same title for a duplicated URL. Live: Strands 893,
+MCP 349, Kiro 250 docs; "example servers" and "hooks" return distinct URLs.
 
 - Repeated URLs inside one llms.txt are each indexed as a separate doc:
   Strands 895 links / 893 unique, MCP 354 / 349, Kiro 259 / 250.
