@@ -115,13 +115,13 @@ function getTitleBoost(doc: Doc): number {
 }
 
 /**
- * Count occurrences of a token in text (case-insensitive).
+ * Count non-overlapping occurrences of a token in text.
+ * Both `text` and `token` are expected to already be lowercased by the caller.
  */
 function countOccurrences(text: string, token: string): number {
-  const lower = text.toLowerCase();
   let count = 0;
   let pos = 0;
-  while ((pos = lower.indexOf(token, pos)) !== -1) {
+  while ((pos = text.indexOf(token, pos)) !== -1) {
     count++;
     pos += token.length;
   }
@@ -142,6 +142,21 @@ function extractMatches(text: string, regex: RegExp): string {
 }
 
 /**
+ * Precomputed, lowercased scoring fields for one document. Built once per doc
+ * at add() time and read by scoring, so BM25 never re-lowercases or re-runs the
+ * Markdown regex extraction per (query token x candidate doc). Kept off the
+ * public Doc in a private parallel array.
+ */
+interface DocScoreFields {
+  contentLower: string;
+  titleLower: string;
+  headersLower: string;
+  codeLower: string;
+  linkLower: string;
+  titleBoost: number;
+}
+
+/**
  * BM25 inverted index with Markdown awareness.
  */
 export class IndexSearch {
@@ -149,6 +164,8 @@ export class IndexSearch {
   private docFrequency: Map<string, number> = new Map();
   private docIndices: Map<string, number[]> = new Map();
   private docLengths: number[] = [];
+  private scoreFields: DocScoreFields[] = [];
+  private totalDocLength: number = 0;
   private avgDocLength: number = 0;
 
   /**
@@ -159,27 +176,34 @@ export class IndexSearch {
     this.docs.push(doc);
 
     const seen = new Set<string>();
-    const docTokens: string[] = [];
 
-    // Extract content parts
-    const content = doc.content.toLowerCase();
-    const titleText = doc.indexTitle.toLowerCase();
+    // Precompute lowercased fields + Markdown extracts once. Scoring reads these
+    // instead of recomputing them per (query token x candidate doc) per query.
+    // store.ts always passes content: "", so header/code/link weighting is dead
+    // in production; skip the regex extraction entirely when content is empty
+    // (extractMatches over "" yields "", so the result is unchanged).
+    const titleLower = doc.indexTitle.toLowerCase();
+    const hasContent = doc.content.length > 0;
+    const contentLower = hasContent ? doc.content.toLowerCase() : "";
+    const headersLower = hasContent ? extractMatches(doc.content, MD_HEADER_RE).toLowerCase() : "";
+    const codeLower = hasContent ? extractMatches(doc.content, MD_CODE_BLOCK_RE).toLowerCase() : "";
+    const inlineLower = hasContent ? extractMatches(doc.content, MD_INLINE_CODE_RE).toLowerCase() : "";
+    const linkLower = hasContent ? extractMatches(doc.content, MD_LINK_TEXT_RE).toLowerCase() : "";
 
-    // Extract headers, code, links
-    const headers = extractMatches(doc.content, MD_HEADER_RE);
-    const codeBlocks = extractMatches(doc.content, MD_CODE_BLOCK_RE);
-    const inlineCode = extractMatches(doc.content, MD_INLINE_CODE_RE);
-    const linkText = extractMatches(doc.content, MD_LINK_TEXT_RE);
+    this.scoreFields.push({
+      contentLower,
+      titleLower,
+      headersLower,
+      codeLower,
+      linkLower,
+      titleBoost: getTitleBoost(doc),
+    });
 
-    // Build weighted haystack
-    const haystack = [
-      titleText,
-      headers.toLowerCase(),
-      linkText.toLowerCase(),
-      codeBlocks.toLowerCase(),
-      inlineCode.toLowerCase(),
-      content,
-    ].filter(Boolean).join(" ");
+    // Build weighted haystack (same field order as before, so tokenization,
+    // bigrams, doc frequencies, and doc lengths are all identical).
+    const haystack = [titleLower, headersLower, linkLower, codeLower, inlineLower, contentLower]
+      .filter(Boolean)
+      .join(" ");
 
     // Tokenize and generate bigrams
     const unigrams = tokenize(haystack);
@@ -195,15 +219,13 @@ export class IndexSearch {
         this.docFrequency.set(tok, (this.docFrequency.get(tok) || 0) + 1);
         seen.add(tok);
       }
-      docTokens.push(tok);
     }
 
-    // Store document length
-    this.docLengths.push(docTokens.length);
-
-    // Update average document length
-    const totalLength = this.docLengths.reduce((a, b) => a + b, 0);
-    this.avgDocLength = totalLength / this.docLengths.length;
+    // Store document length and maintain a running total, so the average is
+    // O(1) per add instead of a full reduce (previously O(n^2) build).
+    this.docLengths.push(allTokens.length);
+    this.totalDocLength += allTokens.length;
+    this.avgDocLength = this.totalDocLength / this.docLengths.length;
 
     return this;
   }
@@ -224,8 +246,7 @@ export class IndexSearch {
     for (const qt of qTokens) {
       const indices = this.docIndices.get(qt) || [];
       for (const idx of indices) {
-        const doc = this.docs[idx];
-        const score = this.calculateBM25Score(doc, qt, idx);
+        const score = this.calculateBM25Score(qt, idx);
         scores.set(idx, (scores.get(idx) || 0) + score);
       }
     }
@@ -239,32 +260,29 @@ export class IndexSearch {
   }
 
   /**
-   * Calculate BM25 score for a token in a document.
+   * Calculate BM25 score for a token in a document, reading the precomputed
+   * lowercased fields rather than recomputing them on every call.
    */
-  private calculateBM25Score(doc: Doc, token: string, docIdx: number): number {
-    const contentLower = doc.content.toLowerCase();
-    const titleLower = doc.indexTitle.toLowerCase();
+  private calculateBM25Score(token: string, docIdx: number): number {
+    const fields = this.scoreFields[docIdx];
 
-    // Term frequencies
-    const contentTf = countOccurrences(contentLower, token);
-    const titleTf = countOccurrences(titleLower, token);
+    // Term frequencies (fields are already lowercased)
+    const contentTf = countOccurrences(fields.contentLower, token);
+    const titleTf = countOccurrences(fields.titleLower, token);
 
     // Header matches (4x weight)
-    const headers = extractMatches(doc.content, MD_HEADER_RE);
-    const headerTf = countOccurrences(headers.toLowerCase(), token);
+    const headerTf = countOccurrences(fields.headersLower, token);
 
     // Code matches (2x weight)
-    const codeBlocks = extractMatches(doc.content, MD_CODE_BLOCK_RE);
-    const codeTf = countOccurrences(codeBlocks.toLowerCase(), token);
+    const codeTf = countOccurrences(fields.codeLower, token);
 
     // Link text matches (2x weight)
-    const linkText = extractMatches(doc.content, MD_LINK_TEXT_RE);
-    const linkTf = countOccurrences(linkText.toLowerCase(), token);
+    const linkTf = countOccurrences(fields.linkLower, token);
 
     // Combined weighted TF
     const weightedTf =
       contentTf +
-      titleTf * getTitleBoost(doc) +
+      titleTf * fields.titleBoost +
       headerTf * 4 +
       codeTf * 2 +
       linkTf * 2;
