@@ -330,7 +330,7 @@ Issue: #11
 
 Issue: #12
 
-Status: fixed on `fix/failing-source-backoff`. A failed index attempt is
+Status: fixed in #26. A failed index attempt is
 remembered with its reason; for the next 5 minutes
 (`INDEX_RETRY_BACKOFF_MS`) the source fails fast without re-fetching its
 llms.txt, and `refresh_doc_source` retries at once. `list_doc_sources`
@@ -349,7 +349,7 @@ source: warm unscoped search 10-13 ms before, 1 ms after.
 
 Issue: #13
 
-Status: fixed on `fix/failing-source-backoff`. `search_docs` with a
+Status: fixed in #26. `search_docs` with a
 `source` that fails to index returns `isError` with the reason (e.g.
 `source 'broken' failed to index: HTTP 404`); unscoped search still skips
 failing sources.
