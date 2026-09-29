@@ -200,7 +200,7 @@ is tracked as a GitHub issue (#6-#20).
 
 Issue: #6
 
-Status: fixed on `fix/dedupe-snippets-empty-source`. `parseLlmsTxt` throws
+Status: fixed in #22. `parseLlmsTxt` throws
 when a file yields no links (naming an HTML response), so `add_doc_source`
 rolls the source back and reports the reason.
 
@@ -233,7 +233,7 @@ Issue: #7
 
 Issue: #8
 
-Status: fixed on `fix/dedupe-snippets-empty-source`. Links are deduped by
+Status: fixed in #22. Links are deduped by
 URL at parse time (first title is the display title; later distinct titles
 are added to the index title so they stay searchable), merged results keep
 one hit per URL, and `add_doc_source` rejects an `llms.txt` that is already
@@ -278,7 +278,7 @@ Issue: #9
 
 Issue: #10
 
-Status: fixed on `fix/dedupe-snippets-empty-source`. `makeSnippet` strips
+Status: fixed in #22. `makeSnippet` strips
 leading frontmatter and empty `<a name|id>` anchors, and skips blockquotes,
 `:::` containers, tag-only lines and horizontal rules; list items must be
 followed by a space. Live snippets for MCP, Vite+ and Bedrock now show the
