@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterAll, vi } from "vitest";
 import {
   deriveBase,
   findSourceForUrl,
@@ -9,13 +9,23 @@ import {
 } from "../src/utils/registry.js";
 import { assertPublicHttpUrl, isPublicAddress, URLValidationError } from "../src/utils/url-validator.js";
 import { IndexSearch, tokenize } from "../src/utils/indexer.js";
-import { existsSync, rmSync } from "node:fs";
+import { rmSync } from "node:fs";
 
-const TMP = process.env.LLMSTXT_REGISTRY_PATH || "/tmp/llmstxt-test-sources.json";
+// Per-file registry, set before config.ts reads it, so parallel test files
+// never share (and race on deleting) one registry file.
+const TMP = vi.hoisted(() => {
+  const path = `/tmp/llmstxt-test-server-${process.pid}.json`;
+  process.env.LLMSTXT_REGISTRY_PATH = path;
+  return path;
+});
 
 beforeEach(() => {
-  if (existsSync(TMP)) rmSync(TMP);
+  rmSync(TMP, { force: true });
   _resetRegistryCache();
+});
+
+afterAll(() => {
+  rmSync(TMP, { force: true });
 });
 
 describe("deriveBase", () => {
