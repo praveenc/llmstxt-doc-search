@@ -139,6 +139,8 @@ alternating runs per version; in-process index numbers from 3+ runs.
   Strands queries; main no longer does.
 - Scores are on a different scale from v0.1.0 (a single-term title match is
   roughly half); clients relying on absolute scores will see new numbers.
+  Since 9.6 (#11) was fixed, `search_docs` reports a 0-1 relevance instead
+  of raw BM25.
 
 ### Per-source results (medians)
 
@@ -315,6 +317,19 @@ first paragraph of the page.
 ### 9.6 Scores from different sources are merged as if comparable (Medium)
 
 Issue: #11
+
+Status: fixed on `fix/unscoped-score-merge`. Each hit now carries a
+`relevance`: its BM25 score divided by the highest score the query could
+reach in that source (the sum of `idf * (K1 + 1)` over the query's terms
+and bigrams). Unscoped search merges on it, and `search_docs` reports it
+as `score` (0-1). Ranking within one source is unchanged. Live, default
+sources: `search_docs("sampling", k: 6)` now returns the six MCP
+"Sampling" pages (before: AWS "Sample code" pages via the `sampl` stem),
+and "hooks" puts Kiro's Hooks page first. Over 16 mixed queries (top 10
+each), Strands and the Bedrock user guide went from 82 to 57 of 155
+slots, and every source gained or held except those two. Remaining
+limitation: several versioned pages with the same title (e.g. MCP spec
+revisions) can fill the top results.
 
 - The response hint says "Scores are within-source", but unscoped search
   sorts all sources by raw BM25 score (`src/tools/docs.ts:94`). IDF depends
