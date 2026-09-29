@@ -416,6 +416,14 @@ Live: `skip source 'gone' (index failed) [{}]` now reads
 
 Issue: #16
 
+Status: fixed on `fix/agent-plural-stemming`. `agent` and `agents` are
+no longer in `PRESERVE_TERMS`, so the Porter stemmer maps both (and
+`agentic`, as before) to `agent`; `AgentCore` stays whole. Live on herdr:
+`search_docs("agent")` now returns "Agents" first, and "agents" also
+returns the "Agent automation" and "Agent guide" pages. The tokenize and
+search parity fixtures were refreshed: 7 of 203 tokenize strings
+(`agents` -> `agent`) and 5 of 40 search queries changed.
+
 - Both are in `PRESERVE_TERMS` (`src/utils/stopwords.ts:37`), so neither is
   stemmed. On herdr, `search_docs("agents")` finds the "Agents" page and
   `search_docs("agent")` does not.
