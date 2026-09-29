@@ -75,7 +75,10 @@ export function getSource(name: string): Source | undefined {
   return loadRegistry().find((s) => s.name === name);
 }
 
-/** Find the registered source whose base prefix authorizes a doc URL. */
+/**
+ * Find the registered source whose base prefix authorizes a doc URL. When
+ * several bases cover it, the most specific (longest) one wins.
+ */
 export function findSourceForUrl(url: string): Source | undefined {
   let target: URL;
   try {
@@ -83,23 +86,24 @@ export function findSourceForUrl(url: string): Source | undefined {
   } catch {
     return undefined;
   }
-  return loadRegistry().find((s) => {
+  let best: { src: Source; len: number } | undefined;
+  for (const s of loadRegistry()) {
     let baseUrl: URL;
     try {
       baseUrl = new URL(s.base);
     } catch {
-      return false;
+      continue;
     }
     // Same origin, and the doc path is at or under the source's base path.
     // Compare on a path boundary so `/foo` does not authorize `/foobar`.
-    if (target.protocol !== baseUrl.protocol || target.host !== baseUrl.host) {
-      return false;
-    }
+    if (target.protocol !== baseUrl.protocol || target.host !== baseUrl.host) continue;
     const basePath = baseUrl.pathname.endsWith("/")
       ? baseUrl.pathname
       : baseUrl.pathname + "/";
-    return target.pathname === baseUrl.pathname || target.pathname.startsWith(basePath);
-  });
+    const covers = target.pathname === baseUrl.pathname || target.pathname.startsWith(basePath);
+    if (covers && (!best || basePath.length > best.len)) best = { src: s, len: basePath.length };
+  }
+  return best?.src;
 }
 
 function sameLlmsTxtUrl(a: string, b: string): boolean {
