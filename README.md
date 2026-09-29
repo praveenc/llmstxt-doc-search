@@ -85,7 +85,7 @@ add_doc_source("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt")
 | `docs_home()` | Orientation: registered sources plus how to search and fetch. Call this first. |
 | `list_doc_sources()` | List sources with their `llms.txt` URL and index status. |
 | `search_docs(query, source?, k?)` | BM25 search. Omit `source` to search all, or scope to one. Returns ranked `{source, url, title, score, snippet}`. `k` defaults to 5 (max 50). |
-| `fetch_doc(url)` | Fetch the full content of a result URL. The URL must belong to a registered source. |
+| `fetch_doc(url)` | Fetch the full content of a result URL. The URL must be listed in, or under the `llms.txt` directory of, a registered source. |
 | `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. |
 | `remove_doc_source(name)` | Remove a registered source. |
 | `refresh_doc_source(name)` | Re-index a source to pick up new or changed docs. |
@@ -207,7 +207,7 @@ Ranking uses BM25 (Best Matching 25) with several enhancements:
 
 This server fetches user-supplied URLs at runtime, so its SSRF surface is guarded in depth:
 
-- **Scoped fetches.** `fetch_doc` only retrieves URLs under a registered source's origin and path prefix, matched on a path boundary rather than a raw string prefix. There is no arbitrary fetch.
+- **Scoped fetches.** `fetch_doc` only retrieves URLs that a registered source's `llms.txt` lists exactly, or that sit under that source's origin and path prefix (matched on a path boundary rather than a raw string prefix). There is no arbitrary fetch.
 - **Scheme allow-list.** Non-`http(s)` schemes are rejected.
 - **Range-based address blocking.** Private and reserved destinations are blocked using IP range classification (`ipaddr.js`), covering decimal, octal, and hex IPv4, IPv4-mapped IPv6, loopback, link-local, unique-local, carrier-grade NAT, and other reserved ranges - not just a hostname regex.
 - **Connection-time validation.** The resolved IP is checked at connection time via a custom DNS lookup, closing DNS-rebinding, and every redirect hop is re-validated.

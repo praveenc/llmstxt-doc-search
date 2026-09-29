@@ -219,6 +219,12 @@ rolls the source back and reports the reason.
 
 Issue: #7
 
+Status: fixed on `fix/cross-host-doc-links`. `fetch_doc` also authorizes
+any URL a registered source's llms.txt lists exactly, on any host; the
+prefix rule still covers everything else. Unlisted URLs on other hosts are
+still rejected. Live: `raw.githubusercontent.com` results from
+`herdr.dev/llms.txt` now fetch.
+
 - 22 of 26 links in `https://herdr.dev/llms.txt` point to
   `raw.githubusercontent.com`. They show up in `search_docs`, and the server
   even fetches them to build snippets, but `fetch_doc` rejects them with
@@ -262,6 +268,12 @@ MCP 349, Kiro 250 docs; "example servers" and "hooks" return distinct URLs.
 ### 9.4 `fetch_doc` resolves to the first matching source, not the one searched (Low-Medium)
 
 Issue: #9
+
+Status: fixed on `fix/cross-host-doc-links`. `fetch_doc` first uses an
+indexed source whose llms.txt lists the URL, preferring one that already has
+the page cached, so a page fetched for a snippet is reused rather than
+fetched again. Otherwise the longest matching base wins. A source is indexed
+only when no indexed source lists the URL.
 
 - With `b-bedrock` registered on the same llms.txt as the default
   `aws-bedrock-userguide`, `fetch_doc` of a Bedrock URL reports
