@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { looksLikeHtml } from "../src/utils/doc-fetcher.js";
+import { cleanMarkdown, htmlToText, looksLikeHtml } from "../src/utils/doc-fetcher.js";
 
 describe("looksLikeHtml", () => {
   it("detects an HTML document", () => {
@@ -32,5 +32,79 @@ describe("looksLikeHtml", () => {
   it("returns false for plain markdown with no html markers", () => {
     const md = "# Title\n\nSome **markdown** text with a [link](https://example.com) and `code`.";
     expect(looksLikeHtml(md)).toBe(false);
+  });
+});
+
+describe("htmlToText", () => {
+  const page = (body: string) =>
+    `<!doctype html><html><head><title>T</title><style>.x{}</style></head><body>${body}</body></html>`;
+
+  it("keeps only <main> content when the page has one", () => {
+    const html = page(
+      `<header><a href="/">Site</a> Docs Blog</header>` +
+        `<nav>Sidebar link</nav>` +
+        `<main><header><h1>Page heading</h1></header><p>Body text.</p>` +
+        `<aside>On this page</aside><footer>Prev Next</footer></main>` +
+        `<footer>Copyright</footer>`,
+    );
+    const text = htmlToText(html);
+    expect(text).toContain("Page heading");
+    expect(text).toContain("Body text.");
+    for (const chrome of ["Site", "Sidebar link", "On this page", "Prev Next", "Copyright"]) {
+      expect(text).not.toContain(chrome);
+    }
+  });
+
+  it("strips nav, aside, footer and header when there is no <main>", () => {
+    const html = page(
+      `<header>Top bar</header><nav>Menu</nav><div><p>Content</p></div><footer>Foot</footer>`,
+    );
+    expect(htmlToText(html)).toBe("Content");
+  });
+
+  it("removes nested chrome elements completely", () => {
+    const html = page(`<nav>Outer <nav>Inner</nav> tail</nav><p>Kept</p>`);
+    expect(htmlToText(html)).toBe("Kept");
+  });
+
+  it("falls back to the whole page when <main> has no text", () => {
+    const html = page(`<main></main><div>Real content</div><nav>Menu</nav>`);
+    expect(htmlToText(html)).toBe("Real content");
+  });
+
+  it("does not treat <head>, <mainframe> or custom elements as chrome", () => {
+    const html = page(`<nav-card>Card text</nav-card><p>Para</p>`);
+    const text = htmlToText(html);
+    expect(text).toContain("Card text");
+    expect(text).toContain("Para");
+  });
+
+  it("drops <head> text such as the <title>", () => {
+    expect(htmlToText(page(`<header>Bar</header><p>Only</p>`))).toBe("Only");
+  });
+
+  it("collapses runs of spaces within a line", () => {
+    const html = page(`<p>a    b&nbsp;&nbsp; c</p>\n<p>  d  </p>`);
+    expect(htmlToText(html)).toBe("a b c\nd");
+  });
+
+  it("stays fast on unclosed chrome tags", () => {
+    const html = page("<nav>x ".repeat(200_000) + "<p>end</p>");
+    const start = performance.now();
+    const text = htmlToText(html);
+    expect(performance.now() - start).toBeLessThan(2000);
+    expect(text).toContain("end");
+  });
+});
+
+describe("cleanMarkdown", () => {
+  it("removes empty name/id anchors and keeps real links", () => {
+    const md =
+      '<a name="overview"></a>\n## Overview\n' +
+      "Text <a id='x'> </a>here.\n" +
+      '<a href="https://example.com">link</a> and <a name="kept">label</a>';
+    expect(cleanMarkdown(md)).toBe(
+      '\n## Overview\nText here.\n<a href="https://example.com">link</a> and <a name="kept">label</a>',
+    );
   });
 });
