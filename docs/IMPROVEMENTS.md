@@ -455,7 +455,7 @@ served from the cache (1 ms each, before 13-14 ms re-fetches).
 
 Issue: #18
 
-Status: fixed on `fix/md-extension-term`. `titleFromUrl` drops a
+Status: fixed in #30. `titleFromUrl` drops a
 trailing `.md`, `.mdx`, `.markdown`, `.html`, `.htm` or `.txt` from the
 slug, so the extension no longer becomes a title word or search term;
 other dots are kept (`strands.event_loop.md` -> "Strands.event Loop").
