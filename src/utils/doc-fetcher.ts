@@ -6,6 +6,7 @@ import { request as httpsRequest } from "node:https";
 import { request as httpRequest } from "node:http";
 import type { IncomingMessage } from "node:http";
 import { assertPublicHttpUrl, assertPublicAddress } from "./url-validator.js";
+import { stripFragment } from "./text-processor.js";
 
 const MD_LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const HTML_BLOCK_RE = /<(script|style|noscript)[^>]*>[\s\S]*?<\/\1>/gi;
@@ -153,7 +154,7 @@ export function extractLlmsTxtLinks(txt: string, base: string): LlmsTxtLink[] {
     if (!href) continue;
     let abs: string;
     try {
-      abs = new URL(href, base).toString();
+      abs = stripFragment(new URL(href, base).toString());
     } catch {
       continue;
     }
@@ -230,14 +231,14 @@ export function looksLikeHtml(raw: string): boolean {
  * Caller is responsible for authorizing the URL against the registry.
  */
 export async function fetchAndClean(pageUrl: string): Promise<Page> {
-  const url = assertPublicHttpUrl(pageUrl);
+  const url = assertPublicHttpUrl(stripFragment(pageUrl));
   const raw = await fetchUrl(url);
+  const fileName = new URL(url).pathname.split("/").pop() || url;
   if (looksLikeHtml(raw)) {
     const extractedTitle = extractHtmlTitle(raw);
     const content = htmlToText(raw);
-    const title = extractedTitle || url.split("/").pop() || url;
+    const title = extractedTitle || fileName;
     return { url, title, content };
   }
-  const title = url.split("/").pop() || url;
-  return { url, title, content: raw };
+  return { url, title: fileName, content: raw };
 }

@@ -434,6 +434,15 @@ search parity fixtures were refreshed: 7 of 203 tokenize strings
 
 Issue: #17
 
+Status: fixed in #29. The `#fragment` is dropped before a
+URL is used as a lookup, cache or fetch key: in `fetch_doc`, in
+`fetchAndClean`, and when parsing llms.txt (anchors into one page become
+one entry; their titles stay searchable). URL-derived titles also ignore
+the fragment and query string. Live on Bedrock: `fetch_doc` of
+`prompt-caching.md#supported-models` now returns the title "Prompt
+caching" and the page URL, and two more fetches with other fragments are
+served from the cache (1 ms each, before 13-14 ms re-fetches).
+
 - `fetch_doc(".../prompt-caching.md#supported-models")` returns the title
   `prompt-caching.md#supported-models` and fetches the page again for every
   distinct fragment.

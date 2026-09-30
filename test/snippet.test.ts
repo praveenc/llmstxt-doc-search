@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { makeSnippet } from "../src/utils/text-processor.js";
+import { makeSnippet, stripFragment, titleFromUrl, formatDisplayTitle } from "../src/utils/text-processor.js";
 
 describe("makeSnippet", () => {
   it("skips a leading documentation-index blockquote banner (Mintlify)", () => {
@@ -78,5 +78,26 @@ describe("makeSnippet", () => {
   it("falls back to the title when nothing is prose", () => {
     expect(makeSnippet("> only a quote\n- only a list", "Fallback")).toBe("Fallback");
     expect(makeSnippet(null, "Fallback")).toBe("Fallback");
+  });
+});
+
+describe("URLs with #fragments (issue #17)", () => {
+  it("stripFragment drops the fragment and keeps the rest", () => {
+    expect(stripFragment("https://docs.example.com/a.md#supported-models")).toBe("https://docs.example.com/a.md");
+    expect(stripFragment("https://docs.example.com/a.md?v=2#x")).toBe("https://docs.example.com/a.md?v=2");
+    expect(stripFragment("https://docs.example.com/a.md#")).toBe("https://docs.example.com/a.md");
+    expect(stripFragment("https://docs.example.com/a.md")).toBe("https://docs.example.com/a.md");
+  });
+
+  it("titleFromUrl ignores the fragment and query string", () => {
+    expect(titleFromUrl("https://docs.example.com/prompt-caching#supported-models")).toBe("Prompt Caching");
+    expect(titleFromUrl("https://docs.example.com/prompt-caching?lang=en")).toBe("Prompt Caching");
+  });
+
+  it("formatDisplayTitle uses the curated title when the page was reached via a fragment", () => {
+    const titles = new Map([["https://docs.example.com/prompt-caching.md", "Prompt caching"]]);
+    expect(
+      formatDisplayTitle(stripFragment("https://docs.example.com/prompt-caching.md#supported-models"), "prompt-caching.md", titles)
+    ).toBe("Prompt caching");
   });
 });

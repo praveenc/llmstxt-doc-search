@@ -36,6 +36,18 @@ describe("extractLlmsTxtLinks", () => {
     expect(links).toEqual([["Doc", "https://docs.example.com/a.md"]]);
   });
 
+  it("strips #fragments, so anchors into one page become one entry", () => {
+    const txt = [
+      "- [Prompt caching](/prompt-caching.md#overview)",
+      "- [Supported models](/prompt-caching.md#supported-models)",
+      "- [Hooks](/hooks.md)",
+    ].join("\n");
+    expect(extractLlmsTxtLinks(txt, BASE)).toEqual([
+      ["Prompt caching", "https://docs.example.com/prompt-caching.md", ["Supported models"]],
+      ["Hooks", "https://docs.example.com/hooks.md"],
+    ]);
+  });
+
   it("throws when an HTML page yields no links, and says so", () => {
     const html = "<!doctype html>\n<html><head><title>Landing</title></head><body>Hi</body></html>";
     expect(() => extractLlmsTxtLinks(html, BASE)).toThrow(/no markdown links.*HTML page/);
