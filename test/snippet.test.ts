@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { makeSnippet, stripFragment, titleFromUrl, formatDisplayTitle } from "../src/utils/text-processor.js";
+import {
+  makeSnippet,
+  stripFragment,
+  titleFromUrl,
+  formatDisplayTitle,
+  indexTitleVariants,
+} from "../src/utils/text-processor.js";
+import { tokenize } from "../src/utils/indexer.js";
 
 describe("makeSnippet", () => {
   it("skips a leading documentation-index blockquote banner (Mintlify)", () => {
@@ -99,5 +106,33 @@ describe("URLs with #fragments (issue #17)", () => {
     expect(
       formatDisplayTitle(stripFragment("https://docs.example.com/prompt-caching.md#supported-models"), "prompt-caching.md", titles)
     ).toBe("Prompt caching");
+  });
+});
+
+describe("file extensions in URL-derived titles (issue #18)", () => {
+  it("titleFromUrl drops a document extension from the slug", () => {
+    expect(titleFromUrl("https://viteplus.dev/guide/global-cli.md")).toBe("Global Cli");
+    expect(titleFromUrl("https://docs.example.com/guide/intro.mdx")).toBe("Intro");
+    expect(titleFromUrl("https://docs.example.com/guide/intro.HTML")).toBe("Intro");
+    expect(titleFromUrl("https://docs.example.com/guide/intro.htm")).toBe("Intro");
+    expect(titleFromUrl("https://docs.example.com/guide/intro.md#setup")).toBe("Intro");
+  });
+
+  it("keeps dots that are not a document extension", () => {
+    expect(titleFromUrl("https://strandsagents.com/api/strands.event_loop.md")).toBe("Strands.event Loop");
+    expect(titleFromUrl("https://docs.example.com/v1.2/notes")).toBe("Notes");
+  });
+
+  it("index titles no longer carry an md token", () => {
+    const variants = indexTitleVariants("Global CLI", "https://viteplus.dev/guide/global-cli.md");
+    expect(variants).toBe("Global CLI");
+    expect(tokenize(variants)).not.toContain("md");
+  });
+
+  it("formatDisplayTitle treats a bare file name as no title", () => {
+    const none = new Map<string, string>();
+    expect(formatDisplayTitle("https://docs.example.com/guide/intro.md", "intro.md", none)).toBe("Intro");
+    expect(formatDisplayTitle("https://docs.example.com/guide/intro.html", "intro.html", none)).toBe("Intro");
+    expect(formatDisplayTitle("https://docs.example.com/readme", "Editing README.md", none)).toBe("Editing README.md");
   });
 });
