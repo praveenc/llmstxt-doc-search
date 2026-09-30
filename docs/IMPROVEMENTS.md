@@ -465,7 +465,7 @@ Issue: #18
 
 Issue: #19
 
-Status: fixed on `fix/unlisted-url-cache-keys`. When a page is evicted
+Status: fixed in #31. When a page is evicted
 or its fetch fails, a URL the llms.txt lists goes back to its `null`
 placeholder, and any other URL is removed from `urlCache`. Keys are now
 bounded by the listed URLs plus `LLMSTXT_PAGE_CACHE_MAX`. Live on
