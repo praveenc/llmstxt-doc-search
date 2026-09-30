@@ -15,6 +15,8 @@ import {
   pageStateFor,
   dropSourceState,
   getSourceState,
+  errorReason,
+  SourceIndexError,
   SourceState,
 } from "../utils/store.js";
 import { makeSnippet } from "../utils/text-processor.js";
@@ -233,10 +235,12 @@ export async function addDocSource(name: string, url: string) {
     const st = await ensureSourceIndexed(src);
     return { added: sourceSummary(src), docCount: st.docCount };
   } catch (e) {
-    // roll back the registry entry if it cannot be indexed
+    // Roll back the registry entry if it cannot be indexed. The source no
+    // longer exists, so the index error's refresh_doc_source hint is dropped.
     removeSourceEntry(name);
     dropSourceState(name);
-    throw new Error(`source '${name}' added but failed to index (rolled back): ${String(e)}`);
+    const reason = e instanceof SourceIndexError ? e.reason : errorReason(e);
+    throw new Error(`source '${name}' was not added: its llms.txt failed to index: ${reason}`, { cause: e });
   }
 }
 

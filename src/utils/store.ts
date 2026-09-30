@@ -51,7 +51,11 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
   const existing = states.get(src.name);
   if (existing && existing.indexed) return existing;
   if (existing?.failedAt !== undefined && Date.now() - existing.failedAt < INDEX_RETRY_BACKOFF_MS) {
-    throw indexFailure(src.name, existing.lastError, existing.failedAt + INDEX_RETRY_BACKOFF_MS - Date.now());
+    throw new SourceIndexError(
+      src.name,
+      existing.lastError ?? "unknown error",
+      existing.failedAt + INDEX_RETRY_BACKOFF_MS - Date.now()
+    );
   }
 
   const st = fresh();
@@ -61,9 +65,9 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
   try {
     links = await parseLlmsTxt(src.url);
   } catch (e) {
-    st.lastError = describeError(e);
+    st.lastError = errorReason(e);
     st.failedAt = Date.now();
-    throw indexFailure(src.name, st.lastError, INDEX_RETRY_BACKOFF_MS, e);
+    throw new SourceIndexError(src.name, st.lastError, INDEX_RETRY_BACKOFF_MS, e);
   }
   for (const [title, url, otherTitles] of links) {
     st.urlTitles.set(url, title);
@@ -87,17 +91,28 @@ export function getSourceState(name: string): SourceState | undefined {
 }
 
 /** A readable reason for a failure, even when the error's message is empty. */
-function describeError(e: unknown): string {
+export function errorReason(e: unknown): string {
   if (e instanceof Error) return e.message || e.name || "unknown error";
   return String(e) || "unknown error";
 }
 
-function indexFailure(name: string, reason: string | undefined, retryInMs: number, cause?: unknown): Error {
-  const retryIn = Math.ceil(retryInMs / 1000);
-  return new Error(
-    `source '${name}' failed to index: ${reason} (retry in ${retryIn}s, or call refresh_doc_source)`,
-    { cause }
-  );
+/**
+ * A source's llms.txt could not be indexed. `reason` is the underlying cause
+ * without the retry hint.
+ */
+export class SourceIndexError extends Error {
+  constructor(
+    readonly source: string,
+    readonly reason: string,
+    retryInMs: number,
+    cause?: unknown
+  ) {
+    const retryIn = Math.ceil(retryInMs / 1000);
+    super(`source '${source}' failed to index: ${reason} (retry in ${retryIn}s, or call refresh_doc_source)`, {
+      cause,
+    });
+    this.name = "SourceIndexError";
+  }
 }
 
 /**

@@ -80,9 +80,29 @@ describe("addDocSource", () => {
       new Error("no markdown links found in https://docs.example.com/llms.txt")
     );
     await expect(addDocSource("empty", "https://docs.example.com/llms.txt")).rejects.toThrow(
-      /failed to index \(rolled back\).*no markdown links/
+      "source 'empty' was not added: its llms.txt failed to index: no markdown links found in https://docs.example.com/llms.txt"
     );
     expect(getSource("empty")).toBeUndefined();
+  });
+
+  it("does not suggest refresh_doc_source for a source it rolled back (issue #36)", async () => {
+    dropSourceState("gone");
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    const err = await addDocSource("gone", "https://docs.example.com/llms.txt").catch((e: Error) => e);
+    expect(err).toBeInstanceOf(Error);
+    expect((err as Error).message).not.toMatch(/refresh_doc_source|retry in/);
+    expect((err as Error).message).toMatch(/HTTP 404$/);
+    await expect(refreshDocSource("gone")).rejects.toThrow(/unknown source 'gone'/);
+  });
+
+  it("lets the same name be added again right after a rollback", async () => {
+    dropSourceState("again");
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 503"));
+    await expect(addDocSource("again", "https://docs.example.com/llms.txt")).rejects.toThrow(/HTTP 503/);
+
+    mocks.parseLlmsTxt.mockResolvedValueOnce([["A", "https://docs.example.com/a.md"]]);
+    const res = await addDocSource("again", "https://docs.example.com/llms.txt");
+    expect(res.docCount).toBe(1);
   });
 
   it("reports the unique document count", async () => {
