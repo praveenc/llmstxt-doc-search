@@ -613,6 +613,18 @@ Issue: #32
 
 Issue: #33
 
+Status: fixed on `fix/snippet-emphasis-admonition`. `makeSnippet` skips
+lines wrapped entirely in one emphasis span (`*...*`, `**...**`, `_..._`),
+and skips a line that is only a link or image when no prose has started
+yet. A link on its own line inside a paragraph is kept, because
+hard-wrapped prose puts links there (MCP "Security Best Practices"). Live
+check against the snippets on the current base: all 14 Strands Lesson pages
+now start at "About this lesson ..." instead of `*[Watch on YouTube](...)*`.
+Bedrock loses leading `**Note**`, `**Important**` and `**Topics**` labels
+(9 of 81 sampled pages). MCP working-group pages lose their
+`**Working Group**` label (4 of 70), so they now show the group's
+description instead of the label.
+
 - #10 made list items need a following space (`LIST_ITEM_RE`), so a line
   such as `*[Watch on YouTube](https://...)*` now counts as prose. prev
   skipped every line starting with `*`.
@@ -624,6 +636,14 @@ Issue: #33
 ### 11.3 `:::` block content becomes the snippet (Low)
 
 Issue: #34
+
+Status: fixed on `fix/snippet-emphasis-admonition`. `makeSnippet` drops
+each `:::` container along with its contents before it looks for prose.
+Nesting is tracked by depth, and a container with no closing `:::` runs to
+the end of the page, as in markdown-it-container. Live on Vite+ "GitHub
+Actions Cache", the snippet is now the page's first paragraph ("Vite Task
+stores task results in `node_modules/.vite/task-cache` ..."). It was the
+experimental warning. No other page among the 41 Vite+ pages changed.
 
 - `isNonProseLine` skips the `::: warning` fence line but not the text inside
   the block. Vite+ "GitHub Actions Cache" gets the warning text ("Reusing
