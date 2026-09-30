@@ -38,10 +38,21 @@ export function normalize(s: string): string {
 }
 
 /**
+ * A URL without its `#fragment`. A fragment names a place within a page, not
+ * a different page, so it is dropped before a URL is used as a lookup,
+ * cache or fetch key.
+ */
+export function stripFragment(url: string): string {
+  const i = url.indexOf("#");
+  return i >= 0 ? url.slice(0, i) : url;
+}
+
+/**
  * Generate a human-readable title from a URL path.
  */
 export function titleFromUrl(url: string): string {
-  const path = url.includes("://") ? url.split("://")[1] : url;
+  const noQuery = stripFragment(url).split("?")[0];
+  const path = noQuery.includes("://") ? noQuery.split("://")[1] : noQuery;
   const parts = path.split("/").filter(Boolean);
 
   // Remove trailing index.*

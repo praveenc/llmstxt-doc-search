@@ -195,9 +195,12 @@ async function resolveFetchSource(url: string): Promise<{ src: Source; st: Sourc
   return undefined;
 }
 
+/** The URL as the index keys it: parsed, normalized and without its #fragment. */
 function normalizeUrl(url: string): string | undefined {
   try {
-    return new URL(url).toString();
+    const u = new URL(url);
+    u.hash = "";
+    return u.toString();
   } catch {
     return undefined;
   }
