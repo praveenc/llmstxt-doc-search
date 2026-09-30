@@ -15,6 +15,9 @@
   ],
   "scripts": {
     "build": "tsc",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prepack": "npm run clean && npm run build",
+    "prepublishOnly": "npm run typecheck && npm test",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "inspect:dev": "npx @modelcontextprotocol/inspector npx tsx src/index.ts",
