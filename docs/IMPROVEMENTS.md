@@ -434,7 +434,7 @@ search parity fixtures were refreshed: 7 of 203 tokenize strings
 
 Issue: #17
 
-Status: fixed on `fix/url-fragments`. The `#fragment` is dropped before a
+Status: fixed in #29. The `#fragment` is dropped before a
 URL is used as a lookup, cache or fetch key: in `fetch_doc`, in
 `fetchAndClean`, and when parsing llms.txt (anchors into one page become
 one entry; their titles stay searchable). URL-derived titles also ignore
