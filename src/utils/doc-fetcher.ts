@@ -7,6 +7,7 @@ import { request as httpRequest } from "node:http";
 import type { IncomingMessage } from "node:http";
 import { assertPublicHttpUrl, assertPublicAddress } from "./url-validator.js";
 import { stripFragment } from "./text-processor.js";
+import { APP_NAME, APP_VERSION } from "../config.js";
 
 const MD_LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g;
 const HTML_BLOCK_RE = /<(script|style|noscript)[^>]*>[\s\S]*?<\/\1>/gi;
@@ -16,7 +17,7 @@ const H1_TAG_RE = /<h1[^>]*>([\s\S]*?)<\/h1>/i;
 const META_OG_RE = /<meta[^>]+property=["']og:title["'][^>]+content=["']([\s\S]*?)["']/i;
 
 const DEFAULT_TIMEOUT = 30000;
-const USER_AGENT = "llmstxt-doc-search/0.1";
+export const USER_AGENT = `${APP_NAME}/${APP_VERSION}`;
 /** Hard cap on a fetched response body to bound memory / ReDoS surface. */
 const MAX_BODY_BYTES = 10 * 1024 * 1024; // 10 MB
 /** Max number of redirect hops to follow (each re-validated). */

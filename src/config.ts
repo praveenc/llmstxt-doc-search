@@ -1,11 +1,19 @@
 /**
  * Configuration for llmstxt-doc-search.
  */
+import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
 export const APP_NAME = "llmstxt-doc-search";
-export const APP_VERSION = "0.1.0";
+
+/**
+ * Read from package.json (one level above both src/ and dist/) so the version
+ * reported in serverInfo and the User-Agent cannot drift from the published one.
+ */
+export const APP_VERSION: string = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+).version;
 
 /** Where the source registry is persisted (override with LLMSTXT_REGISTRY_PATH). */
 export const REGISTRY_PATH =
