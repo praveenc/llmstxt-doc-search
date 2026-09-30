@@ -3,7 +3,7 @@
 > Live, ranked search across any number of `llms.txt` documentation sites - Strands, Kiro, the AWS guides, and whatever you add at runtime.
 
 [![npm version](https://img.shields.io/npm/v/@praveenc/llmstxt-doc-search.svg)](https://www.npmjs.com/package/@praveenc/llmstxt-doc-search)
-[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.praveenc%2Fllmstxt-doc-search/versions/0.1.0)
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.praveenc%2Fllmstxt-doc-search/versions/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/praveenc/llmstxt-doc-search?include_prereleases)](https://github.com/praveenc/llmstxt-doc-search/releases)
 
