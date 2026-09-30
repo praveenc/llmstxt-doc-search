@@ -476,6 +476,13 @@ still contain the extension; it tests the indexer, not title building.
 
 Issue: #19
 
+Status: fixed in #31. When a page is evicted
+or its fetch fails, a URL the llms.txt lists goes back to its `null`
+placeholder, and any other URL is removed from `urlCache`. Keys are now
+bounded by the listed URLs plus `LLMSTXT_PAGE_CACHE_MAX`. Live on
+Strands with a cap of 5, 20 query-string variants of one page and 10
+missing pages left 30 extra keys before and 5 (the cached pages) after.
+
 - Every URL ever fetched under a source's base stays in `urlCache` as a
   `null` placeholder after a failure or eviction (`src/utils/store.ts:91`,
   `:115`). 120 authorized query-string variants and 30 404s added 150 keys

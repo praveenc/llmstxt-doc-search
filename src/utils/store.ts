@@ -137,10 +137,21 @@ export async function ensurePage(st: SourceState, url: string): Promise<Page | n
     return page;
   } catch (e) {
     logger.warn(`fetch failed: ${url}`, e);
-    st.urlCache.set(url, null);
-    st.pageLru.delete(url);
+    forgetPage(st, url);
     return null;
   }
+}
+
+/**
+ * Drop a URL's cached page. A URL the llms.txt lists goes back to its `null`
+ * placeholder, so it stays known; any other URL (reached only through the
+ * source's base prefix) is removed, so arbitrary query-string variants and
+ * failed fetches do not accumulate keys.
+ */
+function forgetPage(st: SourceState, url: string): void {
+  st.pageLru.delete(url);
+  if (st.urlTitles.has(url)) st.urlCache.set(url, null);
+  else st.urlCache.delete(url);
 }
 
 /** Mark a fetched page as most-recently-used. */
@@ -151,16 +162,14 @@ function touchPage(st: SourceState, url: string): void {
 
 /**
  * Evict least-recently-used fetched pages until the cache is within
- * PAGE_CACHE_MAX. An evicted URL is reset to a `null` placeholder rather than
- * removed, so it stays recognized as a known URL and is re-fetched on next
- * access. A cap of 0 disables eviction.
+ * PAGE_CACHE_MAX (see forgetPage for what is kept). An evicted URL is
+ * re-fetched on next access. A cap of 0 disables eviction.
  */
 function evictPages(st: SourceState): void {
   if (PAGE_CACHE_MAX <= 0) return;
   while (st.pageLru.size > PAGE_CACHE_MAX) {
     const oldest = st.pageLru.values().next().value;
     if (oldest === undefined) break;
-    st.pageLru.delete(oldest);
-    st.urlCache.set(oldest, null);
+    forgetPage(st, oldest);
   }
 }

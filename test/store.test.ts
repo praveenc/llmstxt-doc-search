@@ -115,6 +115,59 @@ describe("ensurePage LRU page cache (issue #4)", () => {
   });
 });
 
+describe("page-cache keys for URLs not in the llms.txt (issue #19)", () => {
+  const unlisted = (i: number) => `${ORIGIN}search?q=${i}`;
+
+  it("does not keep a key for an unlisted URL whose fetch failed", async () => {
+    const st = await indexedSource("fail-unlisted", 2);
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error("HTTP 404"));
+
+    expect(await ensurePage(st, unlisted(0))).toBeNull();
+    expect(st.urlCache.has(unlisted(0))).toBe(false);
+    expect(st.urlCache.size).toBe(2);
+  });
+
+  it("keeps a listed URL's placeholder when its fetch fails", async () => {
+    const st = await indexedSource("fail-listed", 2);
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error("HTTP 500"));
+
+    expect(await ensurePage(st, urlOf(0))).toBeNull();
+    expect(st.urlCache.has(urlOf(0))).toBe(true);
+    expect(st.urlCache.get(urlOf(0))).toBeNull();
+  });
+
+  it("removes an evicted unlisted URL but keeps an evicted listed one", async () => {
+    state.cap = 1;
+    const st = await indexedSource("evict-mixed", 2);
+    await ensurePage(st, unlisted(0)); // [u0]
+    await ensurePage(st, urlOf(0)); // evicts u0 -> removed
+    expect(st.urlCache.has(unlisted(0))).toBe(false);
+    await ensurePage(st, urlOf(1)); // evicts listed 0 -> placeholder
+    expect(st.urlCache.has(urlOf(0))).toBe(true);
+    expect(st.urlCache.get(urlOf(0))).toBeNull();
+  });
+
+  it("stays bounded by the listed URLs plus the cap however many variants are fetched", async () => {
+    const st = await indexedSource("bounded-keys", 5);
+    for (let i = 0; i < 120; i++) await ensurePage(st, unlisted(i));
+    mocks.fetchAndClean.mockRejectedValue(new Error("HTTP 404"));
+    for (let i = 120; i < 150; i++) await ensurePage(st, unlisted(i));
+
+    expect(st.urlCache.size).toBe(5 + 3); // 5 listed placeholders + cap of 3 cached pages
+    expect(st.pageLru.size).toBe(3);
+  });
+
+  it("an evicted unlisted URL is fetched again on next access", async () => {
+    state.cap = 1;
+    const st = await indexedSource("refetch-unlisted", 1);
+    await ensurePage(st, unlisted(0));
+    await ensurePage(st, unlisted(1)); // evicts u0
+    const again = await ensurePage(st, unlisted(0));
+    expect(again?.content).toBe(`body of ${unlisted(0)}`);
+    expect(mocks.fetchAndClean).toHaveBeenCalledTimes(3);
+  });
+});
+
 describe("ensureSourceIndexed with alternate titles", () => {
   it("indexes one doc per URL and keeps alternate titles searchable", async () => {
     dropSourceState("alt");
