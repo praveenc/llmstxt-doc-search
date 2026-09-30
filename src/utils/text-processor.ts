@@ -1,6 +1,7 @@
 /**
  * Text processing utilities for snippets and title normalization.
  */
+import { tokenize } from "./indexer.js";
 
 /** Regex to collapse whitespace */
 const WHITESPACE_RE = /\s+/g;
@@ -140,25 +141,37 @@ export function formatDisplayTitle(
 }
 
 /**
- * Generate searchable title variants for indexing.
+ * Build the text a document's title is indexed under: the display title once,
+ * plus any words the URL slug or the "2 -> to" variant (Agent2Agent) add.
+ *
+ * Words already in the title are not repeated, so every title carries the
+ * same weight whether or not its slug restates it. Otherwise a page whose slug
+ * matched its title ("prompt-caching" for "Prompt caching") would count its
+ * title words once, and one differing only in punctuation ("What is prompt
+ * engineering?") twice, which skews rankings between them.
  */
 export function indexTitleVariants(displayTitle: string, url: string): string {
-  const base = displayTitle;
+  const base = normalize(displayTitle);
+  const variant = base.replace(/(\w)2(\w)/gi, "$1 to $2");
   const slug = titleFromUrl(url);
 
-  // Numeric-to-word variant: '2' -> 'to' (e.g., Agent2Agent)
-  const variant = base.replace(/(\w)2(\w)/gi, "$1 to $2");
-
-  // Build distinct set
-  const variants: string[] = [];
-  for (const v of [base, variant, slug]) {
-    const normalized = normalize(v);
-    if (normalized && !variants.some((x) => x.toLowerCase() === normalized.toLowerCase())) {
-      variants.push(normalized);
-    }
+  // Compare on index tokens (stemmed, stop words dropped), so a slug word
+  // such as "flows" does not repeat a title's "flow".
+  const seen = new Set(tokenize(base.toLowerCase()));
+  const extra: string[] = [];
+  for (const word of [...comparisonWords(variant), ...comparisonWords(slug)]) {
+    const tokens = tokenize(word);
+    if (tokens.every((t) => seen.has(t))) continue;
+    for (const t of tokens) seen.add(t);
+    extra.push(word);
   }
 
-  return variants.join(" ");
+  return [base, ...extra].join(" ");
+}
+
+/** Lowercased words with punctuation removed, for comparing titles. */
+function comparisonWords(s: string): string[] {
+  return normalizeForComparison(s).split(" ").filter(Boolean);
 }
 
 /**
