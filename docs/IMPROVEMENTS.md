@@ -494,7 +494,7 @@ missing pages left 30 extra keys before and 5 (the cached pages) after.
 
 Issue: #20
 
-Status: fixed on `chore/release-0.2.0`.
+Status: fixed in #42.
 
 - `APP_VERSION` is read from `package.json`, and the User-Agent is
   `llmstxt-doc-search/<version>`. A test checks that `package.json`,
