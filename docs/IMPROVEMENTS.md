@@ -584,6 +584,32 @@ present or are side effects of a fix. Code references are to main
 
 Issue: #32
 
+Status: fixed in #41. `indexTitleVariants` indexes
+the display title once and adds only the words of the slug (and of the
+"2 -> to" variant) that are not already in it. Words are compared as index
+tokens, stemmed and with stop words dropped, so `flows` does not repeat
+"flow" and `evaluation` does not repeat "Evaluate". Every title now has the
+same weight whether or not its slug restates it. Ranking check against prev
+(`5f997c5`) and main (`32ccf74`), within each source:
+
+| Check | prev | main | fixed |
+|---|---|---|---|
+| Bedrock "prompt" -> Prompt caching | 1 | >10 | 1 |
+| Bedrock "reduce latency and cost of repeated prompts" -> Prompt caching | 13 | 23 | 13 |
+| Bedrock "flows" -> Flows | 1 | 1 | 1 |
+| Top-5 shared with prev: Bedrock / Strands / MCP (15/15/10 queries) | - | 51/75, 56/75, 48/50 | 55/75, 66/75, 48/50 |
+
+Two Bedrock landing pages rank lower than in prev, because their extra title
+weight came only from the slug:
+
+- "model evaluation" -> "Evaluate models" (`evaluation.md`): 1 in prev and
+  main, 82 now. The title does not contain the phrase; prev matched it only
+  through the bigram `model evalu` formed across the title and its
+  `Evaluation.md` slug. Pages whose titles contain "model evaluation" now
+  rank first, and "evaluate models" still ranks the page first.
+- "agents" -> "Agents: Automate tasks": 1 in prev, 2 in main, 5 now, behind
+  shorter titles such as "Delete an agent".
+
 - `indexTitleVariants` (`src/utils/text-processor.ts`) drops a slug
   variant only when it matches the title exactly, ignoring case.
   - Before #18 the `.md` suffix meant the slug never matched, so every
@@ -654,6 +680,15 @@ experimental warning. No other page among the 41 Vite+ pages changed.
 
 Issue: #35
 
+Status: fixed in #41. `resolveFetchSource` no
+longer indexes every source to look for the URL in its llms.txt. A URL is
+authorized when an indexed source lists it, or when it is under a
+registered source's directory. A listed link on another host is recognized
+once its source has been indexed by a search, `add_doc_source` or
+`refresh_doc_source`; before that, the error says to search first. Live on a
+fresh server: rejecting a URL that no source covers took 636 ms and built 6
+indexes before, and takes 4 ms and builds none now.
+
 - On a fresh server, fetching a URL that no source lists takes 637-685 ms
   and 270 ms of CPU, builds all 6 default indexes, and grows RSS from 87 MB
   to about 120 MB before it is rejected. v0.1.0 and prev reject it in 3-6 ms.
@@ -684,6 +719,15 @@ nested `Error: ... Error: ...` prefixes are gone.
 ### 11.6 Versioned pages with the same title fill the results (Medium, ranking)
 
 Issue: #37
+
+Status: not fixed in v0.2.0; #37 is now an enhancement, "Index URL path
+segments to tell same-titled pages apart". The fix proposed below was
+dropped: keeping one hit per title would hide distinct pages on other sites
+(Strands has 16 different "Overview" pages, Bedrock 93 groups of repeated
+titles), and a check for a version segment in the URL matches every AWS URL
+through `/latest/`. The index holds only titles, so no query can currently
+choose between the versions. The site-agnostic alternative is to index each
+URL's path segments at a low weight.
 
 - MCP publishes each spec page once per version (2024-11-05 ... 2026-07-28,
   draft). "sampling" and "tools" return the same page in six versions. In

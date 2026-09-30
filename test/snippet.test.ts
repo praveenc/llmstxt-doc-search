@@ -6,7 +6,7 @@ import {
   formatDisplayTitle,
   indexTitleVariants,
 } from "../src/utils/text-processor.js";
-import { tokenize } from "../src/utils/indexer.js";
+import { tokenize, IndexSearch } from "../src/utils/indexer.js";
 
 describe("makeSnippet", () => {
   it("skips a leading documentation-index blockquote banner (Mintlify)", () => {
@@ -188,6 +188,43 @@ describe("URLs with #fragments (issue #17)", () => {
     expect(
       formatDisplayTitle(stripFragment("https://docs.example.com/prompt-caching.md#supported-models"), "prompt-caching.md", titles)
     ).toBe("Prompt caching");
+  });
+});
+
+describe("title weight does not depend on the URL slug (issue #32)", () => {
+  const BASE = "https://docs.aws.amazon.com/bedrock/latest/userguide/";
+
+  it("indexes the title once, adding only slug words it lacks", () => {
+    expect(indexTitleVariants("Prompt caching", `${BASE}prompt-caching.md`)).toBe("Prompt caching");
+    expect(indexTitleVariants("What is prompt engineering?", `${BASE}what-is-prompt-engineering.md`)).toBe(
+      "What is prompt engineering?"
+    );
+    expect(indexTitleVariants("Evaluator prompts", `${BASE}kb-eval-prompt.md`)).toBe("Evaluator prompts kb eval");
+  });
+
+  it("treats a slug word as repeated when it stems to a title word", () => {
+    expect(indexTitleVariants("Design a flow", `${BASE}flows-design.md`)).toBe("Design a flow");
+    expect(indexTitleVariants("Evaluate models", `${BASE}evaluation.md`)).toBe("Evaluate models");
+  });
+
+  it("keeps new words from the 2 -> to variant", () => {
+    expect(indexTitleVariants("Agent2Agent protocol", `${BASE}a2a.md`)).toBe("Agent2Agent protocol agent a2a");
+  });
+
+  it("scores titles alike whether the slug matches them exactly or only up to punctuation", () => {
+    const index = new IndexSearch();
+    for (const [title, slug] of [
+      ["Prompt caching", "prompt-caching"],
+      ["Prompt caching!", "prompt-caching"],
+      ["What is prompt caching?", "what-is-prompt-caching"],
+      ["What is prompt caching", "what-is-prompt-caching"],
+    ]) {
+      const uri = `${BASE}${slug}-${title.length}.md`;
+      index.add({ uri, displayTitle: title, content: "", indexTitle: indexTitleVariants(title, `${BASE}${slug}.md`) });
+    }
+    const scoreOf = new Map(index.search("prompt caching", 10).map((r) => [r.doc.displayTitle, r.score]));
+    expect(scoreOf.get("Prompt caching!")).toBeCloseTo(scoreOf.get("Prompt caching")!, 10);
+    expect(scoreOf.get("What is prompt caching?")).toBeCloseTo(scoreOf.get("What is prompt caching")!, 10);
   });
 });
 
