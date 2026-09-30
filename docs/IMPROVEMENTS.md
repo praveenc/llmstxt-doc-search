@@ -500,3 +500,182 @@ Issue: #20
 - Optional: strip HTML page chrome ("View a markdown version of this page",
   breadcrumbs, "Javascript is disabled") and collapse repeated spaces in
   `htmlToText`; inline `<a name>` anchors are left in markdown bodies.
+
+## 10. Benchmark round 2: v0.1.0 vs main after the bug fixes
+
+Run 2026-09-30. Three installs, driven over MCP stdio with medians of 3
+interleaved runs, plus in-process index runs:
+
+- `v0.1.0`: the npm tarball.
+- `prev`: main `5f997c5`, the refactor only (section 8).
+- `main`: `299d237`, the refactor plus #22-#31 (issues #6-#19).
+
+Sources: the five URLs from section 8, plus the real herdr index
+(`herdr.dev/llms.txt`). All three still report version 0.1.0 (#20).
+
+| Metric | v0.1.0 | prev | main | main vs v0.1.0 |
+|---|---|---|---|---|
+| `initialize` response | 641-684 ms | 185-190 ms | 185-190 ms | -71% |
+| Idle RSS | 172 MB | 87 MB | 87 MB | -49% |
+| Final RSS, Strands (893 docs) | 203 MB | 114 MB | 113 MB | -44% |
+| Final RSS, Bedrock (1128 docs) | 214 MB | 118 MB | 118 MB | -45% |
+| Final RSS, MCP / Vite+ | 205 / 199 MB | 111 / 103 MB | 111 / 102 MB | -46 / -49% |
+| RSS after fetching all 893 Strands pages | 264 MB | 127-134 MB | 134-136 MB | -49% |
+| Multi-source session: final RSS | 265 MB | 166 MB | 143 MB | -46% |
+| Multi-source session: registered sources | 12 | 12 | 8 | duplicates rejected |
+| Total CPU per single-source run | 840-1130 ms | 310-460 ms | 330-470 ms | -52..-66% |
+| Search in-process, Strands / Bedrock / MCP | 65 / 106 / 15 us | 13 / 32 / 5.4 us | 14 / 36 / 5.7 us | -61..-78% |
+| Warm search over JSON-RPC, Bedrock | 0.51 ms | 0.37 ms | 0.45 ms | -10% |
+| Index heap, Bedrock | 1.67 MB | 2.64 MB | 2.21 MB | +32% |
+| Index build, Bedrock | 47 ms | 42 ms | 42 ms | -11% |
+| Warm unscoped search, 1 source with a 404 llms.txt | 10.8 ms | 10.9 ms | 1.0 ms | -91% |
+| Duplicate-URL result slots, multi-source session | 43 / 120 | 41 / 120 | 0 / 120 | fixed |
+| Non-JSON lines on stdout | 5 | 0 | 0 | fixed |
+
+- main keeps the refactor's memory and CPU gains, and gets back 16% of the
+  index heap that #3 added on Bedrock.
+- Against prev, main is slightly slower in two places:
+  - Warm Bedrock search over JSON-RPC is 0.02-0.12 ms slower. Snippets
+    are built from the real first paragraph now (#10), which takes 1.2-2.3x
+    as long.
+  - In-process searches containing "agent" are 29-54% slower (+7 us on
+    Strands). This is the cost of #16: "agent" and "agents" now share one
+    term, which matches more pages. It is still about 3.5x faster than
+    v0.1.0.
+- In the multi-source session, main registers 8 sources instead of 12,
+  because it rejects the three duplicate llms.txt files and the HTML herdr
+  page. Part of that session's RSS and CPU saving comes from indexing less.
+- The first cold unscoped search is slower on main (1.3 s vs 0.35 s):
+  since #11, its top 5 for "sampling" are MCP spec pages, which take about
+  0.2 s each to fetch for snippets.
+- Network-bound timings (add, cold search, fetch) were the same across
+  versions within noise.
+
+Fixes confirmed on the live sources (v0.1.0 and prev behave the same
+unless noted):
+
+| Issue | v0.1.0 / prev | main |
+|---|---|---|
+| #6 add `herdr.dev/docs/llms.txt` | accepted, 0 docs, saved | error "the response is an HTML page", not saved |
+| #7 fetch a listed `raw.githubusercontent.com` page | rejected | fetched (6,242 chars); unlisted raw URLs still rejected |
+| #8 docCount Strands / MCP; "example servers" distinct URLs in top 5 | 895 / 354; 1 | 893 / 349; 5 |
+| #8 same llms.txt under a second name | accepted | rejected |
+| #9 fetch after searching a second source on the same llms.txt | second index build and page GET (81-87 ms) | no rebuild or refetch (2 ms) |
+| #10 snippets on Bedrock / MCP / Vite+ | 40/40 `<a name>`, 25/25 banner, 17/17 frontmatter | 0 / 0 / 0; first paragraph |
+| #11 unscoped slots, MCP / agentic-ai-lens (of 120) | 6 / 0 (v0.1.0), 9 / 1 (prev) | 30 / 8 |
+| #12 source with a 404 llms.txt | re-fetched every search; no reason shown | backed off; `lastError: "HTTP 404"` |
+| #13 scoped search on that source | `isError: false`, 0 results | `isError` with the reason |
+| #14 real page under a failing source's prefix | error "HTTP 404" (the llms.txt's error) | fetched |
+| #15 failure log line | `[{}]` | `Error: ... HTTP 404 (retry in 300s, ...)` |
+| #16 "agent" vs "agents" (herdr top 3) | different | identical |
+| #17 fetch `prompt-caching.md#supported-models` + 2 more fragments | title keeps the fragment; 4 GETs | "Prompt caching"; 1 GET |
+| #18 Vite+ search "md" | 41 hits | 0 hits |
+| #19 Strands urlCache keys after 60 `?v=` variants + 20 404s | 973 | 943 (893 listed + 50 cached) |
+
+## 11. Findings from benchmark round 2
+
+Each item is tracked as a GitHub issue (11.N is #(N+31), #32-#38), and
+each was reproduced on the live sources. 11.1 and 11.2 are regressions
+against prev that the bug-fix round introduced. The rest were already
+present or are side effects of a fix. Code references are to main
+`299d237`.
+
+### 11.1 Title weight now depends on the URL slug (Medium, ranking, regression from #18)
+
+Issue: #32
+
+- `indexTitleVariants` (`src/utils/text-processor.ts`) drops a slug
+  variant only when it matches the title exactly, ignoring case.
+  - Before #18 the `.md` suffix meant the slug never matched, so every
+    title was indexed twice.
+  - Now a title whose slug equals it is indexed once: "Prompt caching"
+    becomes `Prompt caching`, where prev had `Prompt caching Prompt
+    Caching.md`.
+  - A slug that differs only by punctuation still doubles the title:
+    "What is prompt engineering?" becomes `What is prompt engineering?
+    What Is Prompt Engineering`.
+- On Bedrock 37 of 1128 titles lost the second copy, mostly topic landing
+  pages: Prompt caching, Prompt management, Batch inference, Flows, Quotas.
+- Rank of "Prompt caching" on Bedrock:
+
+| Query | prev | main |
+|---|---|---|
+| "prompt" | 1 | 11 (top hit: "What is prompt engineering?") |
+| "reduce latency and cost of repeated prompts" | 13 | 23 |
+
+  "prompt caching" still ranks it first, but "Prompt management" drops
+  out of that query's top 3.
+- Fix: compare variants with punctuation removed (`normalizeForComparison`),
+  and give each title a fixed weight that does not depend on whether the
+  slug repeats it.
+
+### 11.2 `*...*` emphasis lines become snippets (Low-Medium, regression from #10)
+
+Issue: #33
+
+- #10 made list items need a following space (`LIST_ITEM_RE`), so a line
+  such as `*[Watch on YouTube](https://...)*` now counts as prose. prev
+  skipped every line starting with `*`.
+- 4 of the 14 Strands "Lesson" pages now have a snippet starting with
+  `*[Watch on YouTube](...)*`, where prev started at "About this lesson...".
+- Fix: also skip lines that are only emphasis or a link, e.g.
+  `^\*[^*\s].*\*$` and `^\[[^\]]*\]\([^)]*\)$`.
+
+### 11.3 `:::` block content becomes the snippet (Low)
+
+Issue: #34
+
+- `isNonProseLine` skips the `::: warning` fence line but not the text inside
+  the block. Vite+ "GitHub Actions Cache" gets the warning text ("Reusing
+  Vite Task's cache ... is experimental") as its snippet.
+- Fix: skip everything from a `:::` opening line to its closing `:::`.
+
+### 11.4 The first rejected `fetch_doc` indexes every source (Low-Medium, side effect of #7)
+
+Issue: #35
+
+- On a fresh server, fetching a URL that no source lists takes 637-685 ms
+  and 270 ms of CPU, builds all 6 default indexes, and grows RSS from 87 MB
+  to about 120 MB before it is rejected. v0.1.0 and prev reject it in 3-6 ms.
+- Cause: `resolveFetchSource` indexes every not-yet-indexed source to
+  check its listing (`src/tools/docs.ts`).
+- Fix: only index a source on demand when the URL's host matches a host the
+  source's llms.txt is known to link to, or skip the check and let search
+  results be the way to reach off-host pages.
+
+### 11.5 A failed add suggests `refresh_doc_source` for a rolled-back source (Low)
+
+Issue: #36
+
+- A failed `add_doc_source` returns "... (rolled back): ... (retry in 300s,
+  or call refresh_doc_source)". The source no longer exists, so
+  `refresh_doc_source` then fails with "unknown source".
+- Fix: strip the retry hint from the rollback message, or build the hint
+  only in search and `list_doc_sources`.
+
+### 11.6 Versioned pages with the same title fill the results (Medium, ranking)
+
+Issue: #37
+
+- MCP publishes each spec page once per version (2024-11-05 ... 2026-07-28,
+  draft). "sampling" and "tools" return the same page in six versions. In
+  the multi-source session MCP takes 6-7 of the top 10 slots for "sampling",
+  "tools", "mcp server" and "security best practices for agents".
+- This was already true in a scoped MCP search. #11 now brings it into
+  unscoped results as well, because MCP is no longer outranked.
+- Fix: group results by (source, displayTitle) and keep the best hit per
+  group (optionally preferring URLs without a date or `draft` segment).
+
+### 11.7 Smaller items (Low)
+
+Issue: #38
+
+- During the 5-minute backoff, every unscoped search still logs one WARN
+  line for the failing source.
+- `fetch_doc` of a missing page returns "failed to fetch document"; the HTTP
+  status (404) is only in the log. v0.1.0 returned "HTTP 404".
+- The #8 duplicate check compares normalized URLs, so the same llms.txt with
+  a query string (`.../llms.txt?v=2`) registers as a second source. In that
+  setup an unscoped search can cache the same page in both sources.
+- A failed duplicate add is logged at ERROR level with a
+  `URLValidationError:` prefix in the tool message.
