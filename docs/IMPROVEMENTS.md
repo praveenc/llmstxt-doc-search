@@ -455,6 +455,17 @@ served from the cache (1 ms each, before 13-14 ms re-fetches).
 
 Issue: #18
 
+Status: fixed on `fix/md-extension-term`. `titleFromUrl` drops a
+trailing `.md`, `.mdx`, `.markdown`, `.html`, `.htm` or `.txt` from the
+slug, so the extension no longer becomes a title word or search term;
+other dots are kept (`strands.event_loop.md` -> "Strands.event Loop").
+`formatDisplayTitle` treats any bare file name with one of those
+extensions (not only `.md`) as no title. Live on viteplus: a search for
+`md` went from 41 hits (every page) to 0; the top results for "global
+cli", "cache" and "migrate" are unchanged. The search parity fixture's
+corpus is a fixed input captured before this fix, so its index titles
+still contain the extension; it tests the indexer, not title building.
+
 - `titleFromUrl` keeps the file extension, so every doc on a `.md` site gets
   an `md` token and bigrams (index title "Global CLI Global Cli.md"), and a
   search for `md` matches all 41 viteplus docs.
