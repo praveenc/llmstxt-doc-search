@@ -96,9 +96,13 @@ Status: fixed in #3 (issue #2).
 
 - The same pattern (depth-mismatched `$HOME` symlink) is starting to inflate
   other npx caches on the same machine (e.g. `@playwright/mcp`, 505 KB).
-- The server has not been migrated to the latest MCP specification revision
-  (2026-07-28). Status: planned; see
-  [mcp-spec-migration-0728.md](mcp-spec-migration-0728.md).
+- Migrate the server to the latest MCP specification revision
+  (2026-07-28). Status: fixed on `feat/mcp-2026-07-28` (#21), for 1.0.0; see
+  [mcp-spec-migration-0728.md](mcp-spec-migration-0728.md). One
+  build serves pinned 2026-07-28, `auto` and 2025-era clients over stdio. A
+  live `search_docs` + `fetch_doc` on the MCP source returns the same results
+  in both eras. RSS is unchanged (about 100 MB after one search and fetch),
+  and the runtime install goes from 24 MB to 16 MB.
 
 ## 8. Benchmark: v0.1.0 (npm) vs main after #1, #3, #5
 

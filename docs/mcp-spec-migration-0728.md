@@ -1,6 +1,15 @@
 # Migrating llmstxt-doc-search to MCP spec 2026-07-28
 
-Status: proposal · Date: 2026-09-29 · Baseline: `main` @ `5f997c5` (package `0.1.0`)
+Status: implemented on `feat/mcp-2026-07-28` (#21), released as 1.0.0 · Date: 2026-09-29 · Baseline: `main` @ `5f997c5` (package `0.1.0`)
+
+Implementation notes (2026-09-30), where the shipped change differs from this proposal:
+
+- 5.4 was already done in 0.2.0: `APP_VERSION` is read from `package.json`.
+- 5.3 (`outputSchema` + `structuredContent`) is deferred to a follow-up, as recommended.
+- The codemod (step 2 of Section 6) was not used. `src/index.ts` was edited by hand, since the `buildServer` wrapper touches every registration anyway.
+- `fetch_doc` and `add_doc_source` use `z.url()`, which replaces the deprecated `z.string().url()`.
+- The version is 1.0.0, not 0.3.0 as Section 10 recommends. The tool names, parameters and result fields have not changed since 0.1.0, so from this release they are the stable API under semver. The bump (5.1 line 3, 5.7) is a separate commit in the same PR.
+- `test/protocol.test.ts` (5.6) is written: 12 tests. 9 of them fail against the v1 server on `main`.
 
 ## 1. Summary
 
