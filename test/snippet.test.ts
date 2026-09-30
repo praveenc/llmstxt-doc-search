@@ -99,6 +99,56 @@ describe("makeSnippet", () => {
     expect(makeSnippet([":::", "Prose after a stray fence."].join("\n"), "X")).toBe("Prose after a stray fence.");
   });
 
+  it("skips a line that is only an emphasized link (issue #33, Strands lessons)", () => {
+    const md = [
+      "*[Watch on YouTube](https://www.youtube.com/watch?v=ZpXWGjISMs8&list=PLDzwjhH-4yhU)*",
+      "",
+      "About this lesson",
+      "",
+      "The videos in this course are a snapshot in time. Strands is under active development.",
+      "",
+      "*Code for this lesson: [`samples/01-agent-loop`](https://github.com/aws-samples/x)*",
+    ].join("\n");
+    expect(makeSnippet(md, "Lesson 1: How Agents Really Work")).toBe(
+      "About this lesson The videos in this course are a snapshot in time. Strands is under active development."
+    );
+  });
+
+  it("skips lines that are only emphasis, a link or an image", () => {
+    const md = [
+      "_Last updated: 2026-09-01_",
+      "**Note**",
+      "[Back to index](../index.md)",
+      "![diagram](arch.png)",
+      "Real prose here.",
+    ].join("\n");
+    expect(makeSnippet(md, "X")).toBe("Real prose here.");
+  });
+
+  it("keeps prose that starts or ends with emphasis", () => {
+    expect(makeSnippet("*Agents* wrap a model in a runtime loop.", "X")).toBe(
+      "*Agents* wrap a model in a runtime loop."
+    );
+    expect(makeSnippet("Tools run inside the *agent loop*", "X")).toBe("Tools run inside the *agent loop*");
+    expect(makeSnippet("See [the guide](g.md) for setup.", "X")).toBe("See [the guide](g.md) for setup.");
+    expect(makeSnippet("**Step one** then **step two**", "X")).toBe("**Step one** then **step two**");
+    expect(makeSnippet("_snake_case_ names are kept.", "X")).toBe("_snake_case_ names are kept.");
+    expect(makeSnippet("**Note:** agents need a model.", "X")).toBe("**Note:** agents need a model.");
+  });
+
+  it("keeps a link-only line inside a hard-wrapped paragraph (MCP)", () => {
+    const md = [
+      "This document provides security considerations for the Model Context",
+      "Protocol (MCP), complementing the",
+      "[MCP Authorization](/specification/2025-03-26/basic/authorization)",
+      "specification.",
+    ].join("\n");
+    expect(makeSnippet(md, "Security Best Practices")).toBe(
+      "This document provides security considerations for the Model Context Protocol (MCP), " +
+        "complementing the [MCP Authorization](/specification/2025-03-26/basic/authorization)"
+    );
+  });
+
   it("still skips list items, numbered steps and horizontal rules", () => {
     const md = ["# Title", "- a bullet", "* another", "1. step one", "***", "Real prose here."].join("\n");
     expect(makeSnippet(md, "Title")).toBe("Real prose here.");
