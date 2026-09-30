@@ -647,7 +647,7 @@ Issue: #35
 
 Issue: #36
 
-Status: fixed on `fix/error-messages-log-levels`. Index failures are now a
+Status: fixed in #40. Index failures are now a
 `SourceIndexError` that carries the bare reason. When `add_doc_source` rolls
 a source back, it reports `source '<name>' was not added: its llms.txt
 failed to index: <reason>`, without the retry or `refresh_doc_source` hint.
@@ -678,7 +678,7 @@ Issue: #37
 
 Issue: #38
 
-Status: fixed on `fix/error-messages-log-levels`. All four items:
+Status: fixed in #40. All four items:
 
 - Backoff logging: a failure replayed from the backoff is marked
   `inBackoff` and its skip is logged at DEBUG. Only the attempt that
