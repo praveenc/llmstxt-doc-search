@@ -494,12 +494,39 @@ missing pages left 30 extra keys before and 5 (the cached pages) after.
 
 Issue: #20
 
-- `APP_VERSION` is still `"0.1.0"` (`src/config.ts:8`) and is reported in
-  `serverInfo`; `package.json` is also 0.1.0.
-- `USER_AGENT` is `llmstxt-doc-search/0.1` (`src/utils/doc-fetcher.ts:18`).
-- Optional: strip HTML page chrome ("View a markdown version of this page",
-  breadcrumbs, "Javascript is disabled") and collapse repeated spaces in
-  `htmlToText`; inline `<a name>` anchors are left in markdown bodies.
+Status: fixed on `chore/release-0.2.0`.
+
+- `APP_VERSION` is read from `package.json`, and the User-Agent is
+  `llmstxt-doc-search/<version>`. A test checks that `package.json`,
+  `package-lock.json` and `server.json` carry the same version.
+- `htmlToText` keeps only `<main>` when the page has one, removes `<nav>`,
+  `<aside>`, `<footer>` (and `<header>` outside `<main>`) and the `<head>`,
+  and collapses repeated spaces. Nothing site-specific is matched. Output
+  size on real pages, before and after:
+
+  | Page | Before | After |
+  |---|---|---|
+  | Kiro `/docs/hooks/` | 11,888 chars | 7,327 (-38%) |
+  | MCP `/docs/getting-started/intro` | 4,131 | 2,339 (-43%) |
+  | Vite+ `/guide/` | 16,875 | 5,596 (-67%) |
+  | herdr `/docs/` | 2,713 | 1,880 (-31%) |
+  | Bedrock `prompt-caching.html` | 28,713 | 28,267 (-2%) |
+
+  AWS pages mark their chrome with `<div>`s and custom elements, so the
+  Bedrock `.html` page keeps it. Its `llms.txt` links to the `.md` pages,
+  which are not affected.
+- Empty `<a name>`/`<a id>` anchors are removed from markdown pages (19 on
+  Bedrock's prompt-caching page).
+- Also found while preparing the release:
+  - `npm pack` from a clean checkout produced a tarball without `dist/`.
+    A `prepack` script now cleans and builds, and `prepublishOnly` runs the
+    typecheck and tests.
+  - `npm audit --omit=dev` reported `fast-uri` (high) and `hono` /
+    `@hono/node-server` (moderate), all transitive through the MCP SDK.
+    Updated in the lockfile to 3.1.8, 4.13.11 and 1.19.17; runtime
+    dependencies now report 0 vulnerabilities. The remaining advisories are
+    in dev dependencies (vitest 2 / esbuild / postcss) and need a vitest
+    major upgrade.
 
 ## 10. Benchmark round 2: v0.1.0 vs main after the bug fixes
 
