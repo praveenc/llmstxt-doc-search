@@ -613,7 +613,7 @@ Issue: #32
 
 Issue: #33
 
-Status: fixed on `fix/snippet-emphasis-admonition`. `makeSnippet` skips
+Status: fixed in #39. `makeSnippet` skips
 lines wrapped entirely in one emphasis span (`*...*`, `**...**`, `_..._`),
 and skips a line that is only a link or image when no prose has started
 yet. A link on its own line inside a paragraph is kept, because
@@ -637,7 +637,7 @@ description instead of the label.
 
 Issue: #34
 
-Status: fixed on `fix/snippet-emphasis-admonition`. `makeSnippet` drops
+Status: fixed in #39. `makeSnippet` drops
 each `:::` container along with its contents before it looks for prose.
 Nesting is tracked by depth, and a container with no closing `:::` runs to
 the end of the page, as in markdown-it-container. Live on Vite+ "GitHub
