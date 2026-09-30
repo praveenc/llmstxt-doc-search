@@ -18,16 +18,51 @@ const LIST_ITEM_RE = /^(?:[-*+]\s|\d+[.)]\s)/;
 const HORIZONTAL_RULE_RE = /^(?:[-*_]\s*){3,}$/;
 const TAG_ONLY_LINE_RE = /^(?:<[^>]*>\s*)+$/;
 
-/** Lines that are structure rather than prose: headings, quotes, containers, lists, rules, bare tags. */
+/** A line wrapped entirely in one emphasis span, e.g. `*[Watch on YouTube](...)*`. */
+const EMPHASIS_ONLY_LINE_RE = /^(?:\*{1,3}[^*\s][^*]*\*{1,3}|_{1,3}[^_\s][^_]*_{1,3})$/;
+/** A line that is only a link or image, e.g. `[Watch on YouTube](...)`. */
+const LINK_ONLY_LINE_RE = /^!?\[[^\]]*\]\([^)]*\)$/;
+
+/** Opening line of a `:::` container (VitePress, Docusaurus), e.g. `::: warning`. */
+const CONTAINER_OPEN_RE = /^:{3,}\s*\S/;
+/** Closing line of a `:::` container. */
+const CONTAINER_CLOSE_RE = /^:{3,}$/;
+
+/**
+ * Lines that are structure rather than prose: headings, quotes, lists, rules,
+ * bare tags, and lines wrapped entirely in emphasis (a `**Note**` label or a
+ * `*[Watch on YouTube](...)*` banner). `:::` containers are removed
+ * beforehand by dropContainers.
+ */
 function isNonProseLine(line: string): boolean {
   return (
     line.startsWith("#") ||
     line.startsWith(">") ||
-    line.startsWith(":::") ||
     LIST_ITEM_RE.test(line) ||
     HORIZONTAL_RULE_RE.test(line) ||
-    TAG_ONLY_LINE_RE.test(line)
+    TAG_ONLY_LINE_RE.test(line) ||
+    EMPHASIS_ONLY_LINE_RE.test(line)
   );
+}
+
+/**
+ * Remove `:::` containers (admonitions, details blocks) together with their
+ * contents. Nested containers are tracked by depth; an unclosed container
+ * runs to the end, as markdown-it-container treats it.
+ */
+function dropContainers(lines: string[]): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  for (const line of lines) {
+    if (CONTAINER_OPEN_RE.test(line)) {
+      depth++;
+    } else if (CONTAINER_CLOSE_RE.test(line)) {
+      if (depth > 0) depth--;
+    } else if (depth === 0) {
+      out.push(line);
+    }
+  }
+  return out;
 }
 
 /**
@@ -137,8 +172,9 @@ function normalizeForComparison(s: string): string {
  * Create a contextual snippet from page content.
  *
  * Skips leading YAML frontmatter, blockquotes (e.g. site-wide "documentation
- * index" banners), headings, list items, horizontal rules and tag-only HTML
- * lines, then returns the first prose paragraph.
+ * index" banners), `:::` containers and their contents, headings, list items,
+ * horizontal rules, tag-only HTML lines, emphasis-only lines and leading
+ * link-only lines, then returns the first prose paragraph.
  */
 export function makeSnippet(
   content: string | null,
@@ -151,7 +187,7 @@ export function makeSnippet(
   text = text.replace(CODE_FENCE_RE, "");
   text = text.replace(EMPTY_ANCHOR_RE, "");
 
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = dropContainers(text.split("\n").map((l) => l.trim()).filter(Boolean));
 
   // Drop first line if it looks like a title or heading
   if (lines.length > 0) {
@@ -171,6 +207,9 @@ export function makeSnippet(
       if (buf.length > 0) break;
       continue;
     }
+    // A bare link before any prose is navigation; inside a paragraph it is
+    // usually hard-wrapped prose, so it is kept.
+    if (buf.length === 0 && LINK_ONLY_LINE_RE.test(line)) continue;
     buf.push(line);
     // Stop when we have a decent paragraph
     if (buf.join(" ").length >= 120 || line.endsWith(".")) {
