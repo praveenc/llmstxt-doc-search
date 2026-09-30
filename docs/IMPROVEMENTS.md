@@ -97,7 +97,7 @@ Status: fixed in #3 (issue #2).
 - The same pattern (depth-mismatched `$HOME` symlink) is starting to inflate
   other npx caches on the same machine (e.g. `@playwright/mcp`, 505 KB).
 - Migrate the server to the latest MCP specification revision
-  (2026-07-28). Status: fixed on `feat/mcp-2026-07-28` (#21), for 1.0.0; see
+  (2026-07-28). Status: fixed in #43 (#21), for 1.0.0; see
   [mcp-spec-migration-0728.md](mcp-spec-migration-0728.md). One
   build serves pinned 2026-07-28, `auto` and 2025-era clients over stdio. A
   live `search_docs` + `fetch_doc` on the MCP source returns the same results

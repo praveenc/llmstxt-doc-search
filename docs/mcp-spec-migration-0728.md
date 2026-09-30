@@ -1,6 +1,6 @@
 # Migrating llmstxt-doc-search to MCP spec 2026-07-28
 
-Status: implemented on `feat/mcp-2026-07-28` (#21), released as 1.0.0 · Date: 2026-09-29 · Baseline: `main` @ `5f997c5` (package `0.1.0`)
+Status: implemented in #43 (#21), released as 1.0.0 · Date: 2026-09-29 · Baseline: `main` @ `5f997c5` (package `0.1.0`)
 
 Implementation notes (2026-09-30), where the shipped change differs from this proposal:
 
