@@ -50,14 +50,15 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/server": "^2.2.0",
     "ipaddr.js": "^2.2.0",
-    "zod": "^3.24.0"
+    "zod": "^4.2.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "^2.2.0",
     "@types/node": "^22.10.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
