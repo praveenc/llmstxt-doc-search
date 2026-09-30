@@ -584,7 +584,7 @@ present or are side effects of a fix. Code references are to main
 
 Issue: #32
 
-Status: fixed on `fix/title-weight-fetch-scope`. `indexTitleVariants` indexes
+Status: fixed in #41. `indexTitleVariants` indexes
 the display title once and adds only the words of the slug (and of the
 "2 -> to" variant) that are not already in it. Words are compared as index
 tokens, stemmed and with stop words dropped, so `flows` does not repeat
@@ -680,7 +680,7 @@ experimental warning. No other page among the 41 Vite+ pages changed.
 
 Issue: #35
 
-Status: fixed on `fix/title-weight-fetch-scope`. `resolveFetchSource` no
+Status: fixed in #41. `resolveFetchSource` no
 longer indexes every source to look for the URL in its llms.txt. A URL is
 authorized when an indexed source lists it, or when it is under a
 registered source's directory. A listed link on another host is recognized
