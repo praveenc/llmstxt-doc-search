@@ -332,3 +332,59 @@ describe("unscoped search merges sources by relevance (issue #11)", () => {
     );
   });
 });
+
+describe("fetch_doc with a #fragment (issue #17)", () => {
+  const DOCS = "https://docs.example.com/llms.txt";
+  const PAGE = "https://docs.example.com/prompt-caching.md";
+
+  beforeEach(() => {
+    mocks.parseLlmsTxt.mockImplementation(async (url: string) => {
+      if (url === DOCS) return [["Prompt caching", PAGE]];
+      throw new Error(`unreachable: ${url}`);
+    });
+    mocks.fetchAndClean.mockImplementation(async (url: string) => ({
+      url,
+      title: url.split("/").pop(),
+      content: "body",
+    }));
+  });
+
+  it("returns the curated title and fetches the page without the fragment", async () => {
+    await addDocSource("docs", DOCS);
+    const res = await fetchDoc(`${PAGE}#supported-models`);
+    expect(res.error).toBeUndefined();
+    expect(res.title).toBe("Prompt caching");
+    expect(res.url).toBe(PAGE);
+    expect(mocks.fetchAndClean).toHaveBeenCalledWith(PAGE);
+  });
+
+  it("fetches a page once for any number of distinct fragments", async () => {
+    await addDocSource("docs", DOCS);
+    await fetchDoc(`${PAGE}#a`);
+    await fetchDoc(`${PAGE}#b`);
+    await fetchDoc(PAGE);
+    expect(mocks.fetchAndClean).toHaveBeenCalledTimes(1);
+  });
+
+  it("authorizes an unlisted URL under the source's directory reached via a fragment", async () => {
+    await addDocSource("docs", DOCS);
+    const UNLISTED = "https://docs.example.com/guide/intro.md";
+    const res = await fetchDoc(`${UNLISTED}#install`);
+    expect(res.error).toBeUndefined();
+    expect(res.source).toBe("docs");
+    expect(res.url).toBe(UNLISTED);
+    expect(mocks.fetchAndClean).toHaveBeenCalledWith(UNLISTED);
+  });
+
+  it("authorizes a listed off-host URL reached via a fragment", async () => {
+    const RAW = "https://raw.githubusercontent.com/o/r/main/docs/panes.md";
+    mocks.parseLlmsTxt.mockImplementation(async (url: string) => {
+      if (url === DOCS) return [["Panes", RAW]];
+      throw new Error(`unreachable: ${url}`);
+    });
+    await addDocSource("docs", DOCS);
+    const res = await fetchDoc(`${RAW}#layout`);
+    expect(res.source).toBe("docs");
+    expect(res.title).toBe("Panes");
+  });
+});
