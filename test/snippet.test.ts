@@ -57,14 +57,46 @@ describe("makeSnippet", () => {
     );
   });
 
-  it("skips VitePress ::: containers", () => {
+  it("skips VitePress ::: containers and the text inside them (issue #34)", () => {
     const md = [
+      "---",
+      "url: /guide/github-actions-cache.md",
+      "---",
       "# GitHub Actions Cache",
+      "",
       "::: warning Experimental",
-      "Reusing the cache across runs is experimental.",
+      "Reusing Vite Task's cache across GitHub Actions runs is experimental.",
       ":::",
+      "",
+      "Vite Task stores task results in `node_modules/.vite/task-cache` at the workspace root.",
     ].join("\n");
-    expect(makeSnippet(md, "GitHub Actions Cache")).toBe("Reusing the cache across runs is experimental.");
+    expect(makeSnippet(md, "GitHub Actions Cache")).toBe(
+      "Vite Task stores task results in `node_modules/.vite/task-cache` at the workspace root."
+    );
+  });
+
+  it("skips nested ::: containers", () => {
+    const md = [
+      "::: details Outer",
+      "Outer text.",
+      "::: tip Inner",
+      "Inner text.",
+      ":::",
+      "Still outer.",
+      ":::",
+      "After the containers.",
+    ].join("\n");
+    expect(makeSnippet(md, "X")).toBe("After the containers.");
+  });
+
+  it("treats an unclosed ::: container as running to the end", () => {
+    const md = ["Intro.", "::: warning", "Never closed."].join("\n");
+    expect(makeSnippet(md, "X")).toBe("Intro.");
+    expect(makeSnippet(["::: warning", "Never closed."].join("\n"), "Fallback")).toBe("Fallback");
+  });
+
+  it("ignores a stray closing ::: line", () => {
+    expect(makeSnippet([":::", "Prose after a stray fence."].join("\n"), "X")).toBe("Prose after a stray fence.");
   });
 
   it("still skips list items, numbered steps and horizontal rules", () => {

@@ -18,16 +18,43 @@ const LIST_ITEM_RE = /^(?:[-*+]\s|\d+[.)]\s)/;
 const HORIZONTAL_RULE_RE = /^(?:[-*_]\s*){3,}$/;
 const TAG_ONLY_LINE_RE = /^(?:<[^>]*>\s*)+$/;
 
-/** Lines that are structure rather than prose: headings, quotes, containers, lists, rules, bare tags. */
+/** Opening line of a `:::` container (VitePress, Docusaurus), e.g. `::: warning`. */
+const CONTAINER_OPEN_RE = /^:{3,}\s*\S/;
+/** Closing line of a `:::` container. */
+const CONTAINER_CLOSE_RE = /^:{3,}$/;
+
+/**
+ * Lines that are structure rather than prose: headings, quotes, lists, rules
+ * and bare tags. `:::` containers are removed beforehand by dropContainers.
+ */
 function isNonProseLine(line: string): boolean {
   return (
     line.startsWith("#") ||
     line.startsWith(">") ||
-    line.startsWith(":::") ||
     LIST_ITEM_RE.test(line) ||
     HORIZONTAL_RULE_RE.test(line) ||
     TAG_ONLY_LINE_RE.test(line)
   );
+}
+
+/**
+ * Remove `:::` containers (admonitions, details blocks) together with their
+ * contents. Nested containers are tracked by depth; an unclosed container
+ * runs to the end, as markdown-it-container treats it.
+ */
+function dropContainers(lines: string[]): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  for (const line of lines) {
+    if (CONTAINER_OPEN_RE.test(line)) {
+      depth++;
+    } else if (CONTAINER_CLOSE_RE.test(line)) {
+      if (depth > 0) depth--;
+    } else if (depth === 0) {
+      out.push(line);
+    }
+  }
+  return out;
 }
 
 /**
@@ -137,8 +164,9 @@ function normalizeForComparison(s: string): string {
  * Create a contextual snippet from page content.
  *
  * Skips leading YAML frontmatter, blockquotes (e.g. site-wide "documentation
- * index" banners), headings, list items, horizontal rules and tag-only HTML
- * lines, then returns the first prose paragraph.
+ * index" banners), `:::` containers and their contents, headings, list items,
+ * horizontal rules and tag-only HTML lines, then returns the first prose
+ * paragraph.
  */
 export function makeSnippet(
   content: string | null,
@@ -151,7 +179,7 @@ export function makeSnippet(
   text = text.replace(CODE_FENCE_RE, "");
   text = text.replace(EMPTY_ANCHOR_RE, "");
 
-  const lines = text.split("\n").map((l) => l.trim()).filter(Boolean);
+  const lines = dropContainers(text.split("\n").map((l) => l.trim()).filter(Boolean));
 
   // Drop first line if it looks like a title or heading
   if (lines.length > 0) {
