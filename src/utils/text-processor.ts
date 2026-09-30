@@ -47,6 +47,9 @@ export function stripFragment(url: string): string {
   return i >= 0 ? url.slice(0, i) : url;
 }
 
+/** A document file extension at the end of a URL slug or file name. */
+const DOC_EXTENSION_RE = /\.(?:md|mdx|markdown|html?|txt)$/i;
+
 /**
  * Generate a human-readable title from a URL path.
  */
@@ -60,7 +63,9 @@ export function titleFromUrl(url: string): string {
     parts.pop();
   }
 
-  const slug = parts[parts.length - 1] || path;
+  // Drop the file extension so it does not become a title word (and a search
+  // term shared by every page on a .md site).
+  const slug = (parts[parts.length - 1] || path).replace(DOC_EXTENSION_RE, "");
   const title = slug.replace(/[-_]/g, " ").trim();
 
   // Title case
@@ -91,7 +96,8 @@ export function formatDisplayTitle(
   if (!extracted) return titleFromUrl(url);
 
   const t = extracted.trim();
-  if (!t || t.toLowerCase() === "index" || t.toLowerCase() === "index.md" || t.endsWith(".md")) {
+  // A bare file name (e.g. "page.md", "page.html") is not a real title.
+  if (!t || t.toLowerCase() === "index" || (DOC_EXTENSION_RE.test(t) && !/\s/.test(t))) {
     return titleFromUrl(url);
   }
 

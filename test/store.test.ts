@@ -194,3 +194,16 @@ describe("ensureSourceIndexed failure backoff (issue #12)", () => {
     expect(getSourceState("broken")?.lastError).toBe("Error");
   });
 });
+
+describe("URL extension is not a search term (issue #18)", () => {
+  it("a search for 'md' does not match every page of a .md site", async () => {
+    dropSourceState("mdsite");
+    mocks.parseLlmsTxt.mockResolvedValueOnce([
+      ["Global CLI", `${ORIGIN}guide/global-cli.md`],
+      ["Caching", `${ORIGIN}guide/cache.md`],
+      ["Markdown files (md)", `${ORIGIN}guide/markdown.md`],
+    ]);
+    const st = await ensureSourceIndexed({ name: "mdsite", url: `${ORIGIN}llms.txt` } as Source);
+    expect(st.index.search("md", 10).map((h) => h.doc.uri)).toEqual([`${ORIGIN}guide/markdown.md`]);
+  });
+});
