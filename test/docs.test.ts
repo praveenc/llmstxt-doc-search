@@ -149,14 +149,31 @@ describe("fetchDoc source authorization", () => {
     expect(res.content).toBe(`body of ${RAW}`);
   });
 
-  it("indexes unindexed sources on demand and skips those that fail to index", async () => {
+  it("does not index sources to authorize an off-host URL, but accepts it once a search has (issue #35)", async () => {
     stubIndexes({ [HERDR]: [["Panes", RAW]] });
     addSourceEntry("herdr", HERDR);
 
-    const res = await fetchDoc(RAW);
-    expect(res.source).toBe("herdr");
-    expect(res.content).toBe(`body of ${RAW}`);
-    expect(mocks.parseLlmsTxt).toHaveBeenCalledWith(HERDR);
+    const before = await fetchDoc(RAW);
+    expect(before.error).toMatch(/not under or listed by any registered source/);
+    expect(mocks.parseLlmsTxt).not.toHaveBeenCalled();
+    expect(mocks.fetchAndClean).not.toHaveBeenCalled();
+
+    await searchDocs("panes", undefined, 5);
+    const after = await fetchDoc(RAW);
+    expect(after.error).toBeUndefined();
+    expect(after.source).toBe("herdr");
+    expect(after.content).toBe(`body of ${RAW}`);
+  });
+
+  it("rejects a URL no source covers without indexing any source (issue #35)", async () => {
+    stubIndexes({ [HERDR]: [["Panes", RAW]], "https://docs.example.com/llms.txt": [["A", "https://docs.example.com/a.md"]] });
+    addSourceEntry("herdr", HERDR);
+    addSourceEntry("docs", "https://docs.example.com/llms.txt");
+
+    const res = await fetchDoc("https://elsewhere.example.org/page.md");
+    expect(res.error).toMatch(/not under or listed by any registered source/);
+    expect(mocks.parseLlmsTxt).not.toHaveBeenCalled();
+    expect(mocks.fetchAndClean).not.toHaveBeenCalled();
   });
 
   it("matches a listed URL after normalizing it", async () => {
@@ -210,7 +227,7 @@ describe("fetchDoc source authorization", () => {
     expect(res.source).toBe("guide");
   });
 
-  it("uses a covering prefix source before indexing an unindexed source that lists the URL", async () => {
+  it("uses a covering prefix source without indexing an unindexed source that lists the URL", async () => {
     const ROOT = "https://docs.example.com/llms.txt";
     const MIRROR = "https://mirror.example.com/llms.txt";
     const PAGE = "https://docs.example.com/intro.md";

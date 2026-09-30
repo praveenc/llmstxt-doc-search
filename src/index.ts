@@ -100,8 +100,9 @@ server.registerTool(
   "fetch_doc",
   {
     description:
-      "Fetch full content of a doc url. The url must be listed in, or under the llms.txt " +
-      "directory of, a registered source (use search_docs first). Content is fetched live.",
+      "Fetch full content of a doc url. The url must be under the llms.txt directory of a " +
+      "registered source, or listed by a source already searched (use search_docs first). " +
+      "Content is fetched live.",
     inputSchema: {
       url: z.string().url().describe("Document URL from a search_docs result"),
     },

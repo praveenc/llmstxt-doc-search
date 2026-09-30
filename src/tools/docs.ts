@@ -65,7 +65,7 @@ export function docsHome() {
     sources: getSources().map(sourceSummary),
     how_to: [
       "search_docs(query, source?, k) - rank docs; omit source to search all, or scope to one (e.g. 'strands', 'aws-bedrock-userguide').",
-      "fetch_doc(url) - get full content of a result url (must be listed by, or under the llms.txt directory of, a registered source).",
+      "fetch_doc(url) - get full content of a result url (must be under the llms.txt directory of a registered source, or listed by one that has been searched).",
       "list_doc_sources() - see configured sources.",
       "add_doc_source(name, llms_txt_url) / remove_doc_source(name) / refresh_doc_source(name) - manage sources at runtime.",
       "Cite the doc url and note it is fetched live (may change).",
@@ -166,17 +166,16 @@ export async function searchDocs(
  *     has the page cached (so a snippet fetch is reused, not repeated);
  *  2. the source with the longest base prefix covering it; if that source
  *     fails to index, the page is still fetched, since the prefix alone
- *     authorizes it;
- *  3. any not-yet-indexed source whose llms.txt lists it (indexed on demand;
- *     sources that fail to index are skipped).
+ *     authorizes it.
  * Listed links can live on another host (e.g. raw.githubusercontent.com),
- * which the prefix rule alone rejects.
+ * which the prefix rule alone rejects; they are authorized once their source
+ * is indexed by a search, add_doc_source or refresh_doc_source. Sources are
+ * not indexed here just to check their listings, so a URL that no source
+ * covers is rejected without fetching every registered llms.txt.
  */
 async function resolveFetchSource(url: string): Promise<{ src: Source; st: SourceState } | undefined> {
-  const sources = getSources();
-
   let listed: { src: Source; st: SourceState } | undefined;
-  for (const src of sources) {
+  for (const src of getSources()) {
     const st = getSourceState(src.name);
     if (!st?.indexed || !st.urlTitles.has(url)) continue;
     if (st.urlCache.get(url)) return { src, st };
@@ -185,27 +184,13 @@ async function resolveFetchSource(url: string): Promise<{ src: Source; st: Sourc
   if (listed) return listed;
 
   const prefixed = findSourceForUrl(url);
-  if (prefixed) {
-    try {
-      return { src: prefixed, st: await ensureSourceIndexed(prefixed) };
-    } catch (e) {
-      logIndexSkip(`source '${prefixed.name}' failed to index; fetching without its index`, e);
-      return { src: prefixed, st: pageStateFor(prefixed.name) };
-    }
+  if (!prefixed) return undefined;
+  try {
+    return { src: prefixed, st: await ensureSourceIndexed(prefixed) };
+  } catch (e) {
+    logIndexSkip(`source '${prefixed.name}' failed to index; fetching without its index`, e);
+    return { src: prefixed, st: pageStateFor(prefixed.name) };
   }
-
-  for (const src of sources) {
-    if (getSourceState(src.name)?.indexed) continue;
-    let st: SourceState;
-    try {
-      st = await ensureSourceIndexed(src);
-    } catch (e) {
-      logIndexSkip(`skip source '${src.name}' (index failed)`, e);
-      continue;
-    }
-    if (st.urlTitles.has(url)) return { src, st };
-  }
-  return undefined;
 }
 
 /** The URL as the index keys it: parsed, normalized and without its #fragment. */
@@ -230,7 +215,8 @@ export async function fetchDoc(
       title: "",
       content: "",
       error:
-        "URL is not under or listed by any registered source. Use search_docs first, or add_doc_source for its llms.txt.",
+        "URL is not under or listed by any registered source. Use search_docs first (a listed link on " +
+        "another host is recognized once its source has been searched), or add_doc_source for its llms.txt.",
     };
   }
   const { src, st } = resolved;
