@@ -9,6 +9,8 @@
 
 `llmstxt-doc-search` is a Model Context Protocol (MCP) server that turns the `llms.txt` index a documentation site publishes into a fast, ranked search tool your agent can call. It indexes titles at startup, ranks queries with BM25, and fetches the full document only when you open a result - so you get current docs with almost no local storage. Built on the search engine from [`@praveenc/mcp-docs-server`](https://github.com/praveenc/mcp-docs-server), generalized to a runtime registry of sources.
 
+It implements the [MCP 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28) specification over stdio and still works with clients on the 2025 protocol, which open with an `initialize` handshake. Requires Node.js 20 or later.
+
 ---
 
 ## Why
@@ -90,6 +92,8 @@ add_doc_source("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt")
 | `remove_doc_source(name)` | Remove a registered source. |
 | `refresh_doc_source(name)` | Re-index a source to pick up new or changed docs. A source whose `llms.txt` fails to index is skipped for 5 minutes; this retries it immediately. |
 
+`docs_home`, `list_doc_sources`, `search_docs`, and `fetch_doc` are annotated read-only, so a client can approve them without prompting. `add_doc_source`, `remove_doc_source`, and `refresh_doc_source` change the persisted registry, and `remove_doc_source` is annotated destructive. The tool list is fixed, so it is advertised as cacheable for one hour.
+
 ### Default sources
 
 Seeded into the registry on first run:
@@ -119,11 +123,13 @@ All configuration is via environment variables; none are required.
 npx @modelcontextprotocol/inspector npx -y @praveenc/llmstxt-doc-search
 ```
 
+The Inspector can connect in either protocol era; see [Protocol eras](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras.md).
+
 ---
 
 ## Development
 
-Clone the repository for local work:
+Clone the repository for local work (Node.js 20 or later):
 
 ```bash
 git clone https://github.com/praveenc/llmstxt-doc-search.git
@@ -135,7 +141,7 @@ npm install
 
 ```bash
 npm run dev         # run from source with tsx (no build)
-npm test            # offline unit tests
+npm test            # offline unit and protocol tests
 npm run typecheck   # type-check without emitting
 npm run build       # compile to dist/
 npm run inspect:dev # MCP Inspector against the source
@@ -175,7 +181,7 @@ Or, after `npm run build`, at the compiled entry point:
 
 ```text
 src/
-├── index.ts              # MCP server entry point and tool registration
+├── index.ts              # Tool registration and the stdio entry point (serves 2026-07-28 and 2025-era clients)
 ├── config.ts             # Defaults and environment configuration
 ├── tools/
 │   └── docs.ts           # search_docs, fetch_doc, and source management

@@ -4,6 +4,40 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.0] - 2026-09-30
+
+Implements MCP specification 2026-07-28 (#21). Clients on the 2025 protocol
+(with the `initialize` handshake) keep working unchanged.
+
+This is the first stable release. From here, semver covers the tool names
+and parameters, the fields in tool results, the `LLMSTXT_*` environment
+variables, and the registry file.
+
+### Added
+
+- Serves MCP 2026-07-28 over stdio: `server/discover`, requests without a
+  handshake, and `resultType` on results. A client pinned to 2026-07-28
+  failed to connect to 0.2.0 with `ERA_NEGOTIATION_FAILED`.
+- `tools/list` and `server/discover` results carry cache hints
+  (`ttlMs: 3600000`, `cacheScope: "public"`), and the server advertises
+  `tools.listChanged: false`.
+- Tool titles and annotations: `docs_home`, `list_doc_sources`,
+  `search_docs` and `fetch_doc` are marked read-only, and
+  `remove_doc_source` is marked destructive.
+- Protocol tests that drive the server over stdio in the legacy, `auto` and
+  pinned 2026-07-28 modes.
+
+### Changed
+
+- Requires Node.js 20 or later (was 18).
+- Replaced `@modelcontextprotocol/sdk` 1.x with `@modelcontextprotocol/server`
+  2.x, and `zod` 3 with `zod` 4. The install drops from about 90 packages
+  (24 MB) to 4 (16 MB).
+- Input schemas are JSON Schema 2020-12, and tools with no arguments reject
+  unknown properties.
+- Calling an unknown tool returns a JSON-RPC `-32602` error instead of a
+  tool result with `isError: true`, as the spec requires.
+
 ## [0.2.0] - 2026-09-30
 
 Lower memory and CPU, more accurate ranking, and a round of fixes found by
@@ -60,5 +94,6 @@ parameters changed.
 
 Initial release.
 
+[1.0.0]: https://github.com/praveenc/llmstxt-doc-search/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/praveenc/llmstxt-doc-search/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/praveenc/llmstxt-doc-search/releases/tag/v0.1.0
