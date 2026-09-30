@@ -106,9 +106,16 @@ export function findSourceForUrl(url: string): Source | undefined {
   return best?.src;
 }
 
+/**
+ * Whether two URLs name the same llms.txt. The query string and fragment are
+ * ignored, so `.../llms.txt?v=2` is not registered as a second copy of
+ * `.../llms.txt`.
+ */
 function sameLlmsTxtUrl(a: string, b: string): boolean {
   try {
-    return new URL(a).toString() === new URL(b).toString();
+    const ua = new URL(a);
+    const ub = new URL(b);
+    return ua.origin === ub.origin && ua.pathname === ub.pathname;
   } catch {
     return a === b;
   }

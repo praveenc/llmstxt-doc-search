@@ -18,7 +18,16 @@ vi.mock("../src/utils/doc-fetcher.js", () => ({
   parseLlmsTxt: mocks.parseLlmsTxt,
 }));
 
-import { ensureSourceIndexed, ensurePage, dropSourceState, getSourceState, SourceState } from "../src/utils/store.js";
+import {
+  ensureSourceIndexed,
+  ensurePage,
+  loadPage,
+  dropSourceState,
+  getSourceState,
+  errorReason,
+  SourceIndexError,
+  SourceState,
+} from "../src/utils/store.js";
 import { Source } from "../src/utils/registry.js";
 
 const ORIGIN = "https://docs.example.com/";
@@ -245,6 +254,39 @@ describe("ensureSourceIndexed failure backoff (issue #12)", () => {
     mocks.parseLlmsTxt.mockRejectedValueOnce(new Error(""));
     await expect(ensureSourceIndexed(src)).rejects.toThrow("source 'broken' failed to index: Error");
     expect(getSourceState("broken")?.lastError).toBe("Error");
+  });
+
+  it("marks only a replayed failure as in backoff, with the bare reason (issue #38)", async () => {
+    mocks.parseLlmsTxt.mockRejectedValueOnce(new Error("HTTP 404"));
+    const first = await ensureSourceIndexed(src).catch((e: unknown) => e);
+    const replay = await ensureSourceIndexed(src).catch((e: unknown) => e);
+
+    expect(first).toBeInstanceOf(SourceIndexError);
+    expect(first).toMatchObject({ source: "broken", reason: "HTTP 404", inBackoff: false });
+    expect(replay).toBeInstanceOf(SourceIndexError);
+    expect(replay).toMatchObject({ source: "broken", reason: "HTTP 404", inBackoff: true });
+  });
+});
+
+describe("errorReason", () => {
+  it("prefers the message, then a code, then the name", () => {
+    expect(errorReason(new Error("HTTP 404"))).toBe("HTTP 404");
+    expect(errorReason(Object.assign(new AggregateError([], ""), { code: "ECONNREFUSED" }))).toBe("ECONNREFUSED");
+    expect(errorReason(new TypeError(""))).toBe("TypeError");
+    expect(errorReason("boom")).toBe("boom");
+    expect(errorReason("")).toBe("unknown error");
+  });
+});
+
+describe("loadPage", () => {
+  it("throws the fetch error where ensurePage returns null", async () => {
+    const st = await indexedSource("lp", 2);
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error("HTTP 404"));
+    await expect(loadPage(st, urlOf(0))).rejects.toThrow("HTTP 404");
+    expect(st.urlCache.get(urlOf(0))).toBeNull();
+
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error("HTTP 404"));
+    expect(await ensurePage(st, urlOf(1))).toBeNull();
   });
 });
 

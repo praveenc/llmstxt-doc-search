@@ -28,6 +28,7 @@ import {
 } from "../src/tools/docs.js";
 import { addSourceEntry, getSource, getSources, _resetRegistryCache } from "../src/utils/registry.js";
 import { dropSourceState, ensurePage, ensureSourceIndexed } from "../src/utils/store.js";
+import { logger } from "../src/utils/logger.js";
 import { rmSync } from "node:fs";
 
 beforeEach(() => {
@@ -239,11 +240,23 @@ describe("fetchDoc source authorization", () => {
     const DOCS = "https://docs.example.com/llms.txt";
     stubIndexes({});
     addSourceEntry("flaky", DOCS);
-    mocks.fetchAndClean.mockRejectedValueOnce(new Error(""));
+    // A failed connect: an AggregateError with an empty message and only a code.
+    mocks.fetchAndClean.mockRejectedValueOnce(Object.assign(new AggregateError([], ""), { code: "ECONNREFUSED" }));
 
     const res = await fetchDoc("https://docs.example.com/guide/intro.md");
     expect(res.source).toBe("flaky");
-    expect(res.error).toBe("failed to fetch document");
+    expect(res.error).toBe("failed to fetch document: ECONNREFUSED");
+  });
+
+  it("reports the HTTP status of a missing page (issue #38)", async () => {
+    const DOCS = "https://docs.example.com/llms.txt";
+    stubIndexes({});
+    addSourceEntry("flaky", DOCS);
+    mocks.fetchAndClean.mockRejectedValueOnce(new Error("HTTP 404"));
+
+    const res = await fetchDoc("https://docs.example.com/guide/missing.md");
+    expect(res.error).toBe("failed to fetch document: HTTP 404");
+    expect(res.content).toBe("");
   });
 });
 
@@ -272,6 +285,23 @@ describe("failing sources in search and listing (issues #12, #13)", () => {
 
     const badCalls = mocks.parseLlmsTxt.mock.calls.filter(([u]) => u === BAD);
     expect(badCalls).toHaveLength(1);
+  });
+
+  it("warns once for a failing source, then logs its backoff skips at debug (issue #38)", async () => {
+    const warn = vi.spyOn(logger, "warn");
+    const debug = vi.spyOn(logger, "debug");
+    try {
+      await searchDocs("agent loop", undefined, 5);
+      await searchDocs("agent loop", undefined, 5);
+      await searchDocs("agent loop", undefined, 5);
+
+      const skips = (spy: typeof warn) => spy.mock.calls.filter(([m]) => m === "skip source 'bad' (index failed)");
+      expect(skips(warn)).toHaveLength(1);
+      expect(skips(debug)).toHaveLength(2);
+    } finally {
+      warn.mockRestore();
+      debug.mockRestore();
+    }
   });
 
   it("surfaces the failure in list_doc_sources", async () => {

@@ -54,6 +54,7 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
     throw new SourceIndexError(
       src.name,
       existing.lastError ?? "unknown error",
+      true,
       existing.failedAt + INDEX_RETRY_BACKOFF_MS - Date.now()
     );
   }
@@ -67,7 +68,7 @@ export async function ensureSourceIndexed(src: Source): Promise<SourceState> {
   } catch (e) {
     st.lastError = errorReason(e);
     st.failedAt = Date.now();
-    throw new SourceIndexError(src.name, st.lastError, INDEX_RETRY_BACKOFF_MS, e);
+    throw new SourceIndexError(src.name, st.lastError, false, INDEX_RETRY_BACKOFF_MS, e);
   }
   for (const [title, url, otherTitles] of links) {
     st.urlTitles.set(url, title);
@@ -90,20 +91,28 @@ export function getSourceState(name: string): SourceState | undefined {
   return states.get(name);
 }
 
-/** A readable reason for a failure, even when the error's message is empty. */
+/**
+ * A readable reason for a failure, even when the error's message is empty:
+ * falls back to its `code` (e.g. ECONNREFUSED on a failed connect), then its name.
+ */
 export function errorReason(e: unknown): string {
-  if (e instanceof Error) return e.message || e.name || "unknown error";
+  if (e instanceof Error) {
+    const code = (e as { code?: unknown }).code;
+    return e.message || (typeof code === "string" && code) || e.name || "unknown error";
+  }
   return String(e) || "unknown error";
 }
 
 /**
  * A source's llms.txt could not be indexed. `reason` is the underlying cause
- * without the retry hint.
+ * without the retry hint; `inBackoff` is true when this attempt failed fast
+ * on a remembered failure instead of fetching the llms.txt again.
  */
 export class SourceIndexError extends Error {
   constructor(
     readonly source: string,
     readonly reason: string,
+    readonly inBackoff: boolean,
     retryInMs: number,
     cause?: unknown
   ) {
@@ -132,8 +141,11 @@ export function dropSourceState(name: string): void {
   states.delete(name);
 }
 
-/** Fetch + cache a page's content within a source's state. */
-export async function ensurePage(st: SourceState, url: string): Promise<Page | null> {
+/**
+ * Fetch + cache a page's content within a source's state. Throws the fetch
+ * error (e.g. `HTTP 404`) so callers can report why a page is unavailable.
+ */
+export async function loadPage(st: SourceState, url: string): Promise<Page> {
   const cached = st.urlCache.get(url);
   if (cached !== undefined && cached !== null) {
     touchPage(st, url);
@@ -153,6 +165,15 @@ export async function ensurePage(st: SourceState, url: string): Promise<Page | n
   } catch (e) {
     logger.warn(`fetch failed: ${url}`, e);
     forgetPage(st, url);
+    throw e;
+  }
+}
+
+/** Like loadPage, but a failed fetch yields `null` (logged by loadPage). */
+export async function ensurePage(st: SourceState, url: string): Promise<Page | null> {
+  try {
+    return await loadPage(st, url);
+  } catch {
     return null;
   }
 }

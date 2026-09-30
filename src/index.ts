@@ -18,6 +18,8 @@ import {
   refreshDocSource,
 } from "./tools/docs.js";
 import { getSources } from "./utils/registry.js";
+import { errorReason } from "./utils/store.js";
+import { URLValidationError } from "./utils/url-validator.js";
 import { logger, setLogLevel, LogLevel } from "./utils/logger.js";
 
 const lvl = (process.env.LLMSTXT_LOG_LEVEL || "info").toLowerCase();
@@ -89,7 +91,7 @@ server.registerTool(
       return json(await searchDocs(query, source, k ?? 5));
     } catch (e) {
       logger.error("search_docs failed", e);
-      return json({ error: "search failed", message: String(e) }, true);
+      return json({ error: "search failed", message: errorReason(e) }, true);
     }
   }
 );
@@ -110,7 +112,7 @@ server.registerTool(
       return json(res, !!res.error);
     } catch (e) {
       logger.error("fetch_doc failed", e);
-      return json({ url, error: "fetch failed", message: String(e) }, true);
+      return json({ url, error: "fetch failed", message: errorReason(e) }, true);
     }
   }
 );
@@ -129,8 +131,10 @@ server.registerTool(
     try {
       return json(await addDocSource(name, llms_txt_url));
     } catch (e) {
-      logger.error("add_doc_source failed", e);
-      return json({ error: "add failed", message: String(e) }, true);
+      // A rejected name or URL is the caller's input, not a server fault.
+      if (e instanceof URLValidationError) logger.info("add_doc_source rejected", e);
+      else logger.warn("add_doc_source failed", e);
+      return json({ error: "add failed", message: errorReason(e) }, true);
     }
   }
 );
@@ -154,7 +158,7 @@ server.registerTool(
     try {
       return json(await refreshDocSource(name));
     } catch (e) {
-      return json({ error: "refresh failed", message: String(e) }, true);
+      return json({ error: "refresh failed", message: errorReason(e) }, true);
     }
   }
 );
