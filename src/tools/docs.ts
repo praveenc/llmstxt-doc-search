@@ -12,14 +12,27 @@ import {
 import {
   ensureSourceIndexed,
   ensurePage,
+  loadPage,
   pageStateFor,
   dropSourceState,
   getSourceState,
+  errorReason,
+  SourceIndexError,
   SourceState,
 } from "../utils/store.js";
 import { makeSnippet } from "../utils/text-processor.js";
 import { SNIPPET_HYDRATE_MAX } from "../config.js";
 import { logger } from "../utils/logger.js";
+
+/**
+ * Log a source skipped because it could not be indexed. A failure replayed
+ * from the backoff was already logged when it happened, so it goes to debug
+ * rather than repeating a warning on every search.
+ */
+function logIndexSkip(message: string, e: unknown): void {
+  if (e instanceof SourceIndexError && e.inBackoff) logger.debug(message, e);
+  else logger.warn(message, e);
+}
 
 export interface SearchHit {
   source: string;
@@ -106,7 +119,7 @@ export async function searchDocs(
     } catch (e) {
       // A named source that cannot be indexed is an error, not an empty result.
       if (source) throw e;
-      logger.warn(`skip source '${src.name}' (index failed)`, e);
+      logIndexSkip(`skip source '${src.name}' (index failed)`, e);
       continue;
     }
     for (const r of st.index.search(query, k)) {
@@ -176,7 +189,7 @@ async function resolveFetchSource(url: string): Promise<{ src: Source; st: Sourc
     try {
       return { src: prefixed, st: await ensureSourceIndexed(prefixed) };
     } catch (e) {
-      logger.warn(`source '${prefixed.name}' failed to index; fetching without its index`, e);
+      logIndexSkip(`source '${prefixed.name}' failed to index; fetching without its index`, e);
       return { src: prefixed, st: pageStateFor(prefixed.name) };
     }
   }
@@ -187,7 +200,7 @@ async function resolveFetchSource(url: string): Promise<{ src: Source; st: Sourc
     try {
       st = await ensureSourceIndexed(src);
     } catch (e) {
-      logger.warn(`skip source '${src.name}' (index failed)`, e);
+      logIndexSkip(`skip source '${src.name}' (index failed)`, e);
       continue;
     }
     if (st.urlTitles.has(url)) return { src, st };
@@ -221,9 +234,12 @@ export async function fetchDoc(
     };
   }
   const { src, st } = resolved;
-  const page = await ensurePage(st, normalized);
-  if (!page) return { url, title: "", content: "", source: src.name, error: "failed to fetch document" };
-  return { url: page.url, title: page.title, content: page.content, source: src.name };
+  try {
+    const page = await loadPage(st, normalized);
+    return { url: page.url, title: page.title, content: page.content, source: src.name };
+  } catch (e) {
+    return { url, title: "", content: "", source: src.name, error: `failed to fetch document: ${errorReason(e)}` };
+  }
 }
 
 export async function addDocSource(name: string, url: string) {
@@ -233,10 +249,12 @@ export async function addDocSource(name: string, url: string) {
     const st = await ensureSourceIndexed(src);
     return { added: sourceSummary(src), docCount: st.docCount };
   } catch (e) {
-    // roll back the registry entry if it cannot be indexed
+    // Roll back the registry entry if it cannot be indexed. The source no
+    // longer exists, so the index error's refresh_doc_source hint is dropped.
     removeSourceEntry(name);
     dropSourceState(name);
-    throw new Error(`source '${name}' added but failed to index (rolled back): ${String(e)}`);
+    const reason = e instanceof SourceIndexError ? e.reason : errorReason(e);
+    throw new Error(`source '${name}' was not added: its llms.txt failed to index: ${reason}`, { cause: e });
   }
 }
 

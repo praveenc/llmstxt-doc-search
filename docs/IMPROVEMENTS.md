@@ -667,6 +667,14 @@ Issue: #35
 
 Issue: #36
 
+Status: fixed in #40. Index failures are now a
+`SourceIndexError` that carries the bare reason. When `add_doc_source` rolls
+a source back, it reports `source '<name>' was not added: its llms.txt
+failed to index: <reason>`, without the retry or `refresh_doc_source` hint.
+Live with herdr's HTML docs page: the message no longer points to a
+`refresh_doc_source` call that would fail with "unknown source", and the
+nested `Error: ... Error: ...` prefixes are gone.
+
 - A failed `add_doc_source` returns "... (rolled back): ... (retry in 300s,
   or call refresh_doc_source)". The source no longer exists, so
   `refresh_doc_source` then fails with "unknown source".
@@ -689,6 +697,26 @@ Issue: #37
 ### 11.7 Smaller items (Low)
 
 Issue: #38
+
+Status: fixed in #40. All four items:
+
+- Backoff logging: a failure replayed from the backoff is marked
+  `inBackoff` and its skip is logged at DEBUG. Only the attempt that
+  actually fetched the llms.txt logs WARN. Live, with one broken source and
+  3 unscoped searches: 3 WARN lines before, 1 after.
+- `fetch_doc` of a missing page now returns `failed to fetch document:
+  HTTP 404`. A failed connect with an empty message reports its code
+  (`ECONNREFUSED`). The new `loadPage` throws the fetch error, and
+  `ensurePage` keeps returning `null` for snippet hydration.
+- The duplicate check compares origin and path only, so
+  `.../llms.txt?v=2` and `.../llms.txt#top` are rejected as the source that
+  is already registered.
+- A rejected `add_doc_source` input (`URLValidationError`: bad name,
+  duplicate, private host) is logged at INFO, and a failed index at WARN,
+  instead of ERROR. Every tool's error `message` is now the bare reason,
+  without `Error:` or `URLValidationError:` prefixes.
+
+Details of the four items:
 
 - During the 5-minute backoff, every unscoped search still logs one WARN
   line for the failing source.

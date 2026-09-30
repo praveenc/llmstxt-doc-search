@@ -91,6 +91,16 @@ describe("registry", () => {
       /already registered/
     );
   });
+
+  it("treats the same llms.txt with a query string or fragment as a duplicate (issue #38)", () => {
+    expect(() => addSourceEntry("strands-v2", "https://strandsagents.com/llms.txt?v=2")).toThrow(
+      /already registered as source 'strands'/
+    );
+    expect(() => addSourceEntry("strands-frag", "https://strandsagents.com/llms.txt#top")).toThrow(
+      /already registered as source 'strands'/
+    );
+    expect(() => addSourceEntry("strands-full", "https://strandsagents.com/llms-full.txt")).not.toThrow();
+  });
 });
 
 describe("assertPublicHttpUrl", () => {
