@@ -88,11 +88,11 @@ add_doc_source("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt")
 | `list_doc_sources()` | List sources with their `llms.txt` URL and index status, including the last index error for a failing source. |
 | `search_docs(query, source?, k?)` | BM25 search. Omit `source` to search all, or scope to one. Returns ranked `{source, url, title, score, snippet}`, where `score` (0-1) is comparable across sources. `k` defaults to 5 (max 50). |
 | `fetch_doc(url)` | Fetch the full content of a result URL. The URL must be under the `llms.txt` directory of a registered source, or listed in the `llms.txt` of a source that has been indexed (by a search, add, or refresh). |
-| `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. |
-| `remove_doc_source(name)` | Remove a registered source. |
+| `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. With a form-capable client you are asked to confirm before it is saved. |
+| `remove_doc_source(name, confirm?)` | Remove a registered source. A client that can show a prompt asks you to confirm. Without a prompt, or when the host cancels it, the call removes nothing unless `confirm` is `true`, and returns `confirmation_required` or `reason` instead. |
 | `refresh_doc_source(name)` | Re-index a source to pick up new or changed docs. A source whose `llms.txt` fails to index is skipped for 5 minutes; this retries it immediately. |
 
-`docs_home`, `list_doc_sources`, `search_docs`, and `fetch_doc` are annotated read-only, so a client can approve them without prompting. `add_doc_source`, `remove_doc_source`, and `refresh_doc_source` change the persisted registry, and `remove_doc_source` is annotated destructive. The tool list is fixed, so it is advertised as cacheable for one hour.
+`docs_home`, `list_doc_sources`, `search_docs`, and `fetch_doc` are annotated read-only, so a client can approve them without prompting. `add_doc_source`, `remove_doc_source`, and `refresh_doc_source` change the persisted registry, and `remove_doc_source` is annotated destructive. When the client supports form elicitation, `add_doc_source` and `remove_doc_source` ask the user to confirm before they change the registry. A headless client, or one that cancels the prompt, must pass `confirm: true` to `remove_doc_source` instead. The tool list is fixed, so it is advertised as cacheable for one hour.
 
 ### Default sources
 
@@ -218,6 +218,7 @@ This server fetches user-supplied URLs at runtime, so its SSRF surface is guarde
 - **Range-based address blocking.** Private and reserved destinations are blocked using IP range classification (`ipaddr.js`), covering decimal, octal, and hex IPv4, IPv4-mapped IPv6, loopback, link-local, unique-local, carrier-grade NAT, and other reserved ranges - not just a hostname regex.
 - **Connection-time validation.** The resolved IP is checked at connection time via a custom DNS lookup, closing DNS-rebinding, and every redirect hop is re-validated.
 - **Bounded responses.** Response bodies are capped at 10 MB to limit memory and regular-expression (ReDoS) exposure.
+- **Confirmation does not widen fetch policy.** The confirmation prompts on `add_doc_source` and `remove_doc_source` only gate registry changes. They never relax the SSRF guard: a private or reserved `llms.txt` URL is still rejected before any prompt.
 
 Runtime dependencies report zero known vulnerabilities.
 

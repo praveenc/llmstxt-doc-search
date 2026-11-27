@@ -8,7 +8,10 @@
  */
 import { McpServer } from "@modelcontextprotocol/server";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
+import { inputRequired, inputResponse, acceptedContent } from "@modelcontextprotocol/server";
 import { z } from "zod";
+import { realpathSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 import { APP_NAME, APP_VERSION } from "./config.js";
 import {
@@ -20,9 +23,10 @@ import {
   removeDocSource,
   refreshDocSource,
 } from "./tools/docs.js";
-import { getSources } from "./utils/registry.js";
+import { getSources, getSource, assertCanAddSource } from "./utils/registry.js";
 import { errorReason } from "./utils/store.js";
 import { URLValidationError } from "./utils/url-validator.js";
+import { supportsFormElicitation, confirmSchema } from "./utils/elicit.js";
 import { logger, setLogLevel, LogLevel } from "./utils/logger.js";
 
 const lvl = (process.env.LLMSTXT_LOG_LEVEL || "info").toLowerCase();
@@ -58,7 +62,7 @@ function json(data: unknown, isError = false) {
  * protocol era; all state (registry, indexes, page cache) is module-level, so
  * every instance shares it. Registration order is the tools/list order.
  */
-function buildServer(): McpServer {
+export function buildServer(): McpServer {
   const server = new McpServer(
     { name: APP_NAME, version: APP_VERSION },
     {
@@ -175,10 +179,40 @@ function buildServer(): McpServer {
       inputSchema: z.object({
         name: z.string().describe("Short id, e.g. 'langgraph'"),
         llms_txt_url: z.url().describe("URL of the source's llms.txt (https)"),
+        confirm: z
+          .boolean()
+          .optional()
+          .describe("Set true to confirm the add when the client cancels the confirmation prompt."),
       }),
     },
-    async ({ name, llms_txt_url }) => {
+    async ({ name, llms_txt_url, confirm }, ctx) => {
       try {
+        if (supportsFormElicitation(ctx, server.server.getClientCapabilities())) {
+          // Validate name/URL and reject duplicates before prompting, so the
+          // user is not asked about an add that would be rejected anyway.
+          assertCanAddSource(name, llms_txt_url);
+          const answered = inputResponse(ctx.mcpReq.inputResponses, "add");
+          if (answered.kind === "missing") {
+            return inputRequired({
+              inputRequests: {
+                add: inputRequired.elicit({
+                  message: `Add doc source '${name}' from ${llms_txt_url}? It will be indexed and saved to the registry.`,
+                  requestedSchema: confirmSchema(
+                    "Add this source",
+                    "Set true to add and index this llms.txt source."
+                  ),
+                }),
+              },
+            });
+          }
+          const confirmed = acceptedContent<{ confirm?: boolean }>(ctx.mcpReq.inputResponses, "add");
+          const cancelled = answered.kind === "elicit" && answered.action === "cancel";
+          // Headless hosts answer every prompt with cancel; confirm:true lets them add (as for remove).
+          const proceed = cancelled
+            ? confirm === true
+            : answered.kind === "elicit" && answered.action === "accept" && confirmed?.confirm !== false;
+          if (!proceed) return json({ added: false, name, reason: cancelled ? "cancelled" : "declined" });
+        }
         return json(await addDocSource(name, llms_txt_url));
       } catch (e) {
         // A rejected name or URL is the caller's input, not a server fault.
@@ -193,7 +227,9 @@ function buildServer(): McpServer {
     "remove_doc_source",
     {
       title: "Remove doc source",
-      description: "Remove a registered source.",
+      description:
+        "Remove a registered source. A client that can show a prompt asks the user to confirm. " +
+        "Otherwise pass confirm:true, but only after the user agreed.",
       // Destructive: removes the source from the persisted registry file.
       annotations: {
         readOnlyHint: false,
@@ -201,9 +237,60 @@ function buildServer(): McpServer {
         idempotentHint: true,
         openWorldHint: false,
       },
-      inputSchema: z.object({ name: z.string().describe("Source name to remove") }),
+      inputSchema: z.object({
+        name: z.string().describe("Source name to remove"),
+        confirm: z
+          .boolean()
+          .optional()
+          .describe("Set true to confirm removal when the client cannot show a confirmation prompt."),
+      }),
     },
-    async ({ name }) => json(removeDocSource(name))
+    async ({ name, confirm }, ctx) => {
+      const src = getSource(name);
+      // Nothing to remove: report it without prompting.
+      if (!src) return json({ removed: false, name });
+
+      const message =
+        `Remove doc source '${name}' (${src.url})? It will be deleted from the saved registry.`;
+
+      if (supportsFormElicitation(ctx, server.server.getClientCapabilities())) {
+        // Ask the human even when confirm is true, so the model cannot skip the
+        // prompt on a client that can show it.
+        const answered = inputResponse(ctx.mcpReq.inputResponses, "remove");
+        if (answered.kind === "missing") {
+          return inputRequired({
+            inputRequests: {
+              remove: inputRequired.elicit({
+                message,
+                requestedSchema: confirmSchema(
+                  "Remove this source",
+                  "Set true to remove this source from the registry."
+                ),
+              }),
+            },
+          });
+        }
+        const confirmed =
+          acceptedContent<{ confirm?: boolean }>(ctx.mcpReq.inputResponses, "remove");
+        const cancelled = answered.kind === "elicit" && answered.action === "cancel";
+        // Headless hosts (kiro-cli --no-interactive) declare elicitation but answer
+        // every prompt with cancel, so confirm:true is the only way to remove there.
+        if (cancelled && confirm === true) return json(removeDocSource(name));
+        if (answered.kind !== "elicit" || answered.action !== "accept" || confirmed?.confirm === false) {
+          return json({ removed: false, name, reason: cancelled ? "cancelled" : "declined" });
+        }
+        return json(removeDocSource(name));
+      }
+
+      // No form elicitation: default-safe. Require explicit confirm:true.
+      if (confirm === true) return json(removeDocSource(name));
+      return json({
+        removed: false,
+        name,
+        confirmation_required: true,
+        message: `${message} Confirm with the user, then call remove_doc_source again with confirm:true.`,
+      });
+    }
   );
 
   server.registerTool(
@@ -252,7 +339,22 @@ process.on("unhandledRejection", (r) => {
   process.exit(1);
 });
 
-main().catch((e) => {
-  logger.error("fatal error", e);
-  process.exit(1);
-});
+// Only start the stdio server when run as the entry point, so tests can import
+// buildServer and drive it over an in-memory transport. argv[1] is resolved
+// through any symlink (the global-install bin shim) before comparing.
+function isEntryPoint(): boolean {
+  const argv1 = process.argv[1];
+  if (!argv1) return false;
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(argv1)).href;
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) {
+  main().catch((e) => {
+    logger.error("fatal error", e);
+    process.exit(1);
+  });
+}

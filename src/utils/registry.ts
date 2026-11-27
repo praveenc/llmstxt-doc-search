@@ -121,7 +121,12 @@ function sameLlmsTxtUrl(a: string, b: string): boolean {
   }
 }
 
-export function addSourceEntry(name: string, url: string): Source {
+/**
+ * Validate a prospective source without persisting it; returns the normalized
+ * llms.txt URL. Lets a confirmation prompt reject bad input or a duplicate
+ * before asking the user about an add that would fail anyway.
+ */
+export function assertCanAddSource(name: string, url: string): string {
   if (!/^[a-z0-9][a-z0-9._-]*$/i.test(name)) {
     throw new URLValidationError(
       `invalid source name '${name}' (use letters, digits, dot, dash, underscore)`
@@ -138,6 +143,12 @@ export function addSourceEntry(name: string, url: string): Source {
       `llms.txt ${normalized} is already registered as source '${sameUrl.name}'`
     );
   }
+  return normalized;
+}
+
+export function addSourceEntry(name: string, url: string): Source {
+  const normalized = assertCanAddSource(name, url);
+  const list = loadRegistry();
   const src = makeSource(name, normalized);
   list.push(src);
   cache = list;
