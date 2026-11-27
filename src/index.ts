@@ -7,6 +7,7 @@
  * (initialize handshake) from the same process over stdio.
  */
 import { McpServer } from "@modelcontextprotocol/server";
+import type { SkillCatalog } from "@modelcontextprotocol/server/ext/skills";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { z } from "zod";
 
@@ -20,6 +21,7 @@ import {
   removeDocSource,
   refreshDocSource,
 } from "./tools/docs.js";
+import { loadSkillCatalog, SKILLS_DIR } from "./skills.js";
 import { getSources } from "./utils/registry.js";
 import { errorReason } from "./utils/store.js";
 import { URLValidationError } from "./utils/url-validator.js";
@@ -33,6 +35,9 @@ if (["debug", "info", "warn", "error"].includes(lvl)) setLogLevel(lvl as LogLeve
  * and it holds nothing user-specific, so clients and shared caches may keep it.
  */
 const TOOL_LIST_TTL_MS = 60 * 60 * 1000;
+
+/** Loaded once in main(); undefined when skills/ cannot be read, so only tools are served. */
+let skills: SkillCatalog | undefined;
 
 const INSTRUCTIONS =
   "Search public documentation that publishes an llms.txt index (Strands, Kiro, AWS " +
@@ -228,6 +233,7 @@ function buildServer(): McpServer {
     }
   );
 
+  skills?.attach(server);
   return server;
 }
 
@@ -239,6 +245,9 @@ async function main(): Promise<void> {
   } catch (e) {
     logger.warn("registry init warning", e);
   }
+  // Skills ship with the package, so they share the tool list's cache lifetime.
+  skills = await loadSkillCatalog(SKILLS_DIR, { ttlMs: TOOL_LIST_TTL_MS, cacheScope: "public" });
+  if (skills) logger.info(`skills ready: ${skills.entries.length} skill(s) over MCP`);
   serveStdio(buildServer, { onerror: (e) => logger.error("stdio transport error", e) });
   logger.info("Server running on stdio (MCP 2026-07-28 and 2025-era clients)");
 }

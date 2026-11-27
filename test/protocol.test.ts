@@ -6,6 +6,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
+import { SkillsClient } from "@modelcontextprotocol/client/ext/skills";
+import { loadSkillCatalog } from "../src/skills.js";
 
 // Drives the real server over stdio in every protocol era. Only tools that
 // never touch the network (docs_home, list_doc_sources, and a search_docs call
@@ -30,6 +32,7 @@ const TOOL_ORDER = [
   "remove_doc_source",
   "refresh_doc_source",
 ];
+const SKILLS = ["docs-lookup", "manage-sources", "scoped-fetch"];
 const TIMEOUT = 30_000;
 
 type Mode = "legacy" | "auto" | { pin: string };
@@ -103,6 +106,29 @@ describe.each([
       }),
     TIMEOUT
   );
+
+  it(
+    "serves the skills/ folder over the Skills extension",
+    () =>
+      withClient(mode, async (c) => {
+        const skills = new SkillsClient(c);
+        expect(skills.supported).toBe(true);
+        const { skills: entries } = await skills.list();
+        expect(entries.map((s) => s.frontmatter.name)).toEqual(SKILLS);
+        for (const s of entries) expect(s.frontmatter.description.length).toBeGreaterThan(20);
+        const file = await skills.read(entries.find((s) => s.frontmatter.name === "docs-lookup")!);
+        expect(file.verified).toBe(true);
+        expect(file.text).toMatch(/^---\nname: docs-lookup\n/);
+        expect(file.body).toMatch(/search_docs/);
+      }),
+    TIMEOUT
+  );
+});
+
+describe("skills loading", () => {
+  it("returns no catalog, rather than throwing, when the folder is missing", async () => {
+    expect(await loadSkillCatalog(join(TMP_DIR, "no-such-skills"), { ttlMs: 0 })).toBeUndefined();
+  });
 });
 
 describe("tool metadata", () => {
