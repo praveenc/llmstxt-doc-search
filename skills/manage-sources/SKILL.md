@@ -31,8 +31,9 @@ Call `list_doc_sources()` to see each source's name, llms.txt URL and index stat
 
 ## Confirmation
 
-The server may ask the user to confirm an add or remove before it changes the registry.
-If the client shows a confirmation prompt, let the user answer it.
-If `remove_doc_source` returns `confirmation_required: true`, nothing was removed yet.
-Ask the user, and call `remove_doc_source` again with `confirm: true` only after they agree.
-Never pass `confirm: true` on the first call or without the user's agreement.
+`add_doc_source` and `remove_doc_source` take an optional `confirm` flag.
+On a client that can show a prompt, the server asks the user before it changes the registry.
+Let the user answer it, and do not retry after they decline.
+If a result returns `confirmation_required: true` or `reason: "cancelled"`, nothing was changed.
+Ask the user in chat, and call again with `confirm: true` only after they agree.
+Never pass `confirm: true` on your own.
