@@ -4,7 +4,7 @@
     "llmstxt-doc-search": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@praveenc/llmstxt-doc-search"]
+      "args": ["-y", "@praveenc/llmstxt-doc-search@latest"]
     }
   }
 }
