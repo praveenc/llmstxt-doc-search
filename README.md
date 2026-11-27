@@ -62,6 +62,43 @@ Then point your MCP client at the installed binary:
 }
 ```
 
+### Use as a Kiro Power
+
+This repository is also a Kiro Power in the [Agent Plugins](https://agent-plugins.org/) format.
+`plugin.json` describes the power, `mcp.json` starts this server with `npx`, and `skills/` holds short playbooks for looking up docs, managing sources, and fetch scope.
+
+In the Kiro IDE, open the Powers panel, choose **Add Custom Power**, then **Import power from a repository URL**, and enter `https://github.com/praveenc/llmstxt-doc-search`.
+
+The Kiro CLI installs a power from a catalog name or a local directory, so clone the repository first:
+
+```bash
+git clone https://github.com/praveenc/llmstxt-doc-search.git
+kiro-cli powers install ./llmstxt-doc-search
+```
+
+Inside a CLI v3 chat session, `/powers install ./llmstxt-doc-search` does the same.
+Remove it with `kiro-cli powers uninstall llmstxt-doc-search` or `/powers uninstall llmstxt-doc-search`.
+
+A custom agent loads installed powers when its config sets `includePowers: true`.
+For example, `.kiro/agents/docs.md`:
+
+```markdown
+---
+name: docs
+description: Answers questions from live llms.txt documentation
+includePowers: true
+---
+
+Look up documentation before answering, and cite the doc URL.
+```
+
+Start it with `kiro-cli chat --v3 --agent docs`.
+
+### Skills over MCP
+
+The server also serves the same `skills/` folder through the MCP Skills extension (`io.modelcontextprotocol/skills`, SEP-2640).
+Clients that support the extension can list the skills and read each `SKILL.md` as a `skill://` resource, while other clients see only the tools.
+
 ---
 
 ## Quick start
@@ -183,6 +220,7 @@ Or, after `npm run build`, at the compiled entry point:
 src/
 ├── index.ts              # Tool registration and the stdio entry point (serves 2026-07-28 and 2025-era clients)
 ├── config.ts             # Defaults and environment configuration
+├── skills.ts             # Serves skills/ over the MCP Skills extension
 ├── tools/
 │   └── docs.ts           # search_docs, fetch_doc, and source management
 └── utils/
@@ -194,6 +232,8 @@ src/
     ├── url-validator.ts   # SSRF guard and URL validation
     ├── stopwords.ts      # Stop-word list
     └── logger.ts         # Logging utilities
+skills/                   # Agent Skills playbooks (Kiro Power and MCP Skills extension)
+plugin.json, mcp.json     # Kiro Power manifest and MCP server config
 ```
 
 ---
