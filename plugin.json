@@ -1,0 +1,29 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "llmstxt-doc-search",
+  "version": "1.0.0",
+  "description": "Search and read live documentation from llms.txt indexes (Strands, Kiro, AWS Bedrock, Bedrock AgentCore, Well-Architected, MCP) and add your own doc sites at runtime.",
+  "author": {
+    "name": "Praveen Chamarthi",
+    "url": "https://github.com/praveenc"
+  },
+  "homepage": "https://github.com/praveenc/llmstxt-doc-search#readme",
+  "repository": "https://github.com/praveenc/llmstxt-doc-search",
+  "license": "MIT",
+  "keywords": [
+    "docs",
+    "documentation",
+    "llms.txt",
+    "api reference",
+    "look up docs",
+    "search docs",
+    "strands",
+    "strands agents",
+    "kiro",
+    "bedrock",
+    "agentcore",
+    "well-architected",
+    "aws docs",
+    "mcp"
+  ]
+}
