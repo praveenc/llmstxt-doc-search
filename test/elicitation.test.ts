@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, afterAll, vi } from "vitest";
 
 // Per-file registry, set before config.ts reads it.
-const TMP = vi.hoisted(() => {
-  const path = `/tmp/llmstxt-test-elicit-${process.pid}.json`;
+const TMP = await vi.hoisted(async () => {
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const path = join(tmpdir(), `llmstxt-test-elicit-${process.pid}.json`);
   process.env.LLMSTXT_REGISTRY_PATH = path;
   return path;
 });
