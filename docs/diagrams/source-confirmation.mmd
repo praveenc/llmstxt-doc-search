@@ -1,0 +1,17 @@
+%% Rebuild: node pele-build.mjs --css theme.css --scheme light <file>, then --scheme dark (pele 1.10.0)
+flowchart TB
+  accTitle: When add_doc_source and remove_doc_source change the registry
+  accDescr: Input checks run first and never prompt. A client that can show a form asks the user. Accept changes the registry. Decline makes no change. If the prompt is cancelled, the change happens only with confirm true. A client without forms adds a source directly, but removes a source only with confirm true; otherwise it gets confirmation_required.
+
+  start(["add_doc_source /<br>remove_doc_source"]) --> checks{"Input checks<br>pass?"}
+  checks -->|"no"| reject["Rejected<br>(no prompt)"]:::stop
+  checks -->|yes| form{"Client can<br>show a form?"}
+  form -->|yes| ask[/"Ask the user<br>to confirm"/]
+  ask -->|"accept, Yes"| done([Registry changed]):::ok
+  ask -->|"decline, or No"| keep[No change]:::stop
+  ask -->|cancel| cancelled{"confirm: true?"}
+  cancelled -->|yes| done
+  cancelled -->|"no"| keep
+  form -->|"no"| headless{"add, or<br>confirm: true?"}
+  headless -->|yes| done
+  headless -->|"no"| required["No change<br>(confirmation_required)"]:::stop

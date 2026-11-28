@@ -88,11 +88,29 @@ add_doc_source("langgraph", "https://langchain-ai.github.io/langgraph/llms.txt")
 | `list_doc_sources()` | List sources with their `llms.txt` URL and index status, including the last index error for a failing source. |
 | `search_docs(query, source?, k?)` | BM25 search. Omit `source` to search all, or scope to one. Returns ranked `{source, url, title, score, snippet}`, where `score` (0-1) is comparable across sources. `k` defaults to 5 (max 50). |
 | `fetch_doc(url)` | Fetch the full content of a result URL. The URL must be under the `llms.txt` directory of a registered source, or listed in the `llms.txt` of a source that has been indexed (by a search, add, or refresh). |
-| `add_doc_source(name, llms_txt_url)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. |
-| `remove_doc_source(name)` | Remove a registered source. |
+| `add_doc_source(name, llms_txt_url, confirm?)` | Register and index a new `llms.txt` source at runtime. Persisted. Rejected if that `llms.txt` is already registered or contains no links. Asks you to confirm first (see [Confirmation prompts](#confirmation-prompts)). |
+| `remove_doc_source(name, confirm?)` | Remove a registered source. Asks you to confirm first, or needs `confirm: true` (see [Confirmation prompts](#confirmation-prompts)). |
 | `refresh_doc_source(name)` | Re-index a source to pick up new or changed docs. A source whose `llms.txt` fails to index is skipped for 5 minutes; this retries it immediately. |
 
 `docs_home`, `list_doc_sources`, `search_docs`, and `fetch_doc` are annotated read-only, so a client can approve them without prompting. `add_doc_source`, `remove_doc_source`, and `refresh_doc_source` change the persisted registry, and `remove_doc_source` is annotated destructive. The tool list is fixed, so it is advertised as cacheable for one hour.
+
+### Confirmation prompts
+
+`add_doc_source` and `remove_doc_source` change the saved registry, so they confirm the change first.
+
+- A client that can show a form asks the user. Accept makes the change, and decline makes none.
+- If the prompt is cancelled, the change happens only when the call passes `confirm: true`.
+  Kiro CLI in headless mode (`kiro-cli chat --no-interactive`) cancels every prompt, so it needs `confirm: true`.
+- A client that cannot show a form adds a source directly.
+  It removes a source only with `confirm: true`; otherwise the result is `confirmation_required: true` and nothing is removed.
+- The name, URL, and duplicate checks run before any prompt, so you are never asked about a change that would fail.
+
+An agent should pass `confirm: true` only after the user agrees in chat.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/praveenc/llmstxt-doc-search/main/docs/diagrams/source-confirmation-dark.svg">
+  <img src="https://raw.githubusercontent.com/praveenc/llmstxt-doc-search/main/docs/diagrams/source-confirmation-light.svg" width="620" alt="Flowchart: add_doc_source and remove_doc_source reject bad input without a prompt. A client that can show a form asks the user: accept changes the registry, decline makes no change, and cancel changes it only with confirm true. A client without forms adds directly, and removes only with confirm true; otherwise it returns confirmation_required.">
+</picture>
 
 ### Default sources
 
@@ -175,6 +193,11 @@ Or, after `npm run build`, at the compiled entry point:
 }
 ```
 
+### Diagrams
+
+The flowchart in this README is `docs/diagrams/source-confirmation.mmd`, rendered with [Pele](https://pele.run) 1.10.0.
+After you edit the `.mmd` file, render it again to `source-confirmation-light.svg` and `source-confirmation-dark.svg` with the styles in `docs/diagrams/theme.css`, and commit all three files.
+
 ---
 
 ## Architecture
@@ -218,6 +241,7 @@ This server fetches user-supplied URLs at runtime, so its SSRF surface is guarde
 - **Range-based address blocking.** Private and reserved destinations are blocked using IP range classification (`ipaddr.js`), covering decimal, octal, and hex IPv4, IPv4-mapped IPv6, loopback, link-local, unique-local, carrier-grade NAT, and other reserved ranges - not just a hostname regex.
 - **Connection-time validation.** The resolved IP is checked at connection time via a custom DNS lookup, closing DNS-rebinding, and every redirect hop is re-validated.
 - **Bounded responses.** Response bodies are capped at 10 MB to limit memory and regular-expression (ReDoS) exposure.
+- **Confirmation does not widen fetch policy.** The confirmation prompts on `add_doc_source` and `remove_doc_source` only gate registry changes. They never relax the SSRF guard: a private or reserved `llms.txt` URL is still rejected before any prompt.
 
 Runtime dependencies report zero known vulnerabilities.
 
