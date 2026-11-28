@@ -94,6 +94,10 @@ Look up documentation before answering, and cite the doc URL.
 
 Start it with `kiro-cli chat --v3 --agent docs`.
 
+In Kiro CLI 3.6.2, an agent may list this power's skills but none of its tools when it is the only installed power.
+If you see that, install a second power, for example [fetchv2](https://github.com/praveenc/fetchv2-mcp-server), and the tools show.
+In headless mode (`--no-interactive`), allow the power's tools with `--trust-all-tools`; `--trust-tools` does not match power tools in this version.
+
 ### Skills over MCP
 
 The server also serves the same `skills/` folder through the MCP Skills extension (`io.modelcontextprotocol/skills`, SEP-2640).
